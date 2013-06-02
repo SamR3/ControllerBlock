@@ -1,3 +1,6 @@
+/*
+ *  Author: Sam6982
+ */
 package nekto.controller.core;
 
 import nekto.controller.ref.GeneralRef;

@@ -1,4 +1,9 @@
+/*
+ *  Author: Sam6982
+ */
 package nekto.controller.core;
+
+import java.util.List;
 
 import nekto.controller.ref.GeneralRef;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -7,8 +12,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.ModLoader;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemLinker extends Item {
 
@@ -33,21 +39,45 @@ public class ItemLinker extends Item {
     {
         if(!par3World.isRemote)
         {
-            TileEntity tempLink = par3World.getBlockTileEntity(par4, par5, par6);
-            
-            if(tempLink instanceof TileEntityController)
+            if(checkForController(par4, par5, par6, par3World))
             {
-                this.link = (TileEntityController) tempLink;    
-                ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Linker connected to the Controller Block at " + par4 + ", " + par5 + ", " + par6);
-                return true;
-            } else if (this.link != null && !par3World.isAirBlock(par4, par5, par6)) {
-                ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Adding the block ID " + par3World.getBlockId(par4, par5, par6) +" at " + par4 + ", " + par5 + ", " + par6 + " to the Controller Block at " + this.link.xCoord + ", " + this.link.yCoord + ", " + this.link.zCoord);
-                this.link.add(par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
+                TileEntityController tempTile = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
+                
+                if(this.link == null || this.link != tempTile)
+                    this.link = tempTile;
+                
             } else {
-                ModLoader.getMinecraftInstance().thePlayer.addChatMessage("The Linker is not connected. Right click on a controller block to begin linking.");
+                if(this.link == null || !checkForController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World))
+                {
+                    ModLoader.getMinecraftInstance().thePlayer.addChatMessage("The Linker is not connected. Right click on a controller block to begin linking.");
+                } else if (checkForController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World) && !par3World.isAirBlock(par4, par5, par6)) {
+                    this.link.add(par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
+                }
             }
         }
         
         return false;
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+    {
+        if(this.link != null)
+        {
+            par3List.add("Registered to Controller at " + this.link.xCoord + ", " + this.link.yCoord + ", " + this.link.zCoord);
+        } else {
+            par3List.add("Right click on any Controller to begin linking!");
+        }
+    }
+    
+    private boolean checkForController(int x, int y, int z, World world)
+    {
+        if(world.getBlockTileEntity(x, y, z) instanceof TileEntityController)
+        {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

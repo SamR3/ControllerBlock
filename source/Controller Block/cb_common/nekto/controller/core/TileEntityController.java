@@ -1,3 +1,6 @@
+/*
+ *  Author: Sam6982
+ */
 package nekto.controller.core;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,6 +46,7 @@ public class TileEntityController extends TileEntity {
     
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
+        par1NBTTagCompound.setBoolean("active", this.state);
         par1NBTTagCompound.setInteger("num", currIndex);
         
         for(int i = currIndex; i > 0; i--)
@@ -58,6 +62,7 @@ public class TileEntityController extends TileEntity {
     
     public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
+        this.state = par1NBTTagCompound.getBoolean("active");
         this.currIndex = par1NBTTagCompound.getInteger("num");
         
         for(int i = currIndex; i > 0; i--)
