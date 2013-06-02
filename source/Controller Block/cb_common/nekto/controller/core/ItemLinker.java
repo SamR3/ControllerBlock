@@ -41,6 +41,7 @@ public class ItemLinker extends Item {
                 ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Linker connected to the Controller Block at " + par4 + ", " + par5 + ", " + par6);
                 return true;
             } else if (this.link != null && !par3World.isAirBlock(par4, par5, par6)) {
+                ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Adding the block ID " + par3World.getBlockId(par4, par5, par6) +" at " + par4 + ", " + par5 + ", " + par6 + " to the Controller Block at " + this.link.xCoord + ", " + this.link.yCoord + ", " + this.link.zCoord);
                 this.link.add(par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
             } else {
                 ModLoader.getMinecraftInstance().thePlayer.addChatMessage("The Linker is not connected. Right click on a controller block to begin linking.");

@@ -1,15 +1,19 @@
 package nekto.controller.core;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityController extends TileEntity {
     
     private int currIndex = 0;
-    public int[][] blockList;
+    public int[][] blockList = new int[100][5];
+    private boolean state = false;
     
     public void add(int blockID, int x, int y, int z, int metaData) 
     {
+        ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Made it here! The info passed is " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
+        
         this.blockList[this.currIndex][0] = blockID;
         this.blockList[this.currIndex][1] = x;
         this.blockList[this.currIndex][2] = y;
@@ -21,10 +25,20 @@ public class TileEntityController extends TileEntity {
     
     public void activate()
     {
-        for(int i = currIndex; i > 0; i--)
+        if(!state)
         {
-            this.worldObj.setBlockToAir(this.blockList[i][1], this.blockList[i][2], this.blockList[i][3]);
+            for(int i = currIndex; i > 0; i--)
+            {
+                this.worldObj.setBlockToAir(this.blockList[i][1], this.blockList[i][2], this.blockList[i][3]);
+            }
+        } else {
+            for(int i = currIndex; i > 0; i--)
+            {
+                this.worldObj.setBlock(this.blockList[i][1], this.blockList[i][2], this.blockList[i][3], this.blockList[i][0]);
+            }
         }
+        
+        state = !state;
     }
     
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
@@ -33,7 +47,12 @@ public class TileEntityController extends TileEntity {
         
         for(int i = currIndex; i > 0; i--)
         {
-            par1NBTTagCompound.setIntArray(Integer.toString(i), blockList[i]);
+            if(this.blockList[i] != null)
+            {
+                par1NBTTagCompound.setIntArray(Integer.toString(i), this.blockList[i]);
+            } else {
+                break;
+            }
         }
     }
     
