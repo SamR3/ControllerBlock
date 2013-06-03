@@ -217,5 +217,3 @@ pip-log.txt
 /mcp/*
 /eclipse/*
 /api/*
-.gitignore.txt
-.gitattributes.txt
