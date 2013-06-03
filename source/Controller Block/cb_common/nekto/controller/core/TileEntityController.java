@@ -3,17 +3,80 @@
  */
 package nekto.controller.core;
 
+import java.util.ArrayList;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityController extends TileEntity {
     
-    private int currIndex = 0;
-    public int[][] blockList = new int[100][5];
+    //private int currIndex = 0;
+    public ArrayList<int[]> blockList = new ArrayList<int[]>();
     private boolean state = false;
     
     public void add(int blockID, int x, int y, int z, int metaData) 
+    {
+        boolean removed = false;
+        int[] temp = {
+            blockID,
+            x,
+            y,
+            z,
+            metaData
+        };
+        
+        removed = blockList.remove(temp);
+        if(removed) {
+            ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Removed " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
+        } else {
+            blockList.add(temp);
+        }
+    }
+    
+    public void activate()
+    {
+        if(!state)
+        {
+            for(int[] elem : blockList)
+            {
+                this.worldObj.setBlockToAir(elem[1], elem[2], elem[3]);
+            }
+        } else {
+            for(int[] elem : blockList)
+            {
+                this.worldObj.setBlock(elem[1], elem[2], elem[3], elem[0], elem[4], 2);
+            }
+        }
+        
+        state = !state;
+    }
+    
+    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
+    {
+        int count = blockList.size();
+        par1NBTTagCompound.setInteger("length", count);
+        par1NBTTagCompound.setBoolean("active", this.state);
+        
+        for(int[] elem : blockList)
+        {
+            par1NBTTagCompound.setIntArray(Integer.toString(count), elem);
+            count++;
+        }
+    }
+    
+    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
+    {
+        int count = par1NBTTagCompound.getInteger("length");
+        this.state = par1NBTTagCompound.getBoolean("active");
+        
+        for(int i = count; i > 0; i--)
+        {
+            this.blockList.add(par1NBTTagCompound.getIntArray(Integer.toString(i)));
+        }
+    }
+    
+    /*public void add(int blockID, int x, int y, int z, int metaData) 
     {
         ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Made it here! The info passed is " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
         
@@ -69,5 +132,5 @@ public class TileEntityController extends TileEntity {
         {
             this.blockList[i] = par1NBTTagCompound.getIntArray(Integer.toString(i));
         }
-    }
+    }*/
 }
