@@ -26,9 +26,9 @@ public class TileEntityController extends TileEntity {
             metaData
         };
         
-        removed = blockList.remove(temp);
+        removed = blockList.remove(temp); //Not working....
         if(removed) {
-            ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Removed " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
+            ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Removed " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData); //For some reason, this never works.
         } else {
             blockList.add(temp);
         }
