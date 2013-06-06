@@ -13,7 +13,14 @@ public class TileEntityController extends TileEntity {
     
     //private int currIndex = 0;
     public ArrayList<int[]> blockList = new ArrayList<int[]>();
-    private boolean state = false;
+    public boolean state = true;
+    public boolean isPowered = false;
+    
+    @Override
+    public void updateEntity()
+    {
+        isPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+    }
     
     public void add(int blockID, int x, int y, int z, int metaData) 
     {
@@ -34,8 +41,10 @@ public class TileEntityController extends TileEntity {
         }
     }
     
-    public void activate()
+    public void activate(boolean active)
     {
+        this.state = active;
+        
         if(!state)
         {
             for(int[] elem : blockList)
