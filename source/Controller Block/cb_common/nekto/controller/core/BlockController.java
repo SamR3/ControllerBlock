@@ -50,6 +50,7 @@ public class BlockController extends BlockContainer {
     
     @Override
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
+<<<<<<< HEAD
     {
         TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
         if(!activated){
@@ -60,7 +61,38 @@ public class BlockController extends BlockContainer {
 		tile.deactivate();
 		activated=false;
 	}
+=======
+    {        
+        TileEntityController tile = (TileEntityController)par1World.getBlockTileEntity(par2, par3, par4);
+        
+        if(tile != null)
+        {
+            tile.activate(!(tile.state));
+        }
+        
+>>>>>>> upstream/master
         return false;
+        
+        /*if (par1World.isRemote)
+        {
+            return false;
+        }
+        else
+        {
+            if(par5EntityPlayer.getItemInUse() == (new ItemStack(Controller.controllerLinker)))
+            {
+                return false;
+            }
+            
+            TileEntityController tileentitycontroller = (TileEntityController)par1World.getBlockTileEntity(par2, par3, par4);
+
+            if (tileentitycontroller != null)
+            {
+                par5EntityPlayer.openGui(Controller.instance, 0, par1World, par2, par3, par4);
+            }
+
+            return false;
+        }*/
     }
     
     @Override
@@ -78,16 +110,25 @@ public class BlockController extends BlockContainer {
     }
     
     @Override
-    public int tickRate(World par1World)
-    {
-        return 1;
-    }
-    
-    @Override
     public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
     {
-        if(par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))
+        TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
+        
+        if(tile.isPowered && tile.state)
         {
+            tile.activate(true);
+        } 
+        else if(tile.isPowered && !tile.state) 
+        {
+            tile.activate(true);
+        }
+        else if(!tile.isPowered && tile.state)
+        {
+            tile.activate(false);
+        }
+        else if(!tile.isPowered && !tile.state)
+        {
+<<<<<<< HEAD
             TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
 		if(!activated){
             	tile.activate();
@@ -97,6 +138,9 @@ public class BlockController extends BlockContainer {
 		tile.deactivate();
 		activated=false;
 		}
+=======
+            tile.activate(false);
+>>>>>>> upstream/master
         }
     }
 }

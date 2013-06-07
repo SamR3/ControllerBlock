@@ -10,6 +10,7 @@ public class GeneralRef {
     public static final String VERSION = "dev";
     public static final String DEPENDENCIES = "";
     public static final String TEXTURE_PATH = "controller:";
+    public static final String PACKET_CHANNEL = "Controller";
     
 }
 

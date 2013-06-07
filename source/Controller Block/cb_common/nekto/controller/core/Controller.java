@@ -15,7 +15,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = GeneralRef.MOD_ID, name = GeneralRef.MOD_NAME, version = GeneralRef.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false /*, channels={GeneralRef.PACKET_CHANNEL}, packetHandler = PacketHandler.class*/)
 
 public class Controller {
 
@@ -44,5 +44,8 @@ config= new Configuration(event.getSuggestedConfigurationFile(),true);
         
         LanguageRegistry.addName(controllerBlock, "Controller Block");
         LanguageRegistry.addName(controllerLinker, "Linker");
+        
+        /*NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());*/
+        GameRegistry.registerTileEntity(TileEntityController.class, "controllerBlockList");
     }
 }

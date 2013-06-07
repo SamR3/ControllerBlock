@@ -44,6 +44,7 @@ public class ItemLinker extends Item {
                 TileEntityController tempTile = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
                 
                 if(this.link == null || this.link != tempTile)
+                    ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Linked to controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
                     this.link = tempTile;
                 
             } else {
