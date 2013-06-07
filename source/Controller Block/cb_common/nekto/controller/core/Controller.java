@@ -20,17 +20,23 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class Controller {
 
     //Blocks
-    public static final Block controllerBlock = new BlockController(500);
+    public static Block controllerBlock;
     
     //Items
-    public static final Item controllerLinker = new ItemLinker(1000);
+    public static Item controllerLinker;
     
     @Instance(GeneralRef.MOD_ID)
     public static Controller instance;
+@PreInit
+public void preLoad(FMLPreInitializationEvent event) {
+config= new Configuration(event.getSuggestedConfigurationFile(),true);
+}
 
     @Init
     public void load(FMLInitializationEvent event) {
             
+	controllerBlock = new BlockController(500);
+	controllerLinker = new ItemLinker(1000);
         GameRegistry.registerTileEntity(TileEntityController.class, "controller");
         
         GameRegistry.registerBlock(controllerBlock, "controllerBlock");
