@@ -35,7 +35,7 @@ public class ItemLinker extends Item {
     }
     
     @Override
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer player, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
         if(!par3World.isRemote)
         {
@@ -44,21 +44,20 @@ public class ItemLinker extends Item {
                 TileEntityController tempTile = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
                 
                 if(this.link == null || this.link != tempTile)
-                    ModLoader.getMinecraftInstance().thePlayer.addChatMessage("Linked to controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
+                    player.sendChatToPlayer("Linked to controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
                     this.link = tempTile;
                 
             } else {
                 if(this.link == null || !checkForController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World))
                 {
-                    ModLoader.getMinecraftInstance().thePlayer.addChatMessage("The Linker is not connected. Right click on a controller block to begin linking.");
+                   player.sendChatToPlayer("The Linker is not connected. Right click on a controller block to begin linking.");
                 } else if (checkForController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World) && !par3World.isAirBlock(par4, par5, par6)) {
-                    if(par2EntityPlayer.capabilities.isCreativeMode && par3World.getBlockId(par4, par5, par6) == 7)
+                    if(player.capabilities.isCreativeMode)
                     {
-                        this.link.add(par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
-                    } else if (par3World.getBlockId(par4, par5, par6) == 7 && !par2EntityPlayer.capabilities.isCreativeMode) {
-                        
-                    } else {
-                        this.link.add(par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
+                        this.link.add(player,par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
+                    } 
+                    else if (par3World.getBlockId(par4, par5, par6) != 7){//Bedrock case removed
+                        this.link.add(player,par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
                     }
                 }
             }
@@ -81,11 +80,6 @@ public class ItemLinker extends Item {
     
     private boolean checkForController(int x, int y, int z, World world)
     {
-        if(world.getBlockTileEntity(x, y, z) instanceof TileEntityController)
-        {
-            return true;
-        } else {
-            return false;
-        }
+    	return world.getBlockTileEntity(x, y, z) instanceof TileEntityController;
     }
 }
