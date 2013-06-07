@@ -20,6 +20,7 @@ public class BlockController extends BlockContainer {
 
     private Icon textureSide;
     private Icon textureTop;
+    private boolean activated;
     
     public BlockController(int id)
     {
@@ -31,7 +32,7 @@ public class BlockController extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public Icon getIcon(int par1, int par2)
     {
-        return par1 == 1 ? this.textureTop : (par1 == 0 ? this.textureTop : this.textureSide);
+        return par1 <= 1 ? this.textureTop : this.textureSide);
     }
     
     @SideOnly(Side.CLIENT)
@@ -51,7 +52,14 @@ public class BlockController extends BlockContainer {
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {
         TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
-        tile.activate();
+        if(!activated){
+		tile.activate();
+		activated=true;
+	}
+	else{
+		tile.deactivate();
+		activated=false;
+	}
         return false;
     }
     
@@ -81,7 +89,14 @@ public class BlockController extends BlockContainer {
         if(par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))
         {
             TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
-            tile.activate();
+		if(!activated){
+            	tile.activate();
+		activated=true;
+		}
+		else{
+		tile.deactivate();
+		activated=false;
+		}
         }
     }
 }
