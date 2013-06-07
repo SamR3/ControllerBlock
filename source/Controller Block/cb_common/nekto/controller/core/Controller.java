@@ -3,14 +3,20 @@
  */
 package nekto.controller.core;
 
+import nekto.controller.core.CommonProxy;
 import nekto.controller.ref.GeneralRef;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -27,17 +33,23 @@ public class Controller {
     
     @Instance(GeneralRef.MOD_ID)
     public static Controller instance;
-@PreInit
-public void preLoad(FMLPreInitializationEvent event) {
-config= new Configuration(event.getSuggestedConfigurationFile(),true);
-}
+    @SidedProxy(clientSide="nekto.controller.core.ClientProxy", serverSide="nekto.controller.core.CommonProxy")
+	public static CommonProxy proxy;
+	
+	private Configuration config;
+	@PreInit
+	public void preLoad(FMLPreInitializationEvent event) {
+		config= new Configuration(event.getSuggestedConfigurationFile(),true);
+		
+	}
 
     @Init
     public void load(FMLInitializationEvent event) {
-            
-	controllerBlock = new BlockController(500);
-	controllerLinker = new ItemLinker(1000);
-        GameRegistry.registerTileEntity(TileEntityController.class, "controller");
+    	config.load();
+    	controllerBlock = new BlockController(config.get("block", "controller block id", 500).getInt());
+    	controllerLinker = new ItemLinker(config.get("item", "linker item id", 1000).getInt());
+    	if(config.hasChanged())
+    		config.save();
         
         GameRegistry.registerBlock(controllerBlock, "controllerBlock");
         GameRegistry.registerItem(controllerLinker, "controllerLinker");    
@@ -45,7 +57,7 @@ config= new Configuration(event.getSuggestedConfigurationFile(),true);
         LanguageRegistry.addName(controllerBlock, "Controller Block");
         LanguageRegistry.addName(controllerLinker, "Linker");
         
-        /*NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());*/
+        NetworkRegistry.instance().registerGuiHandler(this, proxy);
         GameRegistry.registerTileEntity(TileEntityController.class, "controllerBlockList");
     }
 }
