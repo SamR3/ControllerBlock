@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockController extends BlockContainer {
+public class BlockController extends BlockContainer{
 
     private Icon textureSide;
     private Icon textureTop;
@@ -31,7 +32,7 @@ public class BlockController extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public Icon getIcon(int par1, int par2)
     {
-        return par1 == 1 ? this.textureTop : (par1 == 0 ? this.textureTop : this.textureSide);
+        return par1 <= 1 ? this.textureTop : this.textureSide;
     }
     
     @SideOnly(Side.CLIENT)
@@ -49,36 +50,22 @@ public class BlockController extends BlockContainer {
     
     @Override
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
-    {        
-        TileEntityController tile = (TileEntityController)par1World.getBlockTileEntity(par2, par3, par4);
-        
-        if(tile != null)
+    {    
+        if(par5EntityPlayer.getCurrentEquippedItem()!=null && par5EntityPlayer.getCurrentEquippedItem().getItem() instanceof ItemLinker)
         {
+            return false;
+        }
+        
+        TileEntityController tile = (TileEntityController)par1World.getBlockTileEntity(par2, par3, par4);
+
+        if (tile != null)
+        {
+            par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
             tile.activate(!(tile.state));
         }
-        
+
         return false;
         
-        /*if (par1World.isRemote)
-        {
-            return false;
-        }
-        else
-        {
-            if(par5EntityPlayer.getItemInUse() == (new ItemStack(Controller.controllerLinker)))
-            {
-                return false;
-            }
-            
-            TileEntityController tileentitycontroller = (TileEntityController)par1World.getBlockTileEntity(par2, par3, par4);
-
-            if (tileentitycontroller != null)
-            {
-                par5EntityPlayer.openGui(Controller.instance, 0, par1World, par2, par3, par4);
-            }
-
-            return false;
-        }*/
     }
     
     @Override
@@ -86,11 +73,10 @@ public class BlockController extends BlockContainer {
     {
         switch(side) 
         {
-            case 0: return true;
-            case 1: return true;
-            case 2: return true;
-            case 3: return true;
-            default: return false;
+            case 0:case 1:case 2:case 3: 
+            	return true;
+            default: 
+            	return false;
   
         }
     }
@@ -100,19 +86,11 @@ public class BlockController extends BlockContainer {
     {
         TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
         
-        if(tile.isPowered && tile.state)
+        if(tile.isPowered)
         {
             tile.activate(true);
         } 
-        else if(tile.isPowered && !tile.state) 
-        {
-            tile.activate(true);
-        }
-        else if(!tile.isPowered && tile.state)
-        {
-            tile.activate(false);
-        }
-        else if(!tile.isPowered && !tile.state)
+        else
         {
             tile.activate(false);
         }
