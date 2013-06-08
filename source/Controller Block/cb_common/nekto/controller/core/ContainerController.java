@@ -8,15 +8,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ContainerController extends Container{
+public class ContainerController extends Container {
 
 	private int[] pos=new int[3];
 	private TileEntityController control;
-	public ContainerController(InventoryPlayer inventory,World world, int x, int y, int z){
-		control=(TileEntityController) world.getBlockTileEntity(x, y, z);
-		pos[0]=x;
-		pos[1]=y;
-		pos[2]=z;
+	
+	public ContainerController(InventoryPlayer inventory, TileEntityController tile){
+		control = (TileEntityController) tile;
+		pos[0] = tile.xCoord;
+		pos[1] = tile.yCoord;
+		pos[2] = tile.zCoord;
 		//TODO:Add controller slots
 		//Adding player inventory
 		for(int i = 0; i < 3; i++)
@@ -25,12 +26,16 @@ public class ContainerController extends Container{
 		for(int j = 0; j < 9; j++)
 			addSlotToContainer(new Slot(inventory, j, 8 + j * 18, 142));
 	}
+	
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
+	public boolean canInteractWith(EntityPlayer player) 
+	{
 		return this.control.isUseableByPlayer(player);
 	}
+	
 	@Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int i) {
+    public ItemStack transferStackInSlot(EntityPlayer player, int i) 
+	{
 		ItemStack itemstack = null;
 		Slot slot = (Slot) this.inventorySlots.get(i);
 		if (slot != null && slot.getHasStack()) {

@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockController extends BlockContainer{
+public class BlockController extends BlockContainer {
 
     private Icon textureSide;
     private Icon textureTop;
@@ -61,11 +61,10 @@ public class BlockController extends BlockContainer{
         if (tile != null)
         {
             par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
-            tile.activate(!(tile.state));
+            //tile.activate(!(tile.state));
         }
 
         return false;
-        
     }
     
     @Override
@@ -82,6 +81,29 @@ public class BlockController extends BlockContainer{
     }
     
     @Override
+    public void breakBlock(World par1World, int par2, int par3, int par4, int par5, int par6)
+    {
+        TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
+        ItemLinker linker = tile.getLinker();
+        
+        if(linker != null)
+        {
+            linker.resetLinker();
+        }
+        
+        /*
+         * BUGFIX:
+         *  Makes sure that the Linker doesn't hang on to the
+         *  Controller after it's been destroyed.
+         */
+        
+        if (this.hasTileEntity(par6))
+        {
+            par1World.removeBlockTileEntity(par2, par3, par4);
+        }
+    }
+    
+    @Override
     public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
     {
         TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
@@ -94,5 +116,13 @@ public class BlockController extends BlockContainer{
         {
             tile.activate(false);
         }
+        
+        /*
+         * GLITCH: 
+         *  When the Controller is not powered, and the selected block is not 
+         *  air, any block update near the Controller will cause it to turn all 
+         *  of the linked blocks to air. I tried to fix this, but I haven't made 
+         *  any headway.
+         */
     }
 }

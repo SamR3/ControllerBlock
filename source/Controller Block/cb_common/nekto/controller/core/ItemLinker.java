@@ -44,8 +44,11 @@ public class ItemLinker extends Item {
                 TileEntityController tempTile = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
                 
                 if(this.link == null || this.link != tempTile)
+                {
                     player.sendChatToPlayer("Linked to controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
                     this.link = tempTile;
+                    this.link.setLinker(this);
+                }
                 
             } else {
                 if(this.link == null || !checkForController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World))
@@ -81,5 +84,10 @@ public class ItemLinker extends Item {
     private boolean checkForController(int x, int y, int z, World world)
     {
     	return world.getBlockTileEntity(x, y, z) instanceof TileEntityController;
+    }
+    
+    public void resetLinker()
+    {
+        this.link = null;
     }
 }

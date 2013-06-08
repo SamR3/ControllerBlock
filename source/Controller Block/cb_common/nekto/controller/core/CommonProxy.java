@@ -1,28 +1,36 @@
 package nekto.controller.core;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler{
 
-	public static final int GUI_ID=0;
+	public static final int GUI_ID = 0;
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
-			int x, int y, int z) {
-		if(ID==GUI_ID)
-			return new ContainerController(player.inventory,world,x,y,z);
-		else
-			return null;
+	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	{
+	    TileEntity tile = world.getBlockTileEntity(x, y, z);
+	    
+		if(ID == GUI_ID && tile instanceof TileEntityController)
+		{
+			return new ContainerController(player.inventory, (TileEntityController) tile);
+		}
+		
+		return null;
 	}
 
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
-			int x, int y, int z) {
-		if(ID==GUI_ID)
-			return new GuiController(player.inventory,world,x,y,z);
-		else
-			return null;
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	{	       
+        TileEntity tile = world.getBlockTileEntity(x, y, z);
+        
+        if(ID == GUI_ID && tile instanceof TileEntityController)
+        {
+			return new GuiController(player.inventory, (TileEntityController) tile);
+        }
+			
+	    return null;
 	}
-
 }
