@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -192,6 +193,6 @@ public class TileEntityController extends TileEntity implements IInventory {
 
 	@Override
 	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
-		return true;//TODO:Do we need any limitations ?
+		return i<getSizeInventory() && itemstack.getItem() instanceof ItemBlock;
 	}
 }

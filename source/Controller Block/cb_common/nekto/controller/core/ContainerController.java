@@ -10,15 +10,13 @@ import net.minecraft.world.World;
 
 public class ContainerController extends Container {
 
-	private int[] pos=new int[3];
 	private TileEntityController control;
 	
 	public ContainerController(InventoryPlayer inventory, TileEntityController tile){
-		control = (TileEntityController) tile;
-		pos[0] = tile.xCoord;
-		pos[1] = tile.yCoord;
-		pos[2] = tile.zCoord;
-		//TODO:Add controller slots
+		this.control = ((TileEntityController) tile);
+		//Adding controller slots
+		addSlotToContainer(new ControllerSlot(tile, 0, 29, 21));
+		addSlotToContainer(new ControllerSlot(tile, 1, 29, 52));
 		//Adding player inventory
 		for(int i = 0; i < 3; i++)
 			for(int k = 0; k < 9; k++)
@@ -30,7 +28,7 @@ public class ContainerController extends Container {
 	@Override
 	public boolean canInteractWith(EntityPlayer player) 
 	{
-		return this.control.isUseableByPlayer(player);
+		return this.getControl().isUseableByPlayer(player);
 	}
 	
 	@Override
@@ -41,12 +39,12 @@ public class ContainerController extends Container {
 		if (slot != null && slot.getHasStack()) {
 		    ItemStack itemstack1 = slot.getStack();
 		    itemstack = itemstack1.copy();
-		    if (i < this.control.getSizeInventory()) //From block inventory to player inventory
+		    if (i < this.getControl().getSizeInventory()) //From block inventory to player inventory
 		    { 
-		    	if(!this.mergeItemStack(itemstack1, this.control.getSizeInventory(), this.inventorySlots.size(), true))
+		    	if(!this.mergeItemStack(itemstack1, this.getControl().getSizeInventory(), this.inventorySlots.size(), true))
 		    		return null;
 		    } 	    
-		    else if (!this.mergeItemStack(itemstack1, 2, this.control.getSizeInventory(), false))
+		    else if (!this.mergeItemStack(itemstack1, 2, this.getControl().getSizeInventory(), false))
 		    	return null;
 		    
 		    if (itemstack1.stackSize == 0) 
@@ -68,4 +66,8 @@ public class ContainerController extends Container {
 		}
 		return itemstack;
     }
+
+	public TileEntityController getControl() {
+		return this.control;
+	}
 }

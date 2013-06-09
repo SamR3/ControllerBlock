@@ -20,7 +20,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = GeneralRef.MOD_ID, name = GeneralRef.MOD_NAME, version = GeneralRef.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false /*, channels={GeneralRef.PACKET_CHANNEL}, packetHandler = PacketHandler.class*/)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false , channels={GeneralRef.PACKET_CHANNEL}, packetHandler = PacketHandler.class)
 
 public class Controller {
 
@@ -37,13 +37,14 @@ public class Controller {
 	
 	private Configuration config;
 	@PreInit
-	public void preLoad(FMLPreInitializationEvent event) {
+	public void preLoad(FMLPreInitializationEvent event) 
+	{
 		config= new Configuration(event.getSuggestedConfigurationFile(),true);
-		
 	}
 
     @Init
-    public void load(FMLInitializationEvent event) {
+    public void load(FMLInitializationEvent event) 
+    {
     	config.load();
     	controllerBlock = new BlockController(config.get("block", "controller block id", 500).getInt());
     	controllerLinker = new ItemLinker(config.get("item", "linker item id", 1000).getInt());
