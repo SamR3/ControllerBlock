@@ -45,9 +45,12 @@ public class ItemLinker extends Item {
                 
                 if(this.link == null || this.link != tempTile)
                 {
-                    player.sendChatToPlayer("Linked to controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
+                    player.sendChatToPlayer("Linked to Controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
                     this.link = tempTile;
                     this.link.setLinker(this);
+                } else if(this.link == tempTile) {
+                    player.sendChatToPlayer("Unlinked from Controller.");
+                    this.resetLinker();
                 }
                 
             } else {

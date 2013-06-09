@@ -91,6 +91,8 @@ public class BlockController extends BlockContainer {
             linker.resetLinker();
         }
         
+        tile.activate(false);
+        
         /*
          * BUGFIX:
          *  Makes sure that the Linker doesn't hang on to the
