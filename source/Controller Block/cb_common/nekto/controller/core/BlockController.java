@@ -112,11 +112,11 @@ public class BlockController extends BlockContainer {
         
         if(tile.isPowered)
         {
-            tile.activate(true);
+            tile.activate(false);
         } 
         else
         {
-            tile.activate(false);
+            tile.activate(true);
         }
         
         /*

@@ -57,6 +57,7 @@ public class TileEntityController extends TileEntity implements IInventory {
         } else {
         	player.sendChatToPlayer("Added " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
             blockList.add(temp);
+            this.worldObj.setBlockToAir(temp[1], temp[2], temp[3]);
         }
     }
     
