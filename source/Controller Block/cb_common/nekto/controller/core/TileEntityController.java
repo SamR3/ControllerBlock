@@ -6,6 +6,7 @@ package nekto.controller.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -16,10 +17,9 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityController extends TileEntity implements IInventory {
     
-    public ArrayList<int[]> blockList = null;
-    public boolean state = true;
-    public boolean isPowered = false;
-	private ItemStack[] items;
+    public List<int[]> blockList = null;
+    public boolean previousState = false;
+    private ItemStack[] items;
 	private ItemLinker linker;
     
     public TileEntityController()
@@ -27,14 +27,8 @@ public class TileEntityController extends TileEntity implements IInventory {
     	this.items = new ItemStack[this.getSizeInventory()];
     	this.blockList = new ArrayList<int[]>();
     }
-    
-    @Override
-    public void updateEntity()
-    {
-        this.isPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-    }
-    
-    public void add(EntityPlayer player, int blockID, int x, int y, int z, int metaData) 
+
+	public void add(EntityPlayer player, int blockID, int x, int y, int z, int metaData) 
     {	
         boolean removed = false;
         int[] temp = new int[]{
@@ -58,33 +52,13 @@ public class TileEntityController extends TileEntity implements IInventory {
         } else {
         	player.sendChatToPlayer("Added " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
             blockList.add(temp);
-            this.worldObj.setBlockToAir(temp[1], temp[2], temp[3]);
+            //this.worldObj.setBlockToAir(temp[1], temp[2], temp[3]);
         }
     }
     
-    public void activate(boolean active)
+    public void setState(boolean active)
     {
-        if(!blockList.isEmpty())
-	        if(!active)
-	        {
-	            for(int[] elem : blockList)
-	            {
-	            	if(elem != null && elem.length > 4)
-	            	{
-	            		this.worldObj.setBlockToAir(elem[1], elem[2], elem[3]);
-	            	}
-	            }
-	        } else {
-	            for(int[] elem : blockList)
-	            {
-	            	if(elem != null && elem.length >= 5)
-	            	{
-	            		this.worldObj.setBlock(elem[1], elem[2], elem[3], elem[0], elem[4], 2);
-	            	}
-	            }
-	        }
-        
-        this.state = !active;
+        this.previousState = active;
     }
     
     public void setLinker(ItemLinker par1Linker)
@@ -101,9 +75,8 @@ public class TileEntityController extends TileEntity implements IInventory {
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
     	super.writeToNBT(par1NBTTagCompound);
-    	blockList.trimToSize();
-        par1NBTTagCompound.setInteger("length", blockList.size());
-        par1NBTTagCompound.setBoolean("active", this.state);
+    	par1NBTTagCompound.setInteger("length", blockList.size());
+        par1NBTTagCompound.setBoolean("active", this.previousState);
         for(int index = 0; index < blockList.size(); index++ )
         {
             par1NBTTagCompound.setIntArray(Integer.toString(index), blockList.get(index));
@@ -115,7 +88,7 @@ public class TileEntityController extends TileEntity implements IInventory {
     {
     	super.readFromNBT(par1NBTTagCompound);
         int count = par1NBTTagCompound.getInteger("length");
-        this.state = par1NBTTagCompound.getBoolean("active");
+        this.previousState = par1NBTTagCompound.getBoolean("active");
 
     	this.blockList.clear();
         for(int i = 0; i < count; i++)

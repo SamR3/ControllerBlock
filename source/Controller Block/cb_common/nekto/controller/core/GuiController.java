@@ -36,7 +36,6 @@ public class GuiController extends GuiContainer {
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() 
     {
