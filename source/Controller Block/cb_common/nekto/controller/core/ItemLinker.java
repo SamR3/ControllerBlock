@@ -39,25 +39,33 @@ public class ItemLinker extends Item {
     {
         if(!par3World.isRemote)
         {
-            if(checkForController(par4, par5, par6, par3World))
+            if(isController(par4, par5, par6, par3World))
             {
                 TileEntityController tempTile = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
-                
-                if(this.link == null || this.link != tempTile)
+                if(tempTile.getLinker() == null)
                 {
-                    player.sendChatToPlayer("Linked to Controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
-                    this.link = tempTile;
-                    this.link.setLinker(this);
-                } else if(this.link == tempTile) {
-                    player.sendChatToPlayer("Unlinked from Controller.");
-                    this.resetLinker();
+	                if(this.link == null || this.link != tempTile)
+	                {
+	                    player.sendChatToPlayer("Linked to Controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
+	                    this.link = tempTile;
+	                    this.link.setLinker(this);
+	                } else if(this.link == tempTile) {
+	                    player.sendChatToPlayer("Unlinked from Controller.");
+	                    this.resetLinker();
+	                }
                 }
+                else
+                {
+                	player.sendChatToPlayer("Controller is already linked to another Linker.");
+                }	
                 
             } else {
-                if(this.link == null || !checkForController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World))
+                if(this.link == null || !isController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World))
                 {
                    player.sendChatToPlayer("The Linker is not connected. Right click on a controller block to begin linking.");
-                } else if (checkForController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World) && !par3World.isAirBlock(par4, par5, par6)) {
+                } 
+                else if (isController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World) && !par3World.isAirBlock(par4, par5, par6)) 
+                {
                     if(player.capabilities.isCreativeMode)
                     {
                         this.link.add(player,par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
@@ -83,7 +91,7 @@ public class ItemLinker extends Item {
         }
     }
     
-    private boolean checkForController(int x, int y, int z, World world)
+    private boolean isController(int x, int y, int z, World world)
     {
     	return world.getBlockTileEntity(x, y, z) instanceof TileEntityController;
     }
