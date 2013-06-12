@@ -11,7 +11,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.src.ModLoader;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,56 +42,67 @@ public class ItemLinker extends Item {
             if(isController(par4, par5, par6, par3World))
             {
                 TileEntityController tempTile = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
-                if(tempTile.getLinker() == null)
-                {
-	                if(this.link == null || this.link != tempTile)
-	                {
-	                    player.sendChatToPlayer("Linked to Controller at " + tempTile.xCoord + ", " + tempTile.yCoord + ", " + tempTile.zCoord);
-	                    this.link = tempTile;
-	                    this.link.setLinker(this);
-	                } else if(this.link == tempTile) {
-	                    player.sendChatToPlayer("Unlinked from Controller.");
-	                    this.resetLinker();
-	                }
+                if(par1ItemStack.hasTagCompound() && par1ItemStack.stackTagCompound.hasKey("ControlPos"))
+            	{
+                    player.sendChatToPlayer("Unlinked from Controller.");              
+                    this.link.setLinker(null);//The controller is freed from the reference to the linker.
+                    this.resetLinker();//The linker is freed from the reference to the controller.                
+                    par1ItemStack.getTagCompound().removeTag("ControlPos");//Removed the data saved
                 }
-                else
+                else if(tempTile.getLinker() == null)
+                {
+                    player.sendChatToPlayer("Linked to Controller at " + par4 + ", " + par5 + ", " + par6);
+                    this.link = tempTile;
+                    this.link.setLinker(this);
+                	NBTTagCompound tag = new NBTTagCompound();
+                	tag.setIntArray("ControlPos", new int[]{par4, par5, par6});
+                	par1ItemStack.setTagCompound(tag);                 	
+                }
+                else if(this !=tempTile.getLinker())
                 {
                 	player.sendChatToPlayer("Controller is already linked to another Linker.");
-                }	
-                
-            } else {
-                if(this.link == null || !isController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World))
-                {
-                   player.sendChatToPlayer("The Linker is not connected. Right click on a controller block to begin linking.");
-                } 
-                else if (isController(this.link.xCoord, this.link.yCoord, this.link.zCoord, par3World) && !par3World.isAirBlock(par4, par5, par6)) 
-                {
-                    if(player.capabilities.isCreativeMode)
-                    {
-                        this.link.add(player,par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
-                    } 
-                    else if (par3World.getBlockId(par4, par5, par6) != 7){//Bedrock case removed
-                        this.link.add(player,par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
-                    }
+                	//Another player might be editing, let's avoid any issue and do nothing.
                 }
+            } else {
+                if ( par1ItemStack.hasTagCompound() && par1ItemStack.stackTagCompound.hasKey("ControlPos")) 
+                {
+                	if(link == null)
+                	{
+                		int[] pos = par1ItemStack.getTagCompound().getIntArray("ControlPos");
+                		this.link= (TileEntityController) par3World.getBlockTileEntity(pos[0], pos[1], pos[2]);
+                	}
+                	if(!par3World.isAirBlock(par4, par5, par6))
+	                    if(player.capabilities.isCreativeMode)
+	                    {
+	                        this.link.add(player,par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
+	                    } 
+	                    else if (par3World.getBlockId(par4, par5, par6) != 7)
+	                    {//Bedrock case removed
+	                        this.link.add(player,par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));                
+	                    }
+                }
+                else
+                	player.sendChatToPlayer("The Linker is not connected. Right click on a controller block to begin linking.");
             }
         }
-        
         return false;
     }
     
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
-        if(this.link != null)
-        {
-            par3List.add("Registered to Controller at " + this.link.xCoord + ", " + this.link.yCoord + ", " + this.link.zCoord);
-        } else {
+    	if(stack.hasTagCompound() && stack.stackTagCompound.hasKey("ControlPos"))
+    	{
+	        int[] pos = stack.getTagCompound().getIntArray("ControlPos");
+	        par3List.add("Registered to Controller at " + pos[0]+ ", " + pos[1] + ", " + pos[2]);
+        } 
+    	else 
+    	{
             par3List.add("Right click on any Controller to begin linking!");
         }
     }
     
-    private boolean isController(int x, int y, int z, World world)
+    private static boolean isController(int x, int y, int z, World world)
     {
     	return world.getBlockTileEntity(x, y, z) instanceof TileEntityController;
     }
