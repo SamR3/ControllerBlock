@@ -20,7 +20,7 @@ public class TileEntityController extends TileEntity implements IInventory {
     public List<int[]> blockList = null;
     public boolean previousState = false;
     private ItemStack[] items;
-	private ItemLinker linker;
+	private ItemLinker linker = null;
     
     public TileEntityController()
     {
@@ -34,17 +34,13 @@ public class TileEntityController extends TileEntity implements IInventory {
         int[] temp = new int[]{
             blockID,x,y,z,metaData
         };
-        Iterator itr = blockList.iterator();
-        int index = 0;
-        
+        Iterator itr = blockList.listIterator();       
         while(itr.hasNext()){
-        	
         	if(Arrays.equals((int[]) itr.next(), temp)){
-        		blockList.remove(index);
+        		itr.remove();
         		removed = true;
         		break;
         	}
-    		index++;
         }
         
         if(removed) {
@@ -64,6 +60,7 @@ public class TileEntityController extends TileEntity implements IInventory {
     public void setLinker(ItemLinker par1Linker)
     {
         this.linker = par1Linker;
+        //par1Linker;
     }
     
     public ItemLinker getLinker()

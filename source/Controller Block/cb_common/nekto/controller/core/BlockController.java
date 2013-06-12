@@ -77,14 +77,7 @@ public class BlockController extends BlockContainer {
     @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
     {
-        switch(side) 
-        {
-            case 0:case 1:case 2:case 3: 
-            	return true;
-            default: 
-            	return false;
-  
-        }
+        return (side>=0 && side<=3);
     }
     
     @Override
