@@ -43,11 +43,24 @@ public class ItemLinker extends Item {
             {
                 TileEntityController tempTile = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
                 if(par1ItemStack.hasTagCompound() && par1ItemStack.stackTagCompound.hasKey("ControlPos"))
-            	{
-                    player.sendChatToPlayer("Unlinked from Controller.");              
-                    this.link.setLinker(null);//The controller is freed from the reference to the linker.
-                    this.resetLinker();//The linker is freed from the reference to the controller.                
+            	{         
+                  //The controller is freed from the reference to the linker.
+                    if(this.link!=null)
+                    {
+                    	this.link.setLinker(null);
+                    	//The linker is freed from the reference to the controller.
+                        this.resetLinker();
+                    }                	
+                    else 
+                    {
+                    	int[] pos = par1ItemStack.getTagCompound().getIntArray("ControlPos");
+                    	//Try to find the old controller block to reset its linker
+                    	if(par3World.getBlockTileEntity(pos[0], pos[1], pos[2]) instanceof TileEntityController)
+                    		((TileEntityController)par3World.getBlockTileEntity(pos[0], pos[1], pos[2])).setLinker(null);
+                    }
+                                  
                     par1ItemStack.getTagCompound().removeTag("ControlPos");//Removed the data saved
+                    player.sendChatToPlayer("Unlinked from Controller.");
                 }
                 else if(tempTile.getLinker() == null)
                 {
@@ -63,13 +76,19 @@ public class ItemLinker extends Item {
                 	player.sendChatToPlayer("Controller is already linked to another Linker.");
                 	//Another player might be editing, let's avoid any issue and do nothing.
                 }
-            } else {
-                if ( par1ItemStack.hasTagCompound() && par1ItemStack.stackTagCompound.hasKey("ControlPos")) 
-                {
-                	if(link == null)
+            } else if ( par1ItemStack.hasTagCompound() && par1ItemStack.stackTagCompound.hasKey("ControlPos"))             
+            {
+                	if(link == null)//Lost the link either from world unload or block break
                 	{
                 		int[] pos = par1ItemStack.getTagCompound().getIntArray("ControlPos");
-                		this.link= (TileEntityController) par3World.getBlockTileEntity(pos[0], pos[1], pos[2]);
+                		if(par3World.getBlockTileEntity(pos[0], pos[1], pos[2]) instanceof TileEntityController)
+                			this.link= (TileEntityController) par3World.getBlockTileEntity(pos[0], pos[1], pos[2]);
+                		else//It had data on a block that doesn't exist anymore
+                		{
+                			par1ItemStack.getTagCompound().removeTag("ControlPos");
+                			player.sendChatToPlayer("Unlinked from Controller.");
+                			return false;
+                		}
                 	}
                 	if(!par3World.isAirBlock(par4, par5, par6))
 	                    if(player.capabilities.isCreativeMode)
@@ -84,7 +103,6 @@ public class ItemLinker extends Item {
                 else
                 	player.sendChatToPlayer("The Linker is not connected. Right click on a controller block to begin linking.");
             }
-        }
         return false;
     }
     
