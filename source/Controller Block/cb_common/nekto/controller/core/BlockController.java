@@ -25,29 +25,12 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockController extends BlockContainer {
-
-    private Icon textureSide;
-    private Icon textureTop;
-    
+public class BlockController extends BlockBase {
+	
     public BlockController(int id)
     {
-        super(id, Material.rock);
+        super(id);
         setUnlocalizedName("controllerBlock");
-        setCreativeTab(CreativeTabs.tabBlock);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public Icon getIcon(int par1, int par2)
-    {
-        return par1 <= 1 ? this.textureTop : this.textureSide;
-    }
-    
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister par1IconRegister)
-    {
-        this.textureSide = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + "controller_side");
-        this.textureTop = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + "controller_top");
     }
 
     @Override
@@ -75,41 +58,14 @@ public class BlockController extends BlockContainer {
     }
     
     @Override
-    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
-    {
-        return (side>=0 && side<=3);
-    }
-    
-    @Override
     public void breakBlock(World world, int par2, int par3, int par4, int par5, int par6)
     {
         TileEntityController tile = (TileEntityController) world.getBlockTileEntity(par2, par3, par4);
-        Iterator itr = tile.blockList.iterator();
-        ItemLinker linker = tile.getLinker();
-        if(!world.isRemote && tile.previousState && linker == null)//We only spawn items if it is powered and not in editing mode
+        if(!world.isRemote && tile.previousState && !tile.isEditing())//We only spawn items if it is powered and not in editing mode
         {
-            float f = world.rand.nextFloat() * 0.8F + 0.1F;
-            float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
-            float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
-            
-			while(itr.hasNext())
-			{
-				int[] elem = (int[]) itr.next();
-				EntityItem item = new EntityItem(world, (double)((float)par2 + f), (double)((float)par3 + f1), (double)((float)par4 + f2), new ItemStack(elem[0],1,elem[4]));
-				//This isn't server compatible, don't do it
-				/*item.motionX = (double)((float)this.rand.nextGaussian() * f3);
-                item.motionY = (double)((float)this.rand.nextGaussian() * f3 + 0.2F);
-                item.motionZ = (double)((float)this.rand.nextGaussian() * f3);*/
-				world.spawnEntityInWorld(item);
-			}
+        	Iterator itr = tile.getBaseList().iterator();
+        	dropItems(world, itr, par2, par3, par4);
         }
-        if(linker != null)
-        {
-            linker.resetLinker();
-        }
-        
-        //this.setUnactiveBlocks(world, itr);No need to since the items won't be dropped when not powered
-        
         super.breakBlock(world, par2, par3, par4, par5, par6);
     }
     
@@ -120,7 +76,7 @@ public class BlockController extends BlockContainer {
     	boolean flag =par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
         if( tile.previousState!=flag)
         {
-        	Iterator itr = tile.blockList.iterator();
+        	Iterator itr = tile.getBaseList().iterator();
         
         	if(flag)
         	{
@@ -134,25 +90,4 @@ public class BlockController extends BlockContainer {
         } 
     }
 
-	private void setUnactiveBlocks(World par1World, Iterator itr) {
-        while(itr.hasNext())
-        {
-        	int[] block = (int[])itr.next();
-        	if(block != null && block.length > 4 && par1World.getBlockId(block[1], block[2], block[3]) != block[4])
-        	{
-        		par1World.setBlock(block[1], block[2], block[3], block[0], block[4], 3);
-        	}
-        }
-	}
-
-	private void setActiveBlocks(World par1World, Iterator itr) {
-        while(itr.hasNext())
-        {
-        	int[] block = (int[])itr.next();
-        	if(block != null && block.length > 4 /*&& par1World.getBlockId(block[1], block[2], block[3]) == 0*/)
-        	{
-        		par1World.setBlockToAir(block[1], block[2], block[3]);
-        	}
-        }
-	}
 }

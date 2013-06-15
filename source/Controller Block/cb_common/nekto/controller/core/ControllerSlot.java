@@ -6,11 +6,11 @@ import net.minecraft.item.ItemStack;
 
 public class ControllerSlot extends Slot{
 
-	private TileEntityController control;
+	private TileEntityBase control;
 	public ControllerSlot(IInventory par1iInventory, int par2, int par3,
 			int par4) {
 		super(par1iInventory, par2, par3, par4);
-		this.control = (TileEntityController) par1iInventory;
+		this.control = (TileEntityBase) par1iInventory;
 	}
 	@Override
 	public boolean isItemValid(ItemStack stack)
