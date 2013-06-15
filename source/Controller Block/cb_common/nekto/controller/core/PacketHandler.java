@@ -36,7 +36,7 @@ public class PacketHandler implements IPacketHandler{
 		}
 		if(data == 1)//First button in GuiController has been pressed
 		{
-			((ContainerController)player.openContainer).getControl().setState(true);
+			((TileEntityController) ((ContainerController)player.openContainer).getControl()).setState(true);
 		}
 	}
 
