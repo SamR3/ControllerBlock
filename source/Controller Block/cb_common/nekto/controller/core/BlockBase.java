@@ -72,7 +72,10 @@ public abstract class BlockBase extends BlockContainer{
         	int[] block = (int[])itr.next();
         	if(block != null && block.length > 4)
         	{
-        		par1World.setBlockToAir(block[1], block[2], block[3]);
+        		if(par1World.getBlockId(block[1], block[2], block[3]) != block[0])
+        			itr.remove();
+        		else
+        			par1World.setBlockToAir(block[1], block[2], block[3]);
         	}
         }
 	}
