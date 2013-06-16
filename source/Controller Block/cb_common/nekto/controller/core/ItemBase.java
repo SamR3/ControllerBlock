@@ -10,12 +10,18 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public abstract class ItemBase extends Item{
 
 	public TileEntityBase link = null;
     public final static String KEYTAG = "Control";
+    public final static String MESSAGE_0="The Linker is not connected. Right click on a controller block to begin linking.";
+    public final static String MESSAGE_1="Linked to Controller at ";
+    public final static String MESSAGE_2="Unlinked from Controller.";
+	public final static String MESSAGE_3="Controller is already linked to another Linker.";
+	
 	public ItemBase(int id)
     {
         super(id);
@@ -46,6 +52,14 @@ public abstract class ItemBase extends Item{
             par3List.add("Right click on any Controller to begin linking!");
         }
     }
+	
+	protected void setEditAndTag(int[] pos, ItemStack par1ItemStack) 
+	{
+    	this.link.setEditing(true);
+        NBTTagCompound tag = new NBTTagCompound();
+    	tag.setIntArray(KEYTAG, pos);
+    	par1ItemStack.setTagCompound(tag);
+	}
 	
 	protected abstract boolean isController(int x, int y, int z, World world);
 }

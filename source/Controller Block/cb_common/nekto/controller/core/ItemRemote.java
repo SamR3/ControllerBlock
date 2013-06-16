@@ -51,7 +51,7 @@ public class ItemRemote extends ItemBase {
                 	else//It had data on a block that doesn't exist anymore
             		{
             			par1ItemStack.getTagCompound().removeTag(KEYTAG);
-            			player.sendChatToPlayer("Unlinked from Controller.");
+            			player.sendChatToPlayer(MESSAGE_2);
             			return false;
             		}
                 }
@@ -63,17 +63,14 @@ public class ItemRemote extends ItemBase {
                     }
                     if(this != tempTile.getLinker())
                     {
-                    	player.sendChatToPlayer("Controller is already linked to another Linker.");
+                    	player.sendChatToPlayer(MESSAGE_3);
                     	//Another player might be editing, let's avoid any issue and do nothing.
                     	return false;
                     }
-                    this.link.setEditing(true);
-                    ((TileEntityAnimator) this.link).setFrame(this.frame + 1 );
+                    
                     player.sendChatToPlayer("Finished frame # "+ this.frame +" Continuing with frame # "+ (this.frame + 1));
                     this.frame++;
-                    NBTTagCompound tag = new NBTTagCompound();
-                	tag.setIntArray(KEYTAG, new int[]{par4, par5, par6, this.frame});
-                	par1ItemStack.setTagCompound(tag);
+                    setEditAndTag( new int[]{par4, par5, par6, this.frame},par1ItemStack);
                 }
                 else if(!par3World.isAirBlock(par4, par5, par6))
                 {
@@ -91,17 +88,13 @@ public class ItemRemote extends ItemBase {
             }   
             else if(isController(par4, par5, par6, par3World) && ((TileEntityAnimator) par3World.getBlockTileEntity(par4, par5, par6)).getLinker() == null)           
             {
-            	player.sendChatToPlayer("Linked to Controller at " + par4 + ", " + par5 + ", " + par6);
+            	player.sendChatToPlayer(MESSAGE_1 + par4 + ", " + par5 + ", " + par6);
         		this.link = (TileEntityAnimator) par3World.getBlockTileEntity(par4, par5, par6);
         		this.link.setLinker(this);
-            	NBTTagCompound tag = new NBTTagCompound();
-            	tag.setIntArray(KEYTAG, new int[]{par4, par5, par6, 0});
-            	par1ItemStack.setTagCompound(tag);
-            	this.link.setEditing(true);
-            	((TileEntityAnimator) this.link).setFrame(0);
+            	setEditAndTag( new int[]{par4, par5, par6, 0},par1ItemStack);
             }
             else
-            	player.sendChatToPlayer("The Linker is not connected. Right click on a controller block to begin linking.");
+            	player.sendChatToPlayer(MESSAGE_0);
         }
         return false;
     }
@@ -121,4 +114,10 @@ public class ItemRemote extends ItemBase {
     {
     	return world.getBlockTileEntity(x, y, z) instanceof TileEntityAnimator;
     }
+    @Override
+    protected void setEditAndTag(int[] pos, ItemStack par1ItemStack) 
+	{
+    	((TileEntityAnimator) this.link).setFrame(pos[3]);
+    	super.setEditAndTag(pos, par1ItemStack);
+	}
 }

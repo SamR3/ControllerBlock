@@ -19,13 +19,14 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
-    private int frame;
-	private boolean editing;
-    
+    private int frame,delay;
+    private Mode currMode = Mode.ORDER;
+	
     public TileEntityAnimator()
     {
     	super(1);
     }
+    
     @Override
 	public void add(EntityPlayer player, int blockID, int par4, int par5, int par6, int metaData) 
     {
@@ -56,21 +57,14 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
         }
     }
 	
-	public void setFrame(int i) 
-	{
-		this.frame = i;
-	}
-
-	public int getFrame() 
-	{
-		return this.frame;
-	}
-    
     @Override
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
     	super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setInteger("frame", this.getFrame());
+        par1NBTTagCompound.setInteger("delay", this.getDelay());
+        par1NBTTagCompound.setShort("mode", (short) this.getMode().ordinal());
+        
         NBTTagList tags = new NBTTagList("frames");
         
         for(int index = 0; index < getBaseList().size(); index++ )
@@ -91,6 +85,9 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     	super.readFromNBT(par1NBTTagCompound);
         int count = par1NBTTagCompound.getInteger("length");
         this.setFrame(par1NBTTagCompound.getInteger("frame"));
+        this.setDelay(par1NBTTagCompound.getInteger("delay"));
+        this.setMode(Mode.values()[par1NBTTagCompound.getShort("mode")]);
+        
         for(int i = 0; i < count; i++)
         {
             NBTTagCompound tag = ((NBTTagCompound) par1NBTTagCompound.getTagList("frames").tagAt(i));
@@ -103,14 +100,44 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     }
 
 	@Override
-	public String getInvName() {
+	public String getInvName() 
+	{
 		return "Animator.inventory";
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
+	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
+	{
 		return (i==0 && itemstack.getItem() instanceof ItemRemote);
 	}
+	   
+    public void setDelay(int time)
+    {
+    	this.delay = time;
+    }
 
+    public int getDelay() 
+    {
+        return this.delay;
+    }
+    
+    public void setFrame(int i) 
+	{
+    	this.frame = i;
+	}
+
+	public int getFrame() 
+	{
+		return this.frame;
+	}
 	
+    public void setMode(Mode par1Mode)
+    {
+    	this.currMode = par1Mode;
+    }
+    
+    public Mode getMode()
+    {
+    	return this.currMode;
+    }
 }

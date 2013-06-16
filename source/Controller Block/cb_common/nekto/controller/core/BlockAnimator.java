@@ -3,28 +3,13 @@
  */
 package nekto.controller.core;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import nekto.controller.ref.GeneralRef;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.util.Icon;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAnimator extends BlockBase {
     
@@ -90,7 +75,7 @@ public class BlockAnimator extends BlockBase {
         			Iterator itr = tile.getBaseList().get(frame).iterator();
                 	setActiveBlocks(par1World,itr);//Make all the blocks disappear
         		}
-        		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));
+        		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+tile.getDelay());
         	}
         	else//Not powered but previously powered
         	{
@@ -107,7 +92,7 @@ public class BlockAnimator extends BlockBase {
 	@Override
 	public int tickRate(World par1World)
     {
-        return 2;//Here we can set the timer
+        return 2;
     }
 	
 	@Override
@@ -119,16 +104,51 @@ public class BlockAnimator extends BlockBase {
 		if(flag)
         {
         	if(tile.getFrame()<tile.getBaseList().size())
-        	{	if(tile.getFrame() > 0 )
-	        	{
-					Iterator oldItr = tile.getBaseList().get(tile.getFrame()-1).iterator();//erase previous frame
-	        		setActiveBlocks(par1World,oldItr);
-	        	}
-	        	Iterator itr = tile.getBaseList().get(tile.getFrame()).iterator();//build next frame
-	        	setUnactiveBlocks(par1World,itr);
-	        	tile.setFrame(tile.getFrame()+1);
+        	{	
+        		previousFrame(par1World,tile);
+        		nextFrame(par1World,tile);
         	}
-        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World));//Here we loop the ticks
+        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+tile.getDelay());//Here we loop the ticks
         }
     }
+
+	private void nextFrame(World par1World, TileEntityAnimator tile) {
+		switch(tile.getMode()){
+		case LOOP:
+			if(tile.getFrame()+1 >= tile.getBaseList().size())
+				tile.setFrame(0);
+			else
+				tile.setFrame(tile.getFrame()+1);
+			break;
+		case RANDOM:
+			tile.setFrame(par1World.rand.nextInt(tile.getBaseList().size()));
+			break;
+		case ORDER:
+			if(tile.getFrame()+1 >= tile.getBaseList().size())
+			{
+				tile.setFrame(tile.getFrame()-1);
+				tile.setMode(Mode.REVERSE);
+			}
+			else
+				tile.setFrame(tile.getFrame()+1);
+			break;
+		case REVERSE:
+			if(tile.getFrame() == 0)
+			{
+				tile.setFrame(1);
+				tile.setMode(Mode.ORDER);
+			}
+			else
+				tile.setFrame(tile.getFrame()-1);
+			break;
+		}
+		Iterator itr = tile.getBaseList().get(tile.getFrame()).iterator();//build next frame
+    	setUnactiveBlocks(par1World,itr);
+	}
+
+	private void previousFrame(World par1World, TileEntityAnimator tile) 
+	{
+		Iterator oldItr = tile.getBaseList().get(tile.getFrame()).iterator();//erase previous frame
+		setActiveBlocks(par1World,oldItr);
+	}
 }

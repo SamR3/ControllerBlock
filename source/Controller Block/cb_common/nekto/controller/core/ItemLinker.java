@@ -48,7 +48,7 @@ public class ItemLinker extends ItemBase {
                 	else//It had data on a block that doesn't exist anymore
             		{
             			par1ItemStack.getTagCompound().removeTag(KEYTAG);
-            			player.sendChatToPlayer("Unlinked from Controller.");
+            			player.sendChatToPlayer(MESSAGE_2);
             			return false;
             		}
                 }
@@ -57,7 +57,7 @@ public class ItemLinker extends ItemBase {
                     if(tempTile.getLinker() == null && this.link == tempTile)
                     {
                     	tempTile.setLinker(this);
-                    	player.sendChatToPlayer("Linked to Controller at " + par4 + ", " + par5 + ", " + par6);
+                    	player.sendChatToPlayer(MESSAGE_1 + par4 + ", " + par5 + ", " + par6);
                     }
                     else if(tempTile.getLinker() == this)
                     {
@@ -65,19 +65,17 @@ public class ItemLinker extends ItemBase {
                     	tempTile.setEditing(false);
                     	par1ItemStack.getTagCompound().removeTag(KEYTAG);
                     	this.resetLinker();
-                    	player.sendChatToPlayer("Unlinked from Controller.");
+                    	player.sendChatToPlayer(MESSAGE_2);
             			return false;
                     }
                     else
                     {
-                    	player.sendChatToPlayer("Controller is already linked to another Linker.");
+                    	player.sendChatToPlayer(MESSAGE_3);
                     	//Another player might be editing, let's avoid any issue and do nothing.
                     	return false;
                     }
-                    this.link.setEditing(true);
-                    NBTTagCompound tag = new NBTTagCompound();
-                	tag.setIntArray(KEYTAG, new int[]{par4, par5, par6});
-                	par1ItemStack.setTagCompound(tag);
+                    setEditAndTag(new int[]{par4, par5, par6},par1ItemStack);
+                    
                 }
                 else if(!par3World.isAirBlock(par4, par5, par6))
                 {
@@ -94,20 +92,18 @@ public class ItemLinker extends ItemBase {
             }   
             else if(isController(par4, par5, par6, par3World) && ((TileEntityController) par3World.getBlockTileEntity(par4, par5, par6)).getLinker() == null)           
             {
-            	player.sendChatToPlayer("Linked to Controller at " + par4 + ", " + par5 + ", " + par6);
+            	player.sendChatToPlayer(MESSAGE_1 + par4 + ", " + par5 + ", " + par6);
         		this.link = (TileEntityController) par3World.getBlockTileEntity(par4, par5, par6);
         		this.link.setLinker(this);
-            	NBTTagCompound tag = new NBTTagCompound();
-            	tag.setIntArray(KEYTAG, new int[]{par4, par5, par6});
-            	par1ItemStack.setTagCompound(tag);
-            	this.link.setEditing(true);
+        		setEditAndTag(new int[]{par4, par5, par6},par1ItemStack);
             }
             else
-            	player.sendChatToPlayer("The Linker is not connected. Right click on a controller block to begin linking.");
+            	player.sendChatToPlayer(MESSAGE_0);
         }
         return false;
     }
-    @Override
+
+	@Override
     protected boolean isController(int x, int y, int z, World world)
     {
     	return world.getBlockTileEntity(x, y, z) instanceof TileEntityController;
