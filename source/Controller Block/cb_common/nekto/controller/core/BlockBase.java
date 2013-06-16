@@ -2,8 +2,6 @@ package nekto.controller.core;
 
 import java.util.Iterator;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import nekto.controller.ref.GeneralRef;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -11,16 +9,18 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BlockBase extends BlockContainer{
 
 	protected Icon textureSide;
 	protected Icon textureTop;
-	protected BlockBase(int par1) {
+	protected BlockBase(int par1) 
+	{
 		super(par1, Material.rock);
 		setCreativeTab(CreativeTabs.tabBlock);
     }
@@ -55,7 +55,8 @@ public abstract class BlockBase extends BlockContainer{
     	super.breakBlock(world, par2, par3, par4, par5, par6);
     }
 
-	protected void setUnactiveBlocks(World par1World, Iterator itr) {
+	protected void setUnactiveBlocks(World par1World, Iterator itr) 
+	{
         while(itr.hasNext())
         {
         	int[] block = (int[])itr.next();
@@ -66,7 +67,8 @@ public abstract class BlockBase extends BlockContainer{
         }
 	}
 
-	protected void setActiveBlocks(World par1World, Iterator itr) {
+	protected void setActiveBlocks(World par1World, Iterator itr) 
+	{
         while(itr.hasNext())
         {
         	int[] block = (int[])itr.next();
@@ -80,7 +82,8 @@ public abstract class BlockBase extends BlockContainer{
         }
 	}
 	
-	protected void dropItems(World world, Iterator itr, int par2, int par3, int par4) {
+	protected void dropItems(World world, Iterator itr, int par2, int par3, int par4) 
+	{
 		float f = world.rand.nextFloat() * 0.8F + 0.1F;
         float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
         float f2 = world.rand.nextFloat() * 0.8F + 0.1F;

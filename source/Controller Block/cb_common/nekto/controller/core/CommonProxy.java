@@ -7,7 +7,6 @@ import nekto.controller.ref.GeneralRef;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -44,7 +43,8 @@ public class CommonProxy implements IGuiHandler{
 	    return null;
 	}
 	
-	public void sendPacket(int i, Entity playerEntity) {
+	public void sendPacket(int i, Entity playerEntity) 
+	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(2);
 		DataOutputStream outputStream = new DataOutputStream(bos);
 		try 

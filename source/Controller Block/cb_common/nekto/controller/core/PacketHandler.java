@@ -14,15 +14,16 @@ import cpw.mods.fml.common.network.Player;
 public class PacketHandler implements IPacketHandler{
 
 	@Override
-	public void onPacketData(INetworkManager manager,
-			Packet250CustomPayload packet, Player player) {
+	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) 
+	{
 		if(packet.channel == GeneralRef.PACKET_CHANNEL)
 		{
 			this.handle(packet,(EntityPlayer) player);
 		}
 	}
 
-	private void handle(Packet250CustomPayload packet, EntityPlayer player) {
+	private void handle(Packet250CustomPayload packet, EntityPlayer player) 
+	{
 		DataInputStream inStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		short data;
 		try 

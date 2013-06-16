@@ -49,11 +49,13 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
         return this.linker;
     }
     
-    public boolean isEditing() {
+    public boolean isEditing() 
+    {
 		return this.editing;
 	}
 
-	public void setEditing(boolean b) {
+	public void setEditing(boolean b) 
+	{
 		this.editing = b;
 	}
 	
@@ -76,17 +78,20 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     }
     
 	@Override
-	public int getSizeInventory() {
+	public int getSizeInventory() 
+	{
 		return this.size;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i) {
+	public ItemStack getStackInSlot(int i) 
+	{
 		return items[i];
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j) {
+	public ItemStack decrStackSize(int i, int j) 
+	{
 		ItemStack aitemstack[] = items;
 		if (aitemstack[i] != null) {
 			if (aitemstack[i].stackSize <= j) {
@@ -106,28 +111,33 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i) {
+	public ItemStack getStackInSlotOnClosing(int i) 
+	{
 		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) {
+	public void setInventorySlotContents(int i, ItemStack itemstack) 
+	{
 		items[i]=itemstack;
 		onInventoryChanged();
 	}
 
 	@Override
-	public boolean isInvNameLocalized() {
+	public boolean isInvNameLocalized() 
+	{
 		return false;
 	}
 
 	@Override
-	public int getInventoryStackLimit() {
+	public int getInventoryStackLimit() 
+	{
 		return 64;
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+	public boolean isUseableByPlayer(EntityPlayer entityplayer) 
+	{
 		return  entityplayer.isDead ? false : entityplayer.getDistanceSq(xCoord, yCoord, zCoord) <= 64D;
 	}
 

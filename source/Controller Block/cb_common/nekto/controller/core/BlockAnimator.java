@@ -4,7 +4,6 @@
 package nekto.controller.core;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -112,7 +111,8 @@ public class BlockAnimator extends BlockBase {
         }
     }
 
-	private void nextFrame(World par1World, TileEntityAnimator tile) {
+	private void nextFrame(World par1World, TileEntityAnimator tile) 
+	{
 		switch(tile.getMode()){
 		case LOOP:
 			if(tile.getFrame()+1 >= tile.getBaseList().size())

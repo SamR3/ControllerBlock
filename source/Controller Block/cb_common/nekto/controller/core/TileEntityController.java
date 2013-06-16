@@ -3,17 +3,13 @@
  */
 package nekto.controller.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityController extends TileEntityBase<int[]> {
     
@@ -74,12 +70,14 @@ public class TileEntityController extends TileEntityBase<int[]> {
 	    }
     }
 	@Override
-	public String getInvName() {
+	public String getInvName() 
+	{
 		return "Controller.inventory";
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
+	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
+	{
 		return i<getSizeInventory() && itemstack.getItem() instanceof ItemBlock;
 	}
 }

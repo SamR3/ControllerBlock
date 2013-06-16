@@ -10,11 +10,13 @@ public class ContainerBase extends Container{
 
 	protected TileEntityBase control;
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
+	public boolean canInteractWith(EntityPlayer player) 
+	{
 		return this.getControl().isUseableByPlayer(player);
 	}
 
-	public TileEntityBase getControl() {
+	public TileEntityBase getControl() 
+	{
 		return this.control;
 	}
 	@Override
@@ -53,7 +55,8 @@ public class ContainerBase extends Container{
 		return itemstack;
     }
 
-	protected void addPlayerInventory(InventoryPlayer inventory) {
+	protected void addPlayerInventory(InventoryPlayer inventory) 
+	{
 		for(int i = 0; i < 3; i++)
 			for(int k = 0; k < 9; k++)
 				addSlotToContainer(new Slot(inventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));
