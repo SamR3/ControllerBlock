@@ -1,13 +1,16 @@
 /*
  *  Author: Sam6982
  */
-package nekto.controller.core;
+package nekto.controller.tile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import nekto.controller.animator.AnimationManager;
+import nekto.controller.animator.Mode;
+import nekto.controller.item.ItemRemote;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,12 +19,15 @@ import net.minecraft.nbt.NBTTagList;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
+    public AnimationManager theAnimator;
+    
     private int frame,delay;
     private Mode currMode = Mode.ORDER;
 	
     public TileEntityAnimator()
     {
     	super(1);
+        this.theAnimator = new AnimationManager(this);
     }
     
     @Override

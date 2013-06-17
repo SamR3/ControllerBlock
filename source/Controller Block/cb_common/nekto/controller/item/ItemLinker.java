@@ -1,8 +1,9 @@
 /*
  *  Author: Sam6982
  */
-package nekto.controller.core;
+package nekto.controller.item;
 
+import nekto.controller.tile.TileEntityController;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

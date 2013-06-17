@@ -1,10 +1,11 @@
 /*
  *  Author: Sam6982
  */
-package nekto.controller.core;
+package nekto.controller.item;
 
 import java.util.List;
 
+import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

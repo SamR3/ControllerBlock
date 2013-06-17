@@ -1,8 +1,9 @@
-package nekto.controller.core;
+package nekto.controller.tile;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import nekto.controller.item.ItemBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

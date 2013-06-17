@@ -1,9 +1,13 @@
-package nekto.controller.core;
+package nekto.controller.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 
+import nekto.controller.container.ContainerAnimator;
+import nekto.controller.gui.AnimatorGUI;
 import nekto.controller.ref.GeneralRef;
+import nekto.controller.tile.TileEntityAnimator;
+import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,9 +26,9 @@ public class CommonProxy implements IGuiHandler{
 	{
 	    TileEntity tile = world.getBlockTileEntity(x, y, z);
 	    
-		if(ID == GUI_ID && tile instanceof TileEntityController)
+		if(ID == GUI_ID && tile instanceof TileEntityAnimator)
 		{
-			return new ContainerController(player.inventory, (TileEntityController) tile);
+			return new ContainerAnimator(player.inventory, (TileEntityAnimator) tile);
 		}
 		
 		return null;
@@ -35,9 +39,9 @@ public class CommonProxy implements IGuiHandler{
 	{	       
         TileEntity tile = world.getBlockTileEntity(x, y, z);
         
-        if(ID == GUI_ID && tile instanceof TileEntityController)
+        if(ID == GUI_ID && tile instanceof TileEntityAnimator)
         {
-			return new GuiController(player.inventory, (TileEntityController) tile);
+			return new AnimatorGUI(player.inventory, (TileEntityAnimator) tile);
         }
 			
 	    return null;

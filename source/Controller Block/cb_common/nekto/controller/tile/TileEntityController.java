@@ -1,7 +1,7 @@
 /*
  *  Author: Sam6982
  */
-package nekto.controller.core;
+package nekto.controller.tile;
 
 import java.util.Arrays;
 import java.util.Iterator;

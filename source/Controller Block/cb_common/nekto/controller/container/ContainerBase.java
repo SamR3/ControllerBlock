@@ -1,5 +1,6 @@
-package nekto.controller.core;
+package nekto.controller.container;
 
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -19,6 +20,7 @@ public class ContainerBase extends Container{
 	{
 		return this.control;
 	}
+	
 	@Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i) 
 	{
@@ -57,10 +59,11 @@ public class ContainerBase extends Container{
 
 	protected void addPlayerInventory(InventoryPlayer inventory) 
 	{
-		for(int i = 0; i < 3; i++)
+		/*for(int i = 0; i < 3; i++)
 			for(int k = 0; k < 9; k++)
-				addSlotToContainer(new Slot(inventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));
+				addSlotToContainer(new Slot(inventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));*/
+	    
 		for(int j = 0; j < 9; j++)
-			addSlotToContainer(new Slot(inventory, j, 8 + j * 18, 142));
+		    addSlotToContainer(new Slot(inventory, j, 8 + j * 18, 140));
 	}
 }

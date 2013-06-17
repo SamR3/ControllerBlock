@@ -1,11 +1,13 @@
-/*
- *  Author: Sam6982
- */
-package nekto.controller.core;
+package nekto.controller.block;
 
 import java.util.Iterator;
 import java.util.Random;
 
+import nekto.controller.animator.Mode;
+import nekto.controller.core.Controller;
+import nekto.controller.item.ItemBase;
+import nekto.controller.item.ItemRemote;
+import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -28,7 +30,8 @@ public class BlockAnimator extends BlockBase {
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {    
     	TileEntityAnimator tile = (TileEntityAnimator)par1World.getBlockTileEntity(par2, par3, par4);
-        if(par5EntityPlayer.getCurrentEquippedItem()!=null && par5EntityPlayer.getCurrentEquippedItem().getItem() instanceof ItemRemote)
+    	
+        if(par5EntityPlayer.getCurrentEquippedItem() != null && par5EntityPlayer.getCurrentEquippedItem().getItem() instanceof ItemRemote)
         {
         	if(par5EntityPlayer.getCurrentEquippedItem().hasTagCompound() && par5EntityPlayer.isSneaking())
         	{
@@ -40,7 +43,9 @@ public class BlockAnimator extends BlockBase {
             return false;
         }
 
-        return false;
+        par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
+        
+        return true;
     }
     
     @Override

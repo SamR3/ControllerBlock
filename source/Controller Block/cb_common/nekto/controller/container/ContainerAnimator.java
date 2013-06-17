@@ -1,5 +1,6 @@
-package nekto.controller.core;
+package nekto.controller.container;
 
+import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerAnimator extends ContainerBase {

@@ -3,7 +3,15 @@
  */
 package nekto.controller.core;
 
+import nekto.controller.block.BlockAnimator;
+import nekto.controller.block.BlockController;
+import nekto.controller.item.ItemLinker;
+import nekto.controller.item.ItemRemote;
+import nekto.controller.network.CommonProxy;
+import nekto.controller.network.PacketHandler;
 import nekto.controller.ref.GeneralRef;
+import nekto.controller.tile.TileEntityAnimator;
+import nekto.controller.tile.TileEntityController;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.Configuration;
@@ -34,7 +42,7 @@ public class Controller {
     
     @Instance(GeneralRef.MOD_ID)
     public static Controller instance;
-    @SidedProxy(clientSide="nekto.controller.core.ClientProxy", serverSide="nekto.controller.core.CommonProxy")
+    @SidedProxy(clientSide = GeneralRef.CLIENT_PROXY, serverSide = GeneralRef.COMMON_PROXY)
 	public static CommonProxy proxy;
 	
 	private Configuration config;

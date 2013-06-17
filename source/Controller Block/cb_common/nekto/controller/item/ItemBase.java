@@ -1,8 +1,9 @@
-package nekto.controller.core;
+package nekto.controller.item;
 
 import java.util.List;
 
 import nekto.controller.ref.GeneralRef;
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

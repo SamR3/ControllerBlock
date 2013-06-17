@@ -1,5 +1,6 @@
-package nekto.controller.core;
+package nekto.controller.container;
 
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

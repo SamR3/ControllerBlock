@@ -1,8 +1,10 @@
-package nekto.controller.core;
+package nekto.controller.block;
 
 import java.util.Iterator;
 
+import nekto.controller.item.ItemBase;
 import nekto.controller.ref.GeneralRef;
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
