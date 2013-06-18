@@ -5,6 +5,7 @@ import java.util.Iterator;
 import nekto.controller.item.ItemBase;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
+import nekto.controller.tile.TileEntityController;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -49,7 +50,13 @@ public abstract class BlockBase extends BlockContainer{
     @Override
     public void breakBlock(World world, int par2, int par3, int par4, int par5, int par6)
     {
-    	ItemBase linker = ((TileEntityBase) world.getBlockTileEntity(par2, par3, par4)).getLinker();
+    	TileEntityBase tile = (TileEntityBase) world.getBlockTileEntity(par2, par3, par4);
+        if(!world.isRemote && tile.previousState && !tile.isEditing())//We only spawn items if it is powered and not in editing mode
+        {
+        	Iterator itr = tile.getBaseList().iterator();
+        	dropItems(world, tile, itr, par2, par3, par4);
+        }
+    	ItemBase linker = tile.getLinker();
     	if(linker != null)
         {
             linker.resetLinker();
@@ -84,7 +91,7 @@ public abstract class BlockBase extends BlockContainer{
         }
 	}
 	
-	protected void dropItems(World world, Iterator itr, int par2, int par3, int par4) 
+	protected void dropItems(World world, TileEntityBase tile, Iterator itr, int par2, int par3, int par4) 
 	{
 		float f = world.rand.nextFloat() * 0.8F + 0.1F;
         float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
@@ -97,4 +104,18 @@ public abstract class BlockBase extends BlockContainer{
 			world.spawnEntityInWorld(item);
 		}
 	}
+	
+	@Override
+    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
+    {
+		TileEntityBase tile = (TileEntityBase) par1World.getBlockTileEntity(par2, par3, par4);
+    	boolean flag =par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
+        if( tile.previousState!=flag)
+        { 	
+    		onRedstoneChange(par1World, par2, par3, par4, par5, flag, tile);   	
+        	tile.setState(flag);
+        }
+    }
+	protected abstract void onRedstoneChange(World par1World, int par2, int par3,
+			int par4, int par5, boolean powered, TileEntityBase tile);
 }

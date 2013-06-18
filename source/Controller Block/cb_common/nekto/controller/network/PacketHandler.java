@@ -4,9 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
-import nekto.controller.container.ContainerController;
+import nekto.controller.container.ContainerAnimator;
 import nekto.controller.ref.GeneralRef;
-import nekto.controller.tile.TileEntityController;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -39,7 +38,7 @@ public class PacketHandler implements IPacketHandler{
 		}
 		if(data == 1)//First button in GuiController has been pressed
 		{
-			((TileEntityController) ((ContainerController)player.openContainer).getControl()).setState(true);
+			(((ContainerAnimator)player.openContainer).getControl()).setState(true);
 		}
 	}
 

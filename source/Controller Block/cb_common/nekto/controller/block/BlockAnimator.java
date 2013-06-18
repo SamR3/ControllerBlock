@@ -1,6 +1,7 @@
 package nekto.controller.block;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import nekto.controller.animator.Mode;
@@ -8,6 +9,7 @@ import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
 import nekto.controller.item.ItemRemote;
 import nekto.controller.tile.TileEntityAnimator;
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -49,49 +51,18 @@ public class BlockAnimator extends BlockBase {
     }
     
     @Override
-    public void breakBlock(World world, int par2, int par3, int par4, int par5, int par6)
-    {
-        TileEntityAnimator tile = (TileEntityAnimator) world.getBlockTileEntity(par2, par3, par4);
-        
-        for(int frame=0;frame<tile.getBaseList().size();frame++)
-        {
-	        Iterator itr = tile.getBaseList().get(frame).iterator();	        
-	        if(!world.isRemote && tile.previousState && frame!=tile.getFrame() && !tile.isEditing())//We only spawn items if it is powered and not in editing mode
-	        {
-	        	dropItems(world, itr, par2, par3, par4);
-	        }
-        }
-        super.breakBlock(world, par2, par3, par4, par5, par6);
-    }
-   
-	@Override
-    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
-    {
-    	TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
-    	//FMLLog.getLogger().info("change "+tile.getFrame());
-    	boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
-        if( tile.previousState != flag)
-        {
-        	if(flag)//Powered but previously not powered
-        	{
-        		for(int frame = 0; frame < tile.getBaseList().size(); frame++)   			
-        		{
-        			Iterator itr = tile.getBaseList().get(frame).iterator();
-                	setActiveBlocks(par1World,itr);//Make all the blocks disappear
-        		}
-        		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+tile.getDelay());
-        	}
-        	else//Not powered but previously powered
-        	{
-        		for(int frame = 0;frame < tile.getBaseList().size(); frame++)
-        		{
-        			Iterator itr = tile.getBaseList().get(frame).iterator();
-                	setUnactiveBlocks(par1World,itr);//Make all the blocks reappear
-        		}
-        	}
-        	tile.setState(flag);//Change the flag state
-        }
-    }
+    protected void dropItems(World world, TileEntityBase tile, Iterator itr, int par2, int par3, int par4) 
+	{
+    	List<int[]> frames = null;
+    	int index = 0;
+    	while(itr.hasNext())
+    	{
+    		frames = (List<int[]>) itr.next();
+    		if(frames!=null && index!=((TileEntityAnimator)tile).getFrame())
+    			super.dropItems(world, tile, frames.iterator(), par2, par3, par4);
+    		index++;
+    	}
+	}
 
 	@Override
 	public int tickRate(World par1World)
@@ -155,5 +126,27 @@ public class BlockAnimator extends BlockBase {
 	{
 		Iterator oldItr = tile.getBaseList().get(tile.getFrame()).iterator();//erase previous frame
 		setActiveBlocks(par1World,oldItr);
+	}
+
+	@Override
+	public void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase tile) 
+	{
+		if(powered)//Powered but previously not powered
+    	{
+    		for(int frame = 0; frame < tile.getBaseList().size(); frame++)   			
+    		{
+    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).iterator();
+            	setActiveBlocks(par1World,itr);//Make all the blocks disappear
+    		}
+    		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+((TileEntityAnimator)tile).getDelay());
+    	}
+    	else//Not powered but previously powered
+    	{
+    		for(int frame = 0;frame < tile.getBaseList().size(); frame++)
+    		{
+    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).iterator();
+            	setUnactiveBlocks(par1World,itr);//Make all the blocks reappear
+    		}
+    	}
 	}
 }

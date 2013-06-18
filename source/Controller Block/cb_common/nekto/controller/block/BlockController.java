@@ -6,6 +6,7 @@ package nekto.controller.block;
 import java.util.Iterator;
 
 import nekto.controller.item.ItemLinker;
+import nekto.controller.tile.TileEntityBase;
 import nekto.controller.tile.TileEntityController;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -42,38 +43,18 @@ public class BlockController extends BlockBase {
 
         return false;
     }
-    
-    @Override
-    public void breakBlock(World world, int par2, int par3, int par4, int par5, int par6)
-    {
-        TileEntityController tile = (TileEntityController) world.getBlockTileEntity(par2, par3, par4);
-        if(!world.isRemote && tile.previousState && !tile.isEditing())//We only spawn items if it is powered and not in editing mode
+
+	@Override
+	public void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase tile) 
+	{
+		if(powered)
+    	{
+    		setActiveBlocks(par1World,tile.getBaseList().iterator());
+    	}
+        else
         {
-        	Iterator itr = tile.getBaseList().iterator();
-        	dropItems(world, itr, par2, par3, par4);
+        	setUnactiveBlocks(par1World,tile.getBaseList().iterator());
         }
-        super.breakBlock(world, par2, par3, par4, par5, par6);
-    }
-    
-    @Override
-    public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
-    {
-    	TileEntityController tile = (TileEntityController) par1World.getBlockTileEntity(par2, par3, par4);
-    	boolean flag =par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
-        if( tile.previousState!=flag)
-        {
-        	Iterator itr = tile.getBaseList().iterator();
-        
-        	if(flag)
-        	{
-        		setActiveBlocks(par1World,itr);
-        	}
-            else
-            {
-            	setUnactiveBlocks(par1World,itr);
-            }
-        	tile.setState(flag);
-        } 
-    }
+	}
 
 }
