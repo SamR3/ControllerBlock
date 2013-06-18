@@ -64,7 +64,7 @@ public class ItemRemote extends ItemBase {
                     	return false;
                     }
                     
-                    player.sendChatToPlayer("Finished frame # "+ this.frame +" Continuing with frame # "+ (this.frame + 1));
+                    player.sendChatToPlayer("Finished frame # "+ (this.frame + 1) +" Continuing with frame # "+ (this.frame + 2));
                     this.frame++;
                     setEditAndTag( new int[]{par4, par5, par6, this.frame},par1ItemStack);
                 }
@@ -102,7 +102,7 @@ public class ItemRemote extends ItemBase {
     	if(stack.hasTagCompound() && stack.stackTagCompound.hasKey(KEYTAG))
     	{
 	        int data = stack.getTagCompound().getIntArray(KEYTAG)[3];
-	        par3List.add("Editing frame # " + data);
+	        par3List.add("Editing frame # " + data + 1);
         }
     }
     @Override

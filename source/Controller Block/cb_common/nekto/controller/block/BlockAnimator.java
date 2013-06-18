@@ -69,12 +69,12 @@ public class BlockAnimator extends BlockBase {
     {
     	TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
     	//FMLLog.getLogger().info("change "+tile.getFrame());
-    	boolean flag =par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
-        if( tile.previousState!=flag)
+    	boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
+        if( tile.previousState != flag)
         {
         	if(flag)//Powered but previously not powered
         	{
-        		for(int frame=0;frame<tile.getBaseList().size();frame++)   			
+        		for(int frame = 0; frame < tile.getBaseList().size(); frame++)   			
         		{
         			Iterator itr = tile.getBaseList().get(frame).iterator();
                 	setActiveBlocks(par1World,itr);//Make all the blocks disappear
@@ -83,7 +83,7 @@ public class BlockAnimator extends BlockBase {
         	}
         	else//Not powered but previously powered
         	{
-        		for(int frame=0;frame<tile.getBaseList().size();frame++)
+        		for(int frame = 0;frame < tile.getBaseList().size(); frame++)
         		{
         			Iterator itr = tile.getBaseList().get(frame).iterator();
                 	setUnactiveBlocks(par1World,itr);//Make all the blocks reappear
@@ -104,15 +104,15 @@ public class BlockAnimator extends BlockBase {
     {
 		TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
 		//FMLLog.getLogger().info("ticked "+tile.getFrame());
-		boolean flag =par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
+		boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
 		if(flag)
         {
-        	if(tile.getFrame()<tile.getBaseList().size())
+        	if(tile.getFrame() < tile.getBaseList().size())
         	{	
-        		previousFrame(par1World,tile);
-        		nextFrame(par1World,tile);
+        		previousFrame(par1World ,tile);
+        		nextFrame(par1World, tile);
         	}
-        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+tile.getDelay());//Here we loop the ticks
+        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World) + tile.getDelay());//Here we loop the ticks
         }
     }
 

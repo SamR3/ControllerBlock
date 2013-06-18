@@ -1,6 +1,3 @@
-/*
- *  Author: Sam6982
- */
 package nekto.controller.tile;
 
 import java.util.ArrayList;
@@ -8,7 +5,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import nekto.controller.animator.AnimationManager;
 import nekto.controller.animator.Mode;
 import nekto.controller.item.ItemRemote;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,15 +15,12 @@ import net.minecraft.nbt.NBTTagList;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
-    public AnimationManager theAnimator;
-    
-    private int frame,delay;
+    private int frame, delay;
     private Mode currMode = Mode.ORDER;
 	
     public TileEntityAnimator()
     {
     	super(1);
-        this.theAnimator = new AnimationManager(this);
     }
     
     @Override
@@ -40,10 +33,14 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {	
         boolean removed = false;
         int[] temp = new int[]{blockID,x,y,z,metaData};
-        while(getBaseList().size()<=frame)
+        
+        while(getBaseList().size() <= frame)
         	getBaseList().add(new ArrayList());
-        Iterator itr = ((List) getBaseList().get(frame)).listIterator();       
-        while(itr.hasNext()){
+        
+        Iterator itr = ((List) getBaseList().get(frame)).listIterator();    
+        
+        while(itr.hasNext())
+        {
         	if(Arrays.equals((int[]) itr.next(),temp)){
         		itr.remove();
         		removed = true;
@@ -111,12 +108,12 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	@Override
 	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
 	{
-		return (i==0 && itemstack.getItem() instanceof ItemRemote);
+		return (i == 0 && itemstack.getItem() instanceof ItemRemote);
 	}
 	   
-    public void setDelay(int time)
+    public void setDelay(float f)
     {
-    	this.delay = time;
+    	this.delay += (int)(f * 1000);
     }
 
     public int getDelay() 

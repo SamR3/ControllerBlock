@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
 public class AnimatorGUI extends GuiContainer {
 
@@ -31,10 +32,8 @@ public class AnimatorGUI extends GuiContainer {
         String s = "Animator Block";
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
         
-        
-        //Just for debugging
-        /*String value = "Delay: " + Float.toString(animatorTile.theAnimator.getDelay());
-        this.fontRenderer.drawString(value, this.xSize / 2 - this.fontRenderer.getStringWidth(value) / 2, 20, 4210752);*/
+        String value = (Float.toString(round(((float)animatorTile.getDelay()) / 1000, 2)) + "s");
+        this.fontRenderer.drawString(value, this.xSize / 2 - this.fontRenderer.getStringWidth(value) / 2, 109, 0);
     }
 
     @Override
@@ -56,20 +55,28 @@ public class AnimatorGUI extends GuiContainer {
             super.initGui();
             
             //id, x, y, width, height, text
-            buttonList.add(new GuiSliderFixed(2, (guiLeft + (176 / 2)) - 75, guiTop + 105, 150, 20, "Delay", 0.0F));
-            buttonList.add(new GuiButton(1, guiLeft + 110, guiTop + 30, 50, 20, "Activate"));
-            //buttonList.add(new GuiButton(2, guiLeft + 109, guiTop + 113, 16, 14, "+"));
+            //buttonList.add(new GuiButton(1, guiLeft + 110, guiTop + 30, 50, 20, "Activate"));
+            buttonList.add(new GuiButton(1, guiLeft + 109, guiTop + 105, 16, 15, "+"));
+            buttonList.add(new GuiButton(2, guiLeft + 51, guiTop + 105, 16, 15, "-"));
+            
     }
     
     @Override
     protected void actionPerformed(GuiButton guibutton) 
     {        
-        if(guibutton.id == 2)
+        
+        switch(guibutton.id) 
         {
-            float sliderValue = ((GuiSliderFixed) buttonList.get(0)).sliderValue;
-            ((TileEntityAnimator)((ContainerBase)player.openContainer).getControl()).theAnimator.setTimer(round(sliderValue, 2));
-        } else {
-            Controller.proxy.sendPacket(guibutton.id, player);
+            case 1:
+                ((TileEntityAnimator)((ContainerBase)player.openContainer).getControl()).setDelay(0.1F);
+                break;
+            case 2:
+                ((TileEntityAnimator)((ContainerBase)player.openContainer).getControl()).setDelay(-0.1F);
+                break;
+            default:
+                Controller.proxy.sendPacket(guibutton.id, player);
+                break;
+
         }
     }
     
@@ -78,7 +85,10 @@ public class AnimatorGUI extends GuiContainer {
         long factor = (long) Math.pow(10, places);
         value = value * factor;
         long tmp = Math.round(value);
-        return (float) tmp / factor;
+        
+        float val = (float) tmp / factor;
+        
+        return val;
     }
 
 }

@@ -22,9 +22,11 @@ public class Frame {
     public void add(EntityPlayer player, int blockID, int x, int y, int z, int metaData) 
     {   
         boolean removed = false;
+        
         int[] temp = new int[]{
             blockID,x,y,z,metaData
         };
+        
         Iterator itr = blockList.iterator();
         int index = 0;
         
@@ -67,27 +69,6 @@ public class Frame {
             {
                 world.setBlockToAir(block[1], block[2], block[3]);
             }
-        }
-    }
-    
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound)
-    {
-        par1NBTTagCompound.setInteger("length", blockList.size());
-        
-        for(int index = 0; index < blockList.size(); index++ )
-        {
-            par1NBTTagCompound.setIntArray(Integer.toString(index), blockList.get(index));
-        }
-    }
-    
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound)
-    {
-        int count = par1NBTTagCompound.getInteger("length");
-
-        this.blockList.clear();
-        for(int i = 0; i < count; i++)
-        {
-            this.blockList.add(par1NBTTagCompound.getIntArray(Integer.toString(i)));
         }
     }
 }
