@@ -100,4 +100,16 @@ public class ItemLinker extends ItemBase {
     {
     	return world.getBlockTileEntity(x, y, z) instanceof TileEntityController;
     }
+
+	@Override
+	protected String getControlName() 
+	{
+		return "Controller";
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Linker";
+	}
 }

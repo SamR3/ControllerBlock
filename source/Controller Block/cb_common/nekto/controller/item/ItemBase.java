@@ -18,10 +18,10 @@ public abstract class ItemBase extends Item{
 
 	public TileEntityBase link = null;
     public final static String KEYTAG = "Control";
-    public final static String MESSAGE_0="The Linker is not connected. Right click on a controller block to begin linking.";
-    public final static String MESSAGE_1="Linked to Controller at ";
-    public final static String MESSAGE_2="Unlinked from Controller.";
-	public final static String MESSAGE_3="Controller is already linked to another Linker.";
+    public String MESSAGE_0="The "+toString()+" is not connected. Right click on a "+getControlName()+" block to begin linking.";
+    public String MESSAGE_1="Linked to "+getControlName()+" at ";
+    public String MESSAGE_2="Unlinked from "+getControlName()+".";
+	public String MESSAGE_3=getControlName()+" is already linked to another "+toString()+".";
 	
 	public ItemBase(int id)
     {
@@ -29,6 +29,7 @@ public abstract class ItemBase extends Item{
         setMaxStackSize(1);
         setCreativeTab(CreativeTabs.tabBlock);
     }
+	
 	@Override
     public void registerIcons(IconRegister par1IconRegister) 
     {
@@ -46,11 +47,11 @@ public abstract class ItemBase extends Item{
     	if(stack.hasTagCompound() && stack.stackTagCompound.hasKey(KEYTAG))
     	{
 	        int[] pos = stack.getTagCompound().getIntArray(KEYTAG);
-	        par3List.add("Registered to Controller at " + pos[0]+ ", " + pos[1] + ", " + pos[2]);
+	        par3List.add("Registered to "+getControlName()+" at " + pos[0]+ ", " + pos[1] + ", " + pos[2]);
         } 
     	else 
     	{
-            par3List.add("Right click on any Controller to begin linking!");
+            par3List.add("Right click on any "+getControlName()+" to begin linking!");
         }
     }
 	
@@ -63,4 +64,5 @@ public abstract class ItemBase extends Item{
 	}
 	
 	protected abstract boolean isController(int x, int y, int z, World world);
+	protected abstract String getControlName();
 }

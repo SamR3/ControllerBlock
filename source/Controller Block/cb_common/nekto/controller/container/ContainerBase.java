@@ -31,11 +31,10 @@ public class ContainerBase extends Container{
 		    itemstack = itemstack1.copy();
 		    if (i < this.getControl().getSizeInventory()) //From block inventory to player inventory
 		    { 
-		    	if(!this.mergeItemStack(itemstack1, this.getControl().getSizeInventory(), this.inventorySlots.size(), true))
-		    		return null;
+		    	this.mergeItemStack(itemstack1, this.getControl().getSizeInventory(), this.inventorySlots.size(), true);
 		    } 	    
-		    else if (!this.mergeItemStack(itemstack1, 2, this.getControl().getSizeInventory(), false))
-		    	return null;
+		    else 
+	    		this.mergeItemStack(itemstack1, 2, this.getControl().getSizeInventory(), false);
 		    
 		    if (itemstack1.stackSize == 0) 
 		    {

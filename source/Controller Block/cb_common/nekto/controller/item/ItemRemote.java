@@ -116,4 +116,16 @@ public class ItemRemote extends ItemBase {
     	((TileEntityAnimator) this.link).setFrame(pos[3]);
     	super.setEditAndTag(pos, par1ItemStack);
 	}
+
+	@Override
+	protected String getControlName() 
+	{
+		return "Animator";
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Remote";
+	}
 }
