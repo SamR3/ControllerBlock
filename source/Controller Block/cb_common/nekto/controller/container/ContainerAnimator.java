@@ -9,7 +9,7 @@ public class ContainerAnimator extends ContainerBase {
 	{
 		this.control = tile;
 		//Adding animator slots
-		addSlotToContainer(new ControllerSlot(tile, 0, 29, 21));
+		addSlotToContainer(new ControllerSlot(tile, 0, 19, 21));
 		//Adding player inventory
 		addPlayerInventory(inventory);
 	}

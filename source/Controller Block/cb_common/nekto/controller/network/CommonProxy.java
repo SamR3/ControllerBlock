@@ -46,19 +46,25 @@ public class CommonProxy implements IGuiHandler{
 			
 	    return null;
 	}
-	
-	public void sendPacket(int i, Entity playerEntity) 
+
+	public void sendPacket( EntityPlayer player,int... data) 
 	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(2);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(4*data.length);
 		DataOutputStream outputStream = new DataOutputStream(bos);
 		try 
 		{
-			outputStream.writeShort(i);
+			for(int d:data)
+				outputStream.writeInt(d);
 		} 
 		catch (Exception ex) 
 		{
 			ex.printStackTrace();
 		}
+		addPacketToQueue(bos,player);
+	}
+
+	private void addPacketToQueue(ByteArrayOutputStream bos, EntityPlayer player) 
+	{
 		Packet250CustomPayload packet = new Packet250CustomPayload();
 		packet.channel = GeneralRef.PACKET_CHANNEL;
 		packet.data = bos.toByteArray();
@@ -66,7 +72,7 @@ public class CommonProxy implements IGuiHandler{
 		
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) 
         {
-            ((EntityClientPlayerMP) playerEntity).sendQueue.addToSendQueue(packet);    	
+            ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(packet);    	
         }
 	}
 }

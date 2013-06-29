@@ -37,13 +37,6 @@ public class BlockAnimator extends BlockBase {
     	
         if(par5EntityPlayer.getCurrentEquippedItem() != null && par5EntityPlayer.getCurrentEquippedItem().getItem() instanceof ItemRemote)
         {
-        	if(par5EntityPlayer.getCurrentEquippedItem().hasTagCompound() && par5EntityPlayer.isSneaking())
-        	{
-        		((ItemRemote)par5EntityPlayer.getCurrentEquippedItem().getItem()).resetLinker();
-        		par5EntityPlayer.getCurrentEquippedItem().getTagCompound().removeTag(ItemBase.KEYTAG);
-        		tile.setEditing(false);
-        		tile.setLinker(null);
-        	}
             return false;
         }
 
@@ -76,7 +69,7 @@ public class BlockAnimator extends BlockBase {
 	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random)
     {
 		TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
-		//FMLLog.getLogger().info("ticked "+tile.getFrame());
+		FMLLog.getLogger().info(tile.getDelay()+"ticked "+tile.getFrame());
 		boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
 		if(flag)
         {
