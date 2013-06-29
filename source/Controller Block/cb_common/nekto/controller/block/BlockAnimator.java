@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.common.FMLLog;
+
 import nekto.controller.animator.Mode;
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
@@ -79,10 +81,8 @@ public class BlockAnimator extends BlockBase {
 		if(flag)
         {
         	if(tile.getFrame() < tile.getBaseList().size())
-        	{	
         		previousFrame(par1World ,tile);
-        		nextFrame(par1World, tile);
-        	}
+    		nextFrame(par1World, tile);
         	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World) + tile.getDelay());//Here we loop the ticks
         }
     }

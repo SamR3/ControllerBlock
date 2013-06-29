@@ -102,7 +102,7 @@ public class ItemRemote extends ItemBase {
     	if(stack.hasTagCompound() && stack.stackTagCompound.hasKey(KEYTAG))
     	{
 	        int data = stack.getTagCompound().getIntArray(KEYTAG)[3];
-	        par3List.add("Editing frame # " + data + 1);
+	        par3List.add("Editing frame # " + (data + 1));
         }
     }
     @Override
