@@ -61,8 +61,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
     	super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("frame", this.getFrame());
-        par1NBTTagCompound.setInteger("delay", this.getDelay());
+        par1NBTTagCompound.setInteger("frame", this.frame);
+        par1NBTTagCompound.setInteger("delay", this.delay);
         par1NBTTagCompound.setShort("mode", (short) this.getMode().ordinal());
         
         NBTTagList tags = new NBTTagList("frames");
@@ -85,7 +85,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     	super.readFromNBT(par1NBTTagCompound);
         int count = par1NBTTagCompound.getInteger("length");
         this.setFrame(par1NBTTagCompound.getInteger("frame"));
-        this.setDelay(par1NBTTagCompound.getInteger("delay"));
+        this.delay = par1NBTTagCompound.getInteger("delay");
         this.setMode(Mode.values()[par1NBTTagCompound.getShort("mode")]);
         
         for(int i = 0; i < count; i++)
