@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import nekto.controller.animator.Mode;
 import nekto.controller.container.ContainerAnimator;
+import nekto.controller.container.ContainerBase;
 import nekto.controller.item.ItemBase;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
@@ -44,7 +45,7 @@ public class PacketHandler implements IPacketHandler{
 		}
 		if(player.openContainer instanceof ContainerAnimator)
 		{
-			TileEntityAnimator animator= (TileEntityAnimator) ((ContainerAnimator)player.openContainer).getControl();
+			TileEntityAnimator animator = (TileEntityAnimator) ((ContainerAnimator)player.openContainer).getControl();
 			
 			switch(data[0])
 			{
@@ -54,22 +55,34 @@ public class PacketHandler implements IPacketHandler{
 			case 2://"-" button has been pressed
 				animator.setDelay(-0.01F);
 				return;
-			case 3://"Reset" button has been pressed
-				TileEntity ent = player.worldObj.getBlockTileEntity(data[1], data[2], data[3]);
-	    		if(ent!=null && ent instanceof TileEntityAnimator)
-	    		{
-	    			animator = (TileEntityAnimator) ent;
-	    			animator.setEditing(false);
-	    			animator.setFrame(0);
-	    			animator.setMode(Mode.ORDER);
-	    			animator.resetDelay();
-	    			animator.setLinker(null);
-	    			ItemStack stack = player.openContainer.getSlot(0).getStack();
-	    			ItemBase remote = (ItemBase)stack.getItem();
-	    			remote.resetLinker();
-	    			stack.getTagCompound().removeTag(ItemBase.KEYTAG);
-	    		}
-	    		return;
+			case 3:
+                animator.setMode(Mode.ORDER);
+                return;
+            case 4:
+                animator.setMode(Mode.REVERSE);
+                return;
+            case 5:
+                animator.setMode(Mode.LOOP);
+                return;
+            case 6:
+                animator.setMode(Mode.RANDOM);
+                return;
+            case 7://"Reset" button has been pressed
+                TileEntity ent = player.worldObj.getBlockTileEntity(data[1], data[2], data[3]);
+                if(ent != null && ent instanceof TileEntityAnimator)
+                {
+                    animator = (TileEntityAnimator) ent;
+                    animator.setEditing(false);
+                    animator.setFrame(0);
+                    animator.setMode(Mode.ORDER);
+                    animator.resetDelay();
+                    animator.setLinker(null);
+                    ItemStack stack = player.openContainer.getSlot(0).getStack();
+                    ItemBase remote = (ItemBase)stack.getItem();
+                    remote.resetLinker();
+                    stack.getTagCompound().removeTag(ItemBase.KEYTAG);
+                }
+                return;
 			}
 		}
 	}

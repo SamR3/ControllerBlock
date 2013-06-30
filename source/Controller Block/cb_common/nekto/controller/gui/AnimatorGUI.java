@@ -1,5 +1,8 @@
 package nekto.controller.gui;
 
+import java.util.List;
+
+import nekto.controller.animator.Mode;
 import nekto.controller.container.ContainerAnimator;
 import nekto.controller.container.ContainerBase;
 import nekto.controller.core.Controller;
@@ -21,6 +24,7 @@ public class AnimatorGUI extends GuiContainer {
 
     private TileEntityAnimator animatorTile;
     private EntityPlayer player;
+    private List<GuiButton> frameButtons;
 
     public AnimatorGUI(InventoryPlayer par1InventoryPlayer, TileEntityAnimator par2TileEntity)
     {
@@ -34,7 +38,7 @@ public class AnimatorGUI extends GuiContainer {
     {        
         String s = "Animator Block";
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-        
+
         String value = (Float.toString(round((float)animatorTile.getDelay() / 1000, 2)) + "s");
         this.fontRenderer.drawString(value, this.xSize / 2 - this.fontRenderer.getStringWidth(value) / 2, 109, 0);
     }
@@ -56,25 +60,22 @@ public class AnimatorGUI extends GuiContainer {
             //buttonList.add(new GuiButton(1, guiLeft + 110, guiTop + 30, 50, 20, "Activate"));
             buttonList.add(new GuiButton(1, guiLeft + 109, guiTop + 105, 16, 15, "+"));
             buttonList.add(new GuiButton(2, guiLeft + 51, guiTop + 105, 16, 15, "-"));
-            buttonList.add(new GuiButton(3, guiLeft + 39, guiTop + 20, 50, 20, "Reset"));         
+
+            buttonList.add(new GuiButton(3, guiLeft + 14, guiTop + 50, 70, 20, "Sequence"));
+            buttonList.add(new GuiButton(4, guiLeft + 92, guiTop + 50, 70, 20, "Reverse"));
+            buttonList.add(new GuiButton(5, guiLeft + 14, guiTop + 75, 70, 20, "Loop"));
+            buttonList.add(new GuiButton(6, guiLeft + 92, guiTop + 75, 70, 20, "Random"));
+            
+            //buttonList.add(new GuiButton(7, guiLeft + 39, guiTop + 20, 50, 20, "Reset"));                  
     }
     
     @Override
     protected void actionPerformed(GuiButton guibutton) 
     {        
     	switch(guibutton.id) 
-        {
-	        case 1:
-	            //((TileEntityAnimator)((ContainerBase)this.inventorySlots).getControl()).setDelay(0.1F);
-	            Controller.proxy.sendPacket( player, guibutton.id);
-	            break;
-	        case 2:
-	           if(((TileEntityAnimator)((ContainerBase)this.inventorySlots).getControl()).getDelay()>2)
-	        	   //((TileEntityAnimator)((ContainerBase)this.inventorySlots).getControl()).setDelay(-0.1F);
-	        	   Controller.proxy.sendPacket( player, guibutton.id);
-	            break;
+    	{
             case 3:
-            	ItemStack stack = this.inventorySlots.getSlot(0).getStack();
+            	/*ItemStack stack = this.inventorySlots.getSlot(0).getStack();
             	if(stack!=null && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
             	{
             		int[] data = stack.getTagCompound().getIntArray(ItemBase.KEYTAG);
@@ -84,11 +85,11 @@ public class AnimatorGUI extends GuiContainer {
             			cData[i+1]=data[i];
             		
             		Controller.proxy.sendPacket(player, cData);
-            	}
-            	break;
+            	}*/
+            	return;
             default:
                 Controller.proxy.sendPacket( player, guibutton.id);
-                break;       
+                return;
         }
     }
     
