@@ -74,11 +74,11 @@ public class ItemRemote extends ItemBase {
                 	((TileEntityAnimator) this.link).setFrame(this.frame);
                     if(player.capabilities.isCreativeMode)
                     {
-                        this.link.add(player, this.frame, par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
+                        this.link.add(player, par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));
                     } 
                     else if (par3World.getBlockId(par4, par5, par6) != 7)
                     {//Bedrock case removed
-                        this.link.add(player, this.frame , par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));                
+                        this.link.add(player, par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));                
                     }
                 } 
             }   

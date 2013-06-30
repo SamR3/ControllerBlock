@@ -1,9 +1,12 @@
 package nekto.controller.tile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import nekto.controller.item.ItemBase;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -25,9 +28,39 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     	this.setBaseList(new ArrayList<e>());
     }
 
+	protected boolean removeFromList(Iterator itr,int[] temp)
+	{
+		while(itr.hasNext())
+        {
+        	if(Arrays.equals((int[]) itr.next(),temp))
+        	{
+        		itr.remove();
+        		return true;
+        	}
+        }
+		return false;
+	}
+	
+    protected static void sendMessage(EntityPlayer player, boolean removed, int blockID, int x, int y, int z, int metaData) 
+    {
+    	String name = Block.blocksList[blockID].getUnlocalizedName().substring(5);
+    	if(removed) 
+    	{
+        	player.sendChatToPlayer("Removed from list " + name + " " + x + " " + y + " " + z + " " + metaData);
+        } else 
+        {
+        	player.sendChatToPlayer("Added to list " + name + " " + x + " " + y + " " + z + " " + metaData);
+        }
+	}
+	
     public void setState(boolean active)
     {
         this.previousState = active;
+    }
+    
+    public boolean isPowered()
+    {
+    	return this.previousState;
     }
     
     public List<e> getBaseList() 
@@ -148,7 +181,5 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	@Override
 	public void closeChest() {}
 
-	public abstract void add(EntityPlayer player, int blockId, int par4, int par5, int par6, int blockMetadata); 
-
-	public abstract void add(EntityPlayer player, int frame, int blockId, int par4,int par5, int par6, int blockMetadata);
+	public abstract void add(EntityPlayer player, int blockId, int x, int y, int z, int blockMetadata);
 }

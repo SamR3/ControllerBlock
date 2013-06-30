@@ -15,7 +15,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
-    private int frame, delay;
+    private int frame=0, delay=0;
     private Mode currMode = Mode.ORDER;
 	
     public TileEntityAnimator()
@@ -24,14 +24,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     }
     
     @Override
-	public void add(EntityPlayer player, int blockID, int par4, int par5, int par6, int metaData) 
+	public void add(EntityPlayer player, int blockID, int x, int y, int z, int metaData) 
     {
-		this.add(player, 0, blockID, par4, par5, par6, metaData);
-	}
-    @Override
-	public void add(EntityPlayer player, int frame, int blockID, int x, int y, int z, int metaData) 
-    {	
-        boolean removed = false;
         int[] temp = new int[]{blockID,x,y,z,metaData};
         
         while(getBaseList().size() <= frame)
@@ -39,25 +33,14 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
         
         Iterator itr = ((List) getBaseList().get(frame)).listIterator();    
         
-        while(itr.hasNext())
-        {
-        	if(Arrays.equals((int[]) itr.next(),temp)){
-        		itr.remove();
-        		removed = true;
-        		break;
-        	}
-        }
-        
-        if(removed) {
-        	player.sendChatToPlayer("Removed from list " + blockID + " " + x + " " + y + " " + z + " " + metaData);
-        } else {
-        	player.sendChatToPlayer("Added to list " + blockID + " " + x + " " + y + " " + z + " " + metaData);
+        boolean removed = removeFromList(itr, temp);
+        sendMessage(player,removed,blockID,x,y,z,metaData);
+        if(!removed)
         	getBaseList().get(frame).add(temp);
-            //this.worldObj.setBlockToAir(temp[1], temp[2], temp[3]);
-        }
     }
 	
-    @Override
+
+	@Override
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {
     	super.writeToNBT(par1NBTTagCompound);
@@ -119,6 +102,11 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     public int getDelay() 
     {
         return this.delay;
+    }
+    
+    public void resetDelay()
+    {
+    	this.delay = 0;
     }
     
     public void setFrame(int i) 

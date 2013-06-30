@@ -19,34 +19,15 @@ public class TileEntityController extends TileEntityBase<int[]> {
     }
     
     @Override
-	public void add(EntityPlayer player, int frame, int blockID, int par4, int par5, int par6, int metaData) 
-    {
-		this.add(player, blockID, par4, par5, par6, metaData);
-	}
-    
-    @Override
 	public void add(EntityPlayer player, int blockID, int x, int y, int z, int metaData) 
     {	
-        boolean removed = false;
-        int[] temp = new int[]{
-            blockID,x,y,z,metaData
-        };
-        Iterator itr = getBaseList().listIterator();       
-        while(itr.hasNext()){
-        	if(Arrays.equals((int[]) itr.next(), temp)){
-        		itr.remove();
-        		removed = true;
-        		break;
-        	}
-        }
+        int[] temp = new int[]{blockID,x,y,z,metaData};
+        Iterator itr = getBaseList().listIterator();
         
-        if(removed) {
-        	player.sendChatToPlayer("Removed " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
-        } else {
-        	player.sendChatToPlayer("Added " + " " + blockID + " " + x + " " + y + " " + z + " " + metaData);
+        boolean removed = removeFromList(itr, temp);
+        sendMessage(player,removed,blockID,x,y,z,metaData);
+        if(!removed)
             getBaseList().add(temp);
-            //this.worldObj.setBlockToAir(temp[1], temp[2], temp[3]);
-        }
     }
     
     @Override
