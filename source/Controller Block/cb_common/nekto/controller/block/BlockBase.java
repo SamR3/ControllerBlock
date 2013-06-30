@@ -3,6 +3,7 @@ package nekto.controller.block;
 import java.util.Iterator;
 
 import nekto.controller.item.ItemBase;
+import nekto.controller.item.ItemLinker;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
 import nekto.controller.tile.TileEntityController;
@@ -11,6 +12,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
@@ -51,7 +53,7 @@ public abstract class BlockBase extends BlockContainer{
     public void breakBlock(World world, int par2, int par3, int par4, int par5, int par6)
     {
     	TileEntityBase tile = (TileEntityBase) world.getBlockTileEntity(par2, par3, par4);
-        if(!world.isRemote && tile.previousState && !tile.isEditing())//We only spawn items if it is powered and not in editing mode
+        if(!world.isRemote && tile.isPowered() && !tile.isEditing())//We only spawn items if it is powered and not in editing mode
         {
         	Iterator itr = tile.getBaseList().iterator();
         	dropItems(world, tile, itr, par2, par3, par4);
@@ -112,7 +114,8 @@ public abstract class BlockBase extends BlockContainer{
     	boolean flag =par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
         if( tile.previousState!=flag)
         { 	
-    		onRedstoneChange(par1World, par2, par3, par4, par5, flag, tile);   	
+        	if(tile.getBaseList().size()>0)
+        		onRedstoneChange(par1World, par2, par3, par4, par5, flag, tile);   	
         	tile.setState(flag);
         }
     }
