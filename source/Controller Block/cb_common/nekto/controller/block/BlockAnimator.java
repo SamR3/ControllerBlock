@@ -33,16 +33,15 @@ public class BlockAnimator extends BlockBase {
     @Override
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {    
-    	TileEntityAnimator tile = (TileEntityAnimator)par1World.getBlockTileEntity(par2, par3, par4);
-    	
-        if(par5EntityPlayer.getCurrentEquippedItem() != null && par5EntityPlayer.getCurrentEquippedItem().getItem() instanceof ItemRemote)
+    	if(par5EntityPlayer.getCurrentEquippedItem() == null || !(par5EntityPlayer.getCurrentEquippedItem().getItem() instanceof ItemRemote))
         {
-            return false;
+	        if(!par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))//We don't want to enable any changes when block is powered
+	        {
+	        	par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
+	        	return true;
+	        }
         }
-
-        par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
-        
-        return true;
+        return false;
     }
     
     @Override
@@ -69,7 +68,7 @@ public class BlockAnimator extends BlockBase {
 	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random)
     {
 		TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
-		FMLLog.getLogger().info(tile.getDelay()+"ticked "+tile.getFrame());
+		//FMLLog.getLogger().info(tile.getDelay()+" ticked "+tile.getFrame());//DEBUG
 		boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
 		if(flag)
         {
