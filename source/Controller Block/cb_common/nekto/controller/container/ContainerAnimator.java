@@ -9,15 +9,7 @@ public class ContainerAnimator extends ContainerBase {
 	{
 		this.control = tile;
 		//Adding animator slots
-		
-		/*GLITCH:
-		 * 
-		 *  Causes Game Crash
-		 * 
-		 * */
-		//addSlotToContainer(new ControllerSlot(tile, 1, 19, 21));
-		
-		
+		addSlotToContainer(new ControllerSlot(tile, 0, 19, 21));
 		//Adding player inventory
 		addPlayerInventory(inventory);
 	}

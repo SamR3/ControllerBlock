@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import nekto.controller.animator.Mode;
 import nekto.controller.container.ContainerAnimator;
-import nekto.controller.container.ContainerBase;
 import nekto.controller.item.ItemBase;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
@@ -53,12 +52,14 @@ public class PacketHandler implements IPacketHandler{
 				animator.setDelay(0.01F);
 				return;
 			case 2://"-" button has been pressed
-				animator.setDelay(-0.01F);
+				if(animator.getDelay()>-1)//Lower delay won't work and might crash
+					animator.setDelay(-0.01F);
 				return;
 			case 3:
                 animator.setMode(Mode.ORDER);
                 return;
             case 4:
+            	//animator.setFrame(animator.getBaseList().size()-1);
                 animator.setMode(Mode.REVERSE);
                 return;
             case 5:
