@@ -125,7 +125,7 @@ public class BlockAnimator extends BlockBase {
 	{
 		if(powered)//Powered but previously not powered
     	{
-    		for(int frame = 0; frame < tile.getBaseList().size(); frame++)   			
+    		for(int frame = 1; frame < tile.getBaseList().size(); frame++)   			
     		{
     			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).iterator();
             	setActiveBlocks(par1World,itr);//Make all the blocks disappear
@@ -134,6 +134,7 @@ public class BlockAnimator extends BlockBase {
     	}
     	else//Not powered but previously powered
     	{
+    		((TileEntityAnimator)tile).setFrame(0);
     		for(int frame = 0;frame < tile.getBaseList().size(); frame++)
     		{
     			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).iterator();
