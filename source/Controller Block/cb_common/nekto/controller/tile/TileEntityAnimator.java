@@ -22,7 +22,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	
     public TileEntityAnimator()
     {
-    	super(0);
+    	super(1);
     }
     
     @Override
@@ -30,8 +30,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
         int[] temp = new int[]{blockID,x,y,z,metaData};
         
-        /*while(getBaseList().size() <= frame)
-        	getBaseList().add(new ArrayList());*/
+        while(getBaseList().size() <= frame)
+        	getBaseList().add(new ArrayList());
         
         Iterator itr = ((List) getBaseList().get(frame)).listIterator();   
         
