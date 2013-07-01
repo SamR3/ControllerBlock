@@ -76,5 +76,7 @@ public class Controller {
         NetworkRegistry.instance().registerGuiHandler(this, proxy);
         GameRegistry.registerTileEntity(TileEntityController.class, "controllerBlockList");
         GameRegistry.registerTileEntity(TileEntityAnimator.class, "animatorBlockList");
+        
+        proxy.registerRenderThings();
     }
 }

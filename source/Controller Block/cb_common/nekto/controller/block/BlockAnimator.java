@@ -4,16 +4,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import cpw.mods.fml.common.FMLLog;
-
 import nekto.controller.animator.Mode;
 import nekto.controller.core.Controller;
-import nekto.controller.item.ItemBase;
 import nekto.controller.item.ItemRemote;
 import nekto.controller.tile.TileEntityAnimator;
 import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockAnimator extends BlockBase {
@@ -28,6 +26,16 @@ public class BlockAnimator extends BlockBase {
     public TileEntity createNewTileEntity(World world)
     {
         return new TileEntityAnimator();
+    }
+    
+    public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
+    {
+       return false;
+    }
+
+    public boolean isOpaqueCube()
+    {
+       return false;
     }
     
     @Override

@@ -15,12 +15,14 @@ import net.minecraft.nbt.NBTTagList;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
-    private int frame=0, delay=0;
+    private int frame = 0, delay = 0;
     private Mode currMode = Mode.ORDER;
+    private float orbRotation = 0;
+    private float hoverHeight = 0;
 	
     public TileEntityAnimator()
     {
-    	super(1);
+    	super(0);
     }
     
     @Override
@@ -28,10 +30,10 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
         int[] temp = new int[]{blockID,x,y,z,metaData};
         
-        while(getBaseList().size() <= frame)
-        	getBaseList().add(new ArrayList());
+        /*while(getBaseList().size() <= frame)
+        	getBaseList().add(new ArrayList());*/
         
-        Iterator itr = ((List) getBaseList().get(frame)).listIterator();    
+        Iterator itr = ((List) getBaseList().get(frame)).listIterator();   
         
         boolean removed = removeFromList(itr, temp);
         sendMessage(player,removed,blockID,x,y,z,metaData);
@@ -80,6 +82,28 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
             	list.add(((NBTTagIntArray)itr.next()).intArray);
             this.getBaseList().add(list);
         }
+    }
+    
+    @Override
+    public void updateEntity()
+    {
+        this.hoverHeight += 3;
+        this.orbRotation += 3;
+        
+        if(this.orbRotation > 360)
+        {
+            this.orbRotation -= 360;
+        }
+    }
+    
+    public float getRotation()
+    {
+        return this.orbRotation;
+    }
+    
+    public float getHoverHeight()
+    {
+        return this.hoverHeight;
     }
 
 	@Override

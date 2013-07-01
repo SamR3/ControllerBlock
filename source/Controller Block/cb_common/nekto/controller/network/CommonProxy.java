@@ -19,6 +19,9 @@ import cpw.mods.fml.relauncher.Side;
 public class CommonProxy implements IGuiHandler{
 
 	public static final int GUI_ID = 0;
+	
+    public void registerRenderThings() {}
+	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
 	{
