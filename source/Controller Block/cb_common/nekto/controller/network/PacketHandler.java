@@ -48,44 +48,65 @@ public class PacketHandler implements IPacketHandler{
 			
 			switch(data[0])
 			{
-			case 1://"+" button has been pressed
+			case 0://"+" button has been pressed
 				animator.setDelay(0.01F);
-				return;
-			case 2://"-" button has been pressed
-				if(animator.getDelay()>-1)//Lower delay won't work and might crash
+				break;
+			case 1://"-" button has been pressed
+				if(animator.getDelay()>-1)
+				{//Lower delay won't work and might crash
 					animator.setDelay(-0.01F);
-				return;
-			case 3:
-                animator.setMode(Mode.ORDER);
-                return;
-            case 4:
-            	//animator.setFrame(animator.getBaseList().size()-1);
-                animator.setMode(Mode.REVERSE);
-                return;
-            case 5:
-                animator.setMode(Mode.LOOP);
-                return;
-            case 6:
-                animator.setMode(Mode.RANDOM);
-                return;
-            case 7://"Reset" button has been pressed
-                TileEntity ent = player.worldObj.getBlockTileEntity(data[1], data[2], data[3]);
-                if(ent != null && ent instanceof TileEntityAnimator)
-                {
-                    animator = (TileEntityAnimator) ent;
-                    animator.setEditing(false);
-                    animator.setFrame(0);
-                    animator.setMode(Mode.ORDER);
-                    animator.resetDelay();
+				}
+				break;
+			case 2://"Switch button has been pressed, going LOOP->ORDER->REVERSE->RANDOM->LOOP
+				int mod = animator.getMode().ordinal();
+				if(mod > 2)
+					animator.setMode(Mode.LOOP);
+				else
+					animator.setMode(Mode.values()[mod + 1]);
+                break;
+            case 3:
+            case 4://One of the "Reset" button has been pressed
+            	if(data.length > 1)//We got data from the item in slot
+            	{
+	                TileEntity ent = player.worldObj.getBlockTileEntity(data[1], data[2], data[3]);
+	                if(ent != null && ent instanceof TileEntityAnimator)
+	                {//We change the animator to the one pointed by the item
+	                    animator = (TileEntityAnimator) ent;
+	                    animator.setEditing(false);
+	                    animator.setLinker(null);
+	                    if(data[0]==5)//This is a full reset
+	                    {
+	                    	resetAnimator(animator);
+	                    }
+	                    //Get the item and reset it
+	                    ItemStack stack = player.openContainer.getSlot(0).getStack();
+	                    ItemBase remote = (ItemBase)stack.getItem();
+	                    remote.resetLinker();
+	                    stack.getTagCompound().removeTag(ItemBase.KEYTAG);
+	                }
+	                break;
+            	}
+            	else//No item, so it falls back to full reset
+            	{
+            		animator.setEditing(false);
                     animator.setLinker(null);
-                    ItemStack stack = player.openContainer.getSlot(0).getStack();
-                    ItemBase remote = (ItemBase)stack.getItem();
-                    remote.resetLinker();
-                    stack.getTagCompound().removeTag(ItemBase.KEYTAG);
-                }
-                return;
+                    resetAnimator(animator);
+            	}
+            	break;
+            case 5://Max setter
+            	animator.setMaxFrame(data[1]);
+				break;
 			}
+			player.openContainer.detectAndSendChanges();
 		}
 	}
 
+	private void resetAnimator(TileEntityAnimator animator) 
+	{
+		animator.setFrame(0);                
+        animator.setMode(Mode.ORDER);
+        animator.resetDelay();
+        animator.setMaxFrame(-1);
+        animator.resetCount();
+	}
 }
