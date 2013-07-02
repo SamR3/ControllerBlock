@@ -3,7 +3,6 @@ package nekto.controller.gui;
 import java.util.List;
 
 import nekto.controller.container.ContainerAnimator;
-import nekto.controller.container.ContainerBase;
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
 import nekto.controller.tile.TileEntityAnimator;
@@ -36,13 +35,9 @@ public class AnimatorGUI extends GuiContainer {
         String s = "Animator Block";
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
 
-        String value = (Float.toString(round((float)getDelay() / 1000, 2)) + "s");
+        String value = (Float.toString(round((float)((ContainerAnimator)this.inventorySlots).getDelay() / 10, 2)) + "s");
         this.fontRenderer.drawString(value, this.xSize / 2 - this.fontRenderer.getStringWidth(value) / 2, 109, 0);
     }
-    
-    private int getDelay() {
-		return ((TileEntityAnimator)((ContainerBase)this.inventorySlots).getControl()).getDelay();
-	}
 
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
@@ -55,19 +50,19 @@ public class AnimatorGUI extends GuiContainer {
     @Override
     public void initGui() 
     {
-            super.initGui();
-            
-            //id, x, y, width, height, text
-            //buttonList.add(new GuiButton(1, guiLeft + 110, guiTop + 30, 50, 20, "Activate"));
-            buttonList.add(new GuiButton(1, guiLeft + 109, guiTop + 105, 16, 15, "+"));
-            buttonList.add(new GuiButton(2, guiLeft + 51, guiTop + 105, 16, 15, "-"));
+        super.initGui();
+        
+        //id, x, y, width, height, text
+        //buttonList.add(new GuiButton(1, guiLeft + 110, guiTop + 30, 50, 20, "Activate"));
+        buttonList.add(new GuiButton(0, guiLeft + 109, guiTop + 105, 16, 15, "+"));
+        buttonList.add(new GuiButton(1, guiLeft + 51, guiTop + 105, 16, 15, "-"));
 
-            buttonList.add(new GuiButton(3, guiLeft + 14, guiTop + 50, 70, 20, "Sequence"));
-            buttonList.add(new GuiButton(4, guiLeft + 92, guiTop + 50, 70, 20, "Reverse"));
-            buttonList.add(new GuiButton(5, guiLeft + 14, guiTop + 75, 70, 20, "Loop"));
-            buttonList.add(new GuiButton(6, guiLeft + 92, guiTop + 75, 70, 20, "Random"));
-            
-            buttonList.add(new GuiButton(7, guiLeft + 39, guiTop + 20, 50, 20, "Reset"));                  
+        buttonList.add(new GuiButton(2, guiLeft + 14, guiTop + 50, 70, 20, "Mode switch"));
+        
+        buttonList.add(new GuiButton(3, guiLeft + 39, guiTop + 20, 54, 20, "Reset Link"));
+        buttonList.add(new GuiButton(4, guiLeft + 95, guiTop + 20, 54, 20, "Full Reset"));
+        
+        buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, "Max frame"));
     }
     
     @Override
@@ -75,7 +70,11 @@ public class AnimatorGUI extends GuiContainer {
     {        
     	switch(guibutton.id) 
     	{
-            case 7:
+	    	case 5:
+	    		//TODO: set the max frame number
+	    		//Controller.proxy.sendPacket(player, new int[]{guibutton.id,max});
+	    	break;
+            case 3: case 4://One of the "Reset" button has been pressed
             	ItemStack stack = this.inventorySlots.getSlot(0).getStack();
             	if(stack!=null && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
             	{
@@ -86,23 +85,24 @@ public class AnimatorGUI extends GuiContainer {
             			cData[i+1]=data[i];
             		
             		Controller.proxy.sendPacket(player, cData);
+            		break;
             	}
-            	return;
+            	else if(guibutton.id==3)
+            	{//This means if there wasn't an item, and full reset button was pressed, it falls back to sending the button id
+            		break;
+            	}
             default:
-                Controller.proxy.sendPacket( player, guibutton.id);
-                return;
+                Controller.proxy.sendPacket(player, guibutton.id);
+                break;
         }
+    	super.actionPerformed(guibutton);
     }
     
     public static float round(float value, int places) 
     {
         long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        
-        float val = (float) tmp / factor;
-        
-        return val;
+        long tmp = Math.round(value * factor);
+        return (float) tmp / factor;
     }
 
 }

@@ -9,12 +9,11 @@ import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy implements IGuiHandler{
 
@@ -71,9 +70,13 @@ public class CommonProxy implements IGuiHandler{
 		packet.data = bos.toByteArray();
 		packet.length = bos.size();
 		
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) 
+        if (player instanceof EntityClientPlayerMP) 
         {
             ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(packet);    	
+        }
+        else if (player instanceof EntityPlayerMP)
+        {
+            ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
         }
 	}
 }
