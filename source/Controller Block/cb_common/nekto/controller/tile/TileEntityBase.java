@@ -24,7 +24,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	public TileEntityBase(int size)
     {
 		this.size = size;
-    	this.items = new ItemStack[getSizeInventory()];
+    	this.items = new ItemStack[size];
     	this.setBaseList(new ArrayList<e>());
     }
 

@@ -15,7 +15,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
-    private int frame = 0, delay = 0;
+    private int frame = 0, delay = 0, count = 0, max = 0;
     private Mode currMode = Mode.ORDER;
     private float orbRotation = 0;
     private float hoverHeight = 0;
@@ -48,6 +48,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     	super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setInteger("frame", this.frame);
         par1NBTTagCompound.setInteger("delay", this.delay);
+        par1NBTTagCompound.setInteger("stop", this.max);
+        par1NBTTagCompound.setInteger("count", this.count);
         par1NBTTagCompound.setShort("mode", (short) this.getMode().ordinal());
         
         NBTTagList tags = new NBTTagList("frames");
@@ -71,6 +73,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
         int count = par1NBTTagCompound.getInteger("length");
         this.setFrame(par1NBTTagCompound.getInteger("frame"));
         this.delay = par1NBTTagCompound.getInteger("delay");
+        this.max = par1NBTTagCompound.getInteger("stop");
+        this.count = par1NBTTagCompound.getInteger("count");
         this.setMode(Mode.values()[par1NBTTagCompound.getShort("mode")]);
         
         for(int i = 0; i < count; i++)
@@ -117,12 +121,19 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	{
 		return (i == 0 && itemstack.getItem() instanceof ItemRemote);
 	}
-	   
+	 /**
+	  * Adds arg multiplied by 1000 to the delay  
+	  * @param f
+	  */
     public void setDelay(float f)
     {
     	this.delay += (int)(f * 1000);
     }
-
+/**
+ * 
+ * @return the number of ticks between scheduled updates in {@link nekto.controller.block.BlockAnimator} 
+ * ie, between frames
+ */
     public int getDelay() 
     {
         return this.delay;
@@ -151,5 +162,28 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     public Mode getMode()
     {
     	return this.currMode;
+    }
+    
+    public boolean shouldStop()
+    {
+    	return this.count==this.max;
+    }
+    
+    public void setMaxFrame(int number)
+    {
+    	if(number >= 0)
+    		this.max = number;
+    	else
+    		this.max = Integer.MAX_VALUE;
+    }
+    
+    public void addToCount()
+    {
+    	this.count++;
+    }
+    
+    public void resetCount()
+    {
+    	this.count = 0;
     }
 }
