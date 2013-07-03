@@ -59,10 +59,10 @@ public class PacketHandler implements IPacketHandler{
 				break;
 			case 2://"Switch button has been pressed, going LOOP->ORDER->REVERSE->RANDOM->LOOP
 				int mod = animator.getMode().ordinal();
-				if(mod > 2)
-					animator.setMode(Mode.LOOP);
-				else
+				if(mod + 1 < Mode.values().length)
 					animator.setMode(Mode.values()[mod + 1]);
+				else
+					animator.setMode(Mode.LOOP);
                 break;
             case 3:
             case 4://One of the "Reset" button has been pressed
@@ -96,6 +96,9 @@ public class PacketHandler implements IPacketHandler{
             case 5://Max setter
             	animator.setMaxFrame(data[1]);
 				break;
+            case 6:
+            	animator.setFrame(animator.getFrame() + 1);
+            	break;
 			}
 			player.openContainer.detectAndSendChanges();
 		}
