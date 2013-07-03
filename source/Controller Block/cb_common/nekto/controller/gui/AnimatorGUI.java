@@ -46,6 +46,33 @@ public class AnimatorGUI extends GuiContainer {
         this.mc.renderEngine.bindTexture("/mods/controller/textures/gui/controllergui.png");
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     }
+	
+	private String getMode()
+	{
+        TileEntityAnimator animator = (TileEntityAnimator) null;
+        
+        /*
+         * This needs a similar client/server synchronization as the delay. 
+         * Right now it's just picking up the client side, which doesn't change.
+         * I'd do it, but I really don't have the experience needed for it.
+         */
+
+        int mode = animator.getMode().ordinal();
+	    
+        switch(mode)
+        {
+            case 0:
+                return "Loop";
+            case 1:
+                return "Sequence";
+            case 2:
+                return "Reverse";
+            case 3:
+                return "Random";
+        }
+        
+        return "Sequence";
+	}
     
     @Override
     public void initGui() 
@@ -53,14 +80,13 @@ public class AnimatorGUI extends GuiContainer {
         super.initGui();
         
         //id, x, y, width, height, text
-        //buttonList.add(new GuiButton(1, guiLeft + 110, guiTop + 30, 50, 20, "Activate"));
         buttonList.add(new GuiButton(0, guiLeft + 109, guiTop + 105, 16, 15, "+"));
         buttonList.add(new GuiButton(1, guiLeft + 51, guiTop + 105, 16, 15, "-"));
 
-        buttonList.add(new GuiButton(2, guiLeft + 14, guiTop + 50, 70, 20, "Mode switch"));
+        buttonList.add(new GuiButton(2, guiLeft + 32, guiTop + 74, 110, 20, getMode()));
         
-        buttonList.add(new GuiButton(3, guiLeft + 39, guiTop + 20, 54, 20, "Reset Link"));
-        buttonList.add(new GuiButton(4, guiLeft + 95, guiTop + 20, 54, 20, "Full Reset"));
+        buttonList.add(new GuiButton(3, guiLeft + 39, guiTop + 19, 60, 20, "Reset Link"));
+        buttonList.add(new GuiButton(4, guiLeft + 100, guiTop + 19, 60, 20, "Full Reset"));
         
         buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, "Max frame"));
     }
@@ -76,18 +102,18 @@ public class AnimatorGUI extends GuiContainer {
 	    	break;
             case 3: case 4://One of the "Reset" button has been pressed
             	ItemStack stack = this.inventorySlots.getSlot(0).getStack();
-            	if(stack!=null && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
+            	if(stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
             	{
             		int[] data = stack.getTagCompound().getIntArray(ItemBase.KEYTAG);
             		int[] cData = new int[1+data.length];
             		cData[0] = guibutton.id;
-            		for(int i=0;i<data.length;i++)
-            			cData[i+1]=data[i];
+            		for(int i = 0; i < data.length; i++)
+            			cData[i + 1] = data[i];
             		
             		Controller.proxy.sendPacket(player, cData);
             		break;
             	}
-            	else if(guibutton.id==3)
+            	else if(guibutton.id == 3)
             	{//This means if there wasn't an item, and full reset button was pressed, it falls back to sending the button id
             		break;
             	}

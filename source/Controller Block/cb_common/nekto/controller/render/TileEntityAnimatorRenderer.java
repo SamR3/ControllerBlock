@@ -1,7 +1,7 @@
 package nekto.controller.render;
 
 import nekto.controller.core.Controller;
-import nekto.controller.render.model.ModelAnimator;
+import nekto.controller.render.model.ModelAnimator2;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -16,11 +16,10 @@ import org.lwjgl.opengl.GL11;
 
 public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
 
-  //The model of your block
-    private final ModelAnimator model;
+    private final ModelAnimator2 model;
     
     public TileEntityAnimatorRenderer() {
-            this.model = new ModelAnimator();
+            this.model = new ModelAnimator2();
     }
     
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float scale) {
@@ -30,24 +29,29 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
         setLighting(tileEntityYour, tileEntity.worldObj, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
         
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTextureByName("/mods/roads/textures/blocks/TrafficLightPoleRed.png");
+        bindTextureByName("");
         
         GL11.glPushMatrix();
         
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
         
-        GL11.glRotatef(((TileEntityAnimator) tileEntity).getRotation(), 0.0F, 1.0F, 0.0F);
+        renderOrb(tileEntity);
         
-        float f2 = MathHelper.sin(((TileEntityAnimator) tileEntity).getHoverHeight() / 10.0F) * 0.04F;
+        GL11.glPopMatrix();
+        
+        GL11.glPopMatrix();
+    }
+    
+    private void renderOrb(TileEntity tile)
+    {
+        GL11.glRotatef(((TileEntityAnimator) tile).getRotation(), 0.0F, 1.0F, 0.0F);
+        
+        float f2 = MathHelper.sin(((TileEntityAnimator) tile).getHoverHeight() / 10.0F) * 0.04F;
 
         GL11.glTranslatef(0.0F, f2, 0.0F);
         
         this.model.renderOrb(0.0625F);
-        
-        GL11.glPopMatrix();
-        
-        GL11.glPopMatrix();
     }
     
     public void setLighting(TileEntityAnimator tl, World world, int i, int j, int k, Block block) {

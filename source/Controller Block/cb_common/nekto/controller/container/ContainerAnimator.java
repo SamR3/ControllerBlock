@@ -35,7 +35,7 @@ public class ContainerAnimator extends ContainerBase {
         {
             ICrafting icrafting = (ICrafting)this.crafters.get(i);
 
-	        if(this.oldDelay!=((TileEntityAnimator)this.control).getDelay())
+	        if(this.oldDelay != ((TileEntityAnimator)this.control).getDelay())
 	        {
 	        	icrafting.sendProgressBarUpdate(this, DELAY_INDEX, ((TileEntityAnimator)this.control).getDelay());
 	        }

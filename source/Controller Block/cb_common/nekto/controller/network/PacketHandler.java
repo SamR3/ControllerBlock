@@ -34,7 +34,7 @@ public class PacketHandler implements IPacketHandler{
 		int[] data = new int[packet.data.length/4];
 		try 
 		{
-			for(int id=0;id<data.length;id++)
+			for(int id = 0; id < data.length; id++)
 				data[id] = inStream.readInt();
 		} 
 		catch (IOException e) 
