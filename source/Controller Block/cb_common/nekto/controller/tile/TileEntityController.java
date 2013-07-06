@@ -3,10 +3,8 @@
  */
 package nekto.controller.tile;
 
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,18 +15,12 @@ public class TileEntityController extends TileEntityBase<int[]> {
     {
     	super(2);
     }
-    
-    @Override
-	public void add(EntityPlayer player, int blockID, int x, int y, int z, int metaData) 
-    {	
-        int[] temp = new int[]{blockID,x,y,z,metaData};
-        Iterator itr = getBaseList().listIterator();
-        
-        boolean removed = removeFromList(itr, temp);
-        sendMessage(player,removed,blockID,x,y,z,metaData);
-        if(!removed)
-            getBaseList().add(temp);
-    }
+
+	@Override
+	protected List getBlockList() 
+	{
+		return getBaseList();
+	}
     
     @Override
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
@@ -61,4 +53,5 @@ public class TileEntityController extends TileEntityBase<int[]> {
 	{
 		return i<getSizeInventory() && itemstack.getItem() instanceof ItemBlock;
 	}
+
 }

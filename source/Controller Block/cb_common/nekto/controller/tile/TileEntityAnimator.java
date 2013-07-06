@@ -1,13 +1,11 @@
 package nekto.controller.tile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import nekto.controller.animator.Mode;
 import nekto.controller.item.ItemRemote;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
@@ -15,7 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
-    private int frame = 0, delay = 0, count = 0, max = 0;
+    private int frame = 0, delay = 0, count = 0, max = -1;
     private Mode currMode = Mode.ORDER;
     private float orbRotation = 0;
     private float hoverHeight = 0;
@@ -24,23 +22,15 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
     	super(1);
     }
-    
-    @Override
-	public void add(EntityPlayer player, int blockID, int x, int y, int z, int metaData) 
-    {
-        int[] temp = new int[]{blockID,x,y,z,metaData};
-        
+
+	@Override
+	protected List getBlockList() 
+	{
         while(getBaseList().size() <= frame)
         	getBaseList().add(new ArrayList());
-        
-        Iterator itr = ((List) getBaseList().get(frame)).listIterator();   
-        
-        boolean removed = removeFromList(itr, temp);
-        sendMessage(player,removed,blockID,x,y,z,metaData);
-        if(!removed)
-        	getBaseList().get(frame).add(temp);
-    }
-	
+			
+		return getBaseList().get(frame);
+	}
 
 	@Override
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
@@ -71,7 +61,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
     	super.readFromNBT(par1NBTTagCompound);
         int count = par1NBTTagCompound.getInteger("length");
-        this.setFrame(par1NBTTagCompound.getInteger("frame"));
+        this.frame = par1NBTTagCompound.getInteger("frame");
         this.delay = par1NBTTagCompound.getInteger("delay");
         this.max = par1NBTTagCompound.getInteger("stop");
         this.count = par1NBTTagCompound.getInteger("count");
@@ -143,10 +133,19 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
     	this.delay = 0;
     }
-    
-    public void setFrame(int i) 
+    /**
+     * Set current frame
+     * @param i the new frame number
+     * @return true if frame has been set
+     */
+    public boolean setFrame(int i) 
 	{
-    	this.frame = i;
+    	if(i>=0 && i < this.getBaseList().size())
+    	{
+    		this.frame = i;
+    		return true;
+    	}
+    	return false;
 	}
 
 	public int getFrame() 
@@ -166,15 +165,17 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
     public boolean shouldStop()
     {
-    	return this.count==this.max;
+    	return this.max>=0 && this.count==this.max;
     }
     
     public void setMaxFrame(int number)
     {
-    	if(number >= 0)
-    		this.max = number;
-    	else
-    		this.max = Integer.MAX_VALUE;
+		this.max = number;
+    }
+    
+    public int getMaxFrame()
+    {
+    	return this.max;
     }
     
     public void addToCount()

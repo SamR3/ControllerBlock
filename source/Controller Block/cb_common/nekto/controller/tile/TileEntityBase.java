@@ -17,18 +17,25 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	private ItemStack[] items;
 	public boolean previousState = false;
 	private List<e> baseList;
-	private int size;
 	private ItemBase linker = null;
 	private boolean editing;
 	
 	public TileEntityBase(int size)
     {
-		this.size = size;
-    	this.items = new ItemStack[size];
+		this.items = new ItemStack[size];
     	this.setBaseList(new ArrayList<e>());
     }
 
-	protected boolean removeFromList(Iterator itr,int[] temp)
+	public void add(EntityPlayer player, int blockId, int x, int y, int z, int blockMetadata)
+	{
+		int[] temp = new int[]{blockId,x,y,z,blockMetadata};
+		boolean removed = removeFromList(getBlockList().listIterator(), temp);
+		sendMessage(player,removed,temp);
+        if(!removed)
+        	getBlockList().add(temp);
+	}
+	
+	private static boolean removeFromList(Iterator itr,int[] temp)
 	{
 		while(itr.hasNext())
         {
@@ -41,15 +48,15 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 		return false;
 	}
 	
-    protected static void sendMessage(EntityPlayer player, boolean removed, int blockID, int x, int y, int z, int metaData) 
+    private static void sendMessage(EntityPlayer player, boolean removed, int[] data) 
     {
-    	String name = Block.blocksList[blockID].getUnlocalizedName().substring(5);
+    	String name = Block.blocksList[data[0]].getUnlocalizedName().substring(5);
     	if(removed) 
     	{
-        	player.sendChatToPlayer("Removed from list " + name + " " + x + " " + y + " " + z + " " + metaData);
+        	player.sendChatToPlayer("Removed from list " + name + " " + data[1] + " " + data[2] + " " + data[3] + " " + data[4]);
         } else 
         {
-        	player.sendChatToPlayer("Added to list " + name + " " + x + " " + y + " " + z + " " + metaData);
+        	player.sendChatToPlayer("Added to list " + name + " " + data[1] + " " +data[2] + " " + data[3] + " " + data[4]);
         }
 	}
 	
@@ -114,7 +121,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	@Override
 	public int getSizeInventory() 
 	{
-		return this.size;
+		return this.items.length;
 	}
 
 	@Override
@@ -181,5 +188,5 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	@Override
 	public void closeChest() {}
 
-	public abstract void add(EntityPlayer player, int blockId, int x, int y, int z, int blockMetadata);
+	protected abstract List getBlockList();
 }
