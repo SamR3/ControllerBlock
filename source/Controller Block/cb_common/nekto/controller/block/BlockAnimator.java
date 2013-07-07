@@ -79,7 +79,7 @@ public class BlockAnimator extends BlockBase {
 		TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
 		//FMLLog.getLogger().info(tile.getDelay()+" ticked "+tile.getFrame());//DEBUG
 		boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
-		if(!tile.isWaiting())
+		if(!(tile.isWaiting() && flag))
 			if(flag || tile.getFrame()!=0)
 	        {
 	        	if(tile.getFrame() < tile.getBaseList().size())
@@ -88,6 +88,8 @@ public class BlockAnimator extends BlockBase {
 	        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World) + tile.getDelay());//Here we loop the ticks
 	        	tile.addToCount();
 	        }
+		if(!flag && tile.getFrame()==0)
+    		((TileEntityAnimator)tile).resetCount();
     }
 
 	private void nextFrame(World par1World, TileEntityAnimator tile) 
