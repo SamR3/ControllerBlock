@@ -40,6 +40,8 @@ public class Controller {
     public static Item controllerLinker;
     public static Item remote;
     
+	public static boolean tickDisplay;
+    
     @Instance(GeneralRef.MOD_ID)
     public static Controller instance;
     @SidedProxy(clientSide = GeneralRef.CLIENT_PROXY, serverSide = GeneralRef.COMMON_PROXY)
@@ -60,6 +62,7 @@ public class Controller {
     	controllerLinker = new ItemLinker(config.get("item", "linker id", 1000).getInt());
     	animator = new BlockAnimator(config.get("block", "animator id", 501).getInt());
     	remote = new ItemRemote(config.get("item", "remote id", 1001).getInt());
+    	tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
     	if(config.hasChanged())
     		config.save();
         

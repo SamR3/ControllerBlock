@@ -35,8 +35,8 @@ public class AnimatorGUI extends GuiContainer {
     {        
         String s = "Animator Block";
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-
-        String value = (Float.toString(round((float)((ContainerAnimator)this.inventorySlots).getDelay() / 10, 2)) + "s");
+        int delay = ((ContainerAnimator)this.inventorySlots).getDelay()+2;
+        String value = Controller.tickDisplay?(delay) + "ticks":(delay)*0.05F + "s";
         this.fontRenderer.drawString(value, this.xSize / 2 - this.fontRenderer.getStringWidth(value) / 2, 109, 0);
     }
 
@@ -99,12 +99,5 @@ public class AnimatorGUI extends GuiContainer {
                 break;
         }
     	super.actionPerformed(guibutton);
-    }
-    
-    public static float round(float value, int places) 
-    {
-        long factor = (long) Math.pow(10, places);
-        long tmp = Math.round(value * factor);
-        return (float) tmp / factor;
     }
 }

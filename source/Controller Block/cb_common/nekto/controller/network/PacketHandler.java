@@ -56,12 +56,12 @@ public class PacketHandler implements IPacketHandler{
 			switch(data[0])
 			{
 			case 0://"+" button has been pressed
-				animator.setDelay(0.01F);
+				animator.setDelay(1);
 				break;
 			case 1://"-" button has been pressed
 				if(animator.getDelay()>-1)
 				{//Lower delay won't work and might crash
-					animator.setDelay(-0.01F);
+					animator.setDelay(-1);
 				}
 				break;
 			case 2://"Switch button has been pressed, going LOOP->ORDER->REVERSE->RANDOM->LOOP

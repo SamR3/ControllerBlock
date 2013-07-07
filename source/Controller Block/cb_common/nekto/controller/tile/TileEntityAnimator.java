@@ -115,13 +115,10 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	{
 		return (i == 0 && itemstack.getItem() instanceof ItemRemote);
 	}
-	 /**
-	  * Adds arg multiplied by 1000 to the delay  
-	  * @param f
-	  */
-    public void setDelay(float f)
+	
+    public void setDelay(int i)
     {
-    	this.delay += (int)(f * 1000);
+    	this.delay += i;
     }
 /**
  * 
