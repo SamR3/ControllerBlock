@@ -6,11 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import nekto.controller.item.ItemBase;
+import nekto.controller.network.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class TileEntityBase<e> extends TileEntity implements IInventory {
@@ -179,7 +181,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer) 
 	{
-		return  entityplayer.isDead ? false : entityplayer.getDistanceSq(xCoord, yCoord, zCoord) <= 64D;
+		return entityplayer.isDead ? false : entityplayer.getDistanceSq(xCoord, yCoord, zCoord) <= 64D;
 	}
 
 	@Override
@@ -187,6 +189,12 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 
 	@Override
 	public void closeChest() {}
+	
+	@Override
+    public Packet getDescriptionPacket()
+    {
+        return PacketHandler.getPacket(this);
+    }
 
 	protected abstract List getBlockList();
 }

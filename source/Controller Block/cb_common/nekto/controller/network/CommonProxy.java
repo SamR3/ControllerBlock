@@ -7,7 +7,6 @@ import nekto.controller.container.ContainerAnimator;
 import nekto.controller.gui.AnimatorGUI;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -60,23 +59,18 @@ public class CommonProxy implements IGuiHandler{
 		{
 			ex.printStackTrace();
 		}
-		addPacketToQueue(bos,player);
-	}
-
-	private void addPacketToQueue(ByteArrayOutputStream bos, EntityPlayer player) 
-	{
 		Packet250CustomPayload packet = new Packet250CustomPayload();
 		packet.channel = GeneralRef.PACKET_CHANNEL;
 		packet.data = bos.toByteArray();
 		packet.length = bos.size();
-		
-        if (player instanceof EntityClientPlayerMP) 
+		addPacketToQueue(packet,player);
+	}
+
+	protected void addPacketToQueue(Packet250CustomPayload packet, EntityPlayer player) 
+	{
+        if (player instanceof EntityPlayerMP)
         {
-            ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(packet);    	
-        }
-        else if (player instanceof EntityPlayerMP)
-        {
-            ((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
+        	((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
         }
 	}
 }

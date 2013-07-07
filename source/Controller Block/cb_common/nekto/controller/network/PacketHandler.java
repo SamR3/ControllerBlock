@@ -1,7 +1,9 @@
 package nekto.controller.network;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 import nekto.controller.animator.Mode;
@@ -9,11 +11,14 @@ import nekto.controller.container.ContainerAnimator;
 import nekto.controller.item.ItemBase;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -42,8 +47,10 @@ public class PacketHandler implements IPacketHandler{
             e.printStackTrace();
             return;
 		}
+		FMLLog.getLogger().info(" packet received ");//DEBUG
 		if(player.openContainer instanceof ContainerAnimator)
 		{
+			FMLLog.getLogger().info(" container opened ");//DEBUG
 			TileEntityAnimator animator = (TileEntityAnimator) ((ContainerAnimator)player.openContainer).getControl();
 			
 			switch(data[0])
@@ -93,15 +100,17 @@ public class PacketHandler implements IPacketHandler{
                     resetAnimator(animator);
             	}
             	break;
-            case 5://Max setter
-            	animator.setMaxFrame(data[1]);
+            case 5://Increment Max number of frames that will run
+            	animator.setMaxFrame(animator.getMaxFrame() + 1);
 				break;
-            case 6:
-            	animator.setFrame(animator.getFrame() + 1);
+            case 6://Increment first frame to display
+        		animator.setFrame(animator.getFrame() + 1);
             	break;
 			}
 			player.openContainer.detectAndSendChanges();
 		}
+		else
+			FMLLog.getLogger().info(" container not opened ");//DEBUG
 	}
 
 	private void resetAnimator(TileEntityAnimator animator) 
@@ -111,5 +120,33 @@ public class PacketHandler implements IPacketHandler{
         animator.resetDelay();
         animator.setMaxFrame(-1);
         animator.resetCount();
+	}
+
+	public static <e> Packet getPacket(TileEntityBase<e> base) 
+	{
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(14);
+        DataOutputStream dos = new DataOutputStream(bos);
+        int x = base.xCoord;
+        int y = base.yCoord;
+        int z = base.zCoord;
+        boolean edit = base.isEditing();
+        boolean active = base.previousState;
+        try
+        {
+            dos.writeInt(x);
+            dos.writeInt(y);
+            dos.writeInt(z);
+            dos.writeBoolean(edit);
+            dos.writeBoolean(active);
+        }
+        catch (IOException e)
+        {
+        }
+        Packet250CustomPayload pkt = new Packet250CustomPayload();
+        pkt.channel = GeneralRef.PACKET_CHANNEL;
+        pkt.data = bos.toByteArray();
+        pkt.length = bos.size();
+        pkt.isChunkDataPacket = true;
+        return pkt;
 	}
 }
