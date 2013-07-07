@@ -6,10 +6,13 @@ import java.util.List;
 
 import nekto.controller.animator.Mode;
 import nekto.controller.item.ItemRemote;
+import nekto.controller.network.PacketHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.packet.Packet;
+import cpw.mods.fml.common.FMLLog;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
@@ -25,10 +28,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 
 	@Override
 	protected List getBlockList() 
-	{
-        while(getBaseList().size() <= frame)
-        	getBaseList().add(new ArrayList());
-			
+	{	
 		return getBaseList().get(frame);
 	}
 
@@ -88,6 +88,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
         {
             this.orbRotation -= 360;
         }
+        //FMLLog.getLogger().info(this.count+" frames done max is "+this.max);//DEBUG
     }
     
     public float getRotation()
@@ -121,8 +122,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     }
 /**
  * 
- * @return the number of ticks between scheduled updates in {@link nekto.controller.block.BlockAnimator} 
- * ie, between frames
+ * @return the number of ticks (minus 2) between scheduled updates  
+ * in {@link nekto.controller.block.BlockAnimator} ie, between frames
  */
     public int getDelay() 
     {
@@ -133,20 +134,13 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
     	this.delay = 0;
     }
-    /**
-     * Set current frame
-     * @param i the new frame number
-     * @return true if frame has been set
-     */
-    public boolean setFrame(int i) 
-	{
-    	if(i>=0 && i < this.getBaseList().size())
-    	{
-    		this.frame = i;
-    		return true;
-    	}
-    	return false;
-	}
+    
+    public void setFrame(int i)
+    {
+    	while(getBaseList().size() <= i)
+        	getBaseList().add(new ArrayList());
+         this.frame = i;
+    }
 
 	public int getFrame() 
 	{
@@ -163,9 +157,9 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     	return this.currMode;
     }
     
-    public boolean shouldStop()
+    public boolean isWaiting()
     {
-    	return this.max>=0 && this.count==this.max;
+    	return this.max >= 0 && this.count >= this.max;
     }
     
     public void setMaxFrame(int number)

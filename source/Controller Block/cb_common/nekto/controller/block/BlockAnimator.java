@@ -45,7 +45,8 @@ public class BlockAnimator extends BlockBase {
         {
 	        if(!par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))//We don't want to enable any changes when block is powered
 	        {
-	        	par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
+	        	if(!par1World.isRemote && par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityAnimator)
+	        		par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
 	        	return true;
 	        }
         }
@@ -78,54 +79,55 @@ public class BlockAnimator extends BlockBase {
 		TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
 		//FMLLog.getLogger().info(tile.getDelay()+" ticked "+tile.getFrame());//DEBUG
 		boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
-		if(flag /*&& !tile.shouldStop()*/)
+		if(flag && !tile.isWaiting())
         {
         	if(tile.getFrame() < tile.getBaseList().size())
         		previousFrame(par1World ,tile);
     		nextFrame(par1World, tile);
         	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World) + tile.getDelay());//Here we loop the ticks
         	tile.addToCount();
-        }
+        }	
     }
 
 	private void nextFrame(World par1World, TileEntityAnimator tile) 
 	{
-		switch(tile.getMode()){
-		case LOOP:
-			if(tile.getFrame()+1 >= tile.getBaseList().size())
-				tile.setFrame(0);
-			else
-				tile.setFrame(tile.getFrame()+1);
-			break;
-		case RANDOM:
-			tile.setFrame(par1World.rand.nextInt(tile.getBaseList().size()));
-			break;
-		case ORDER:
-			if(tile.getFrame()+1 >= tile.getBaseList().size())
-			{
-				tile.setFrame(tile.getFrame()-1);
-				tile.setMode(Mode.REVERSE);
-			}
-			else
-				tile.setFrame(tile.getFrame()+1);
-			break;
-		case REVERSE:
-			if(tile.getFrame() == 0)
-			{
-				tile.setFrame(1);
-				tile.setMode(Mode.ORDER);
-			}
-			else
-				tile.setFrame(tile.getFrame()-1);
-			break;
+		switch(tile.getMode())
+		{
+			case LOOP:
+				if(tile.getFrame()+1 >= tile.getBaseList().size())
+					tile.setFrame(0);
+				else
+					tile.setFrame(tile.getFrame()+1);
+				break;
+			case RANDOM:
+					tile.setFrame(par1World.rand.nextInt(tile.getBaseList().size()));
+				break;
+			case ORDER:
+				if(tile.getFrame()+1 >= tile.getBaseList().size())
+				{
+					tile.setFrame(tile.getFrame()-1);
+					tile.setMode(Mode.REVERSE);
+				}
+				else
+					tile.setFrame(tile.getFrame()+1);
+				break;
+			case REVERSE:
+				if(tile.getFrame() == 0)
+				{
+					tile.setFrame(1);
+					tile.setMode(Mode.ORDER);
+				}
+				else
+					tile.setFrame(tile.getFrame()-1);
+				break;
 		}
-		Iterator itr = tile.getBaseList().get(tile.getFrame()).iterator();//build next frame
+		Iterator itr = tile.getBaseList().get(tile.getFrame()).listIterator();//build next frame
     	setUnactiveBlocks(par1World,itr);
 	}
 
 	private void previousFrame(World par1World, TileEntityAnimator tile) 
 	{
-		Iterator oldItr = tile.getBaseList().get(tile.getFrame()).iterator();//erase previous frame
+		Iterator oldItr = tile.getBaseList().get(tile.getFrame()).listIterator();//erase previous frame
 		setActiveBlocks(par1World,oldItr);
 	}
 
@@ -134,19 +136,25 @@ public class BlockAnimator extends BlockBase {
 	{
 		if(powered)//Powered but previously not powered
     	{
-    		for(int frame = 1; frame < tile.getBaseList().size(); frame++)   			
+    		for(int frame = 0; frame < tile.getBaseList().size(); frame++) 			
     		{
-    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).iterator();
-            	setActiveBlocks(par1World,itr);//Make all the blocks disappear
+    			if(((TileEntityAnimator)tile).getFrame()!=frame)
+    			{
+	    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).listIterator();
+	            	setActiveBlocks(par1World,itr);
+    			}
     		}
     		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+((TileEntityAnimator)tile).getDelay());
     	}
     	else//Not powered but previously powered
     	{
-    		((TileEntityAnimator)tile).setFrame(0);
+    		if(((TileEntityAnimator)tile).getMode()==Mode.REVERSE)
+    			((TileEntityAnimator)tile).setFrame(tile.getBaseList().size()-1);	
+    		else
+    			((TileEntityAnimator)tile).setFrame(0);
     		for(int frame = 0;frame < tile.getBaseList().size(); frame++)
     		{
-    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).iterator();
+    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).listIterator();
             	setUnactiveBlocks(par1World,itr);//Make all the blocks reappear
     		}
     	}
