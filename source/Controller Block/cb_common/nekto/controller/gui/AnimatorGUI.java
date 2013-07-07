@@ -51,18 +51,17 @@ public class AnimatorGUI extends GuiContainer {
     public void initGui() 
     {
         super.initGui();
-        
         //id, x, y, width, height, text
         buttonList.add(new GuiButton(0, guiLeft + 109, guiTop + 105, 16, 15, "+"));
         buttonList.add(new GuiButton(1, guiLeft + 51, guiTop + 105, 16, 15, "-"));
 
-        buttonList.add(new GuiButton(2, guiLeft + 32, guiTop + 74, 110, 20, "Mode switch"));
+        buttonList.add(new GuiButton(2, guiLeft + 32, guiTop + 74, 60, 20, ((ContainerAnimator)this.inventorySlots).getMode()));
         
         buttonList.add(new GuiButton(3, guiLeft + 39, guiTop + 19, 60, 20, "Reset Link"));
-        buttonList.add(new GuiButton(4, guiLeft + 100, guiTop + 19, 60, 20, "Full Reset"));
+        buttonList.add(new GuiButton(4, guiLeft + 100, guiTop + 19, 70, 20, "Forced Reset"));
         
-        buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, "Frame count"));
-        buttonList.add(new GuiButton(6, guiLeft + 24, guiTop + 50, 70, 20, "Frame"));
+        buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getMax()));
+        buttonList.add(new GuiButton(6, guiLeft + 24, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
     }
     
     @Override
@@ -70,10 +69,6 @@ public class AnimatorGUI extends GuiContainer {
     {        
     	switch(guibutton.id) 
     	{
-	    	case 5:
-	    		//TODO: set the max frame number
-	    		//Controller.proxy.sendPacket(player, new int[]{guibutton.id,max});
-	    	break;	
             case 3: case 4://One of the "Reset" button has been pressed
             	ItemStack stack = this.inventorySlots.getSlot(0).getStack();
             	if(stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
@@ -95,6 +90,8 @@ public class AnimatorGUI extends GuiContainer {
                 Controller.proxy.sendPacket(player, guibutton.id);
                 if(guibutton.id == 2)
             		((GuiButton)this.buttonList.get(2)).displayString = ((ContainerAnimator)this.inventorySlots).getMode();
+                if(guibutton.id == 5)
+                	((GuiButton)this.buttonList.get(5)).displayString = ((ContainerAnimator)this.inventorySlots).getMax();
                 if(guibutton.id == 6)
                 	((GuiButton)this.buttonList.get(6)).displayString = ((ContainerAnimator)this.inventorySlots).getFrame();
                 break;
@@ -108,5 +105,4 @@ public class AnimatorGUI extends GuiContainer {
         long tmp = Math.round(value * factor);
         return (float) tmp / factor;
     }
-
 }

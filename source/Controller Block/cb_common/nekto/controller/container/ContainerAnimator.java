@@ -9,14 +9,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerAnimator extends ContainerBase {
 
-	private int oldDelay,oldMode,oldFrame;
-	private final static int DELAY_INDEX=0,MODE_INDEX=1,FRAME_INDEX=2;
+	private int oldDelay,oldMode,oldFrame,oldMax=-1;
+	private final static int DELAY_INDEX=0,MODE_INDEX=1,FRAME_INDEX=2,MAX_INDEX=3;
 	public ContainerAnimator(InventoryPlayer inventory, TileEntityAnimator tile)
 	{
 		this.control = tile;
 		this.oldDelay = tile.getDelay();
 		this.oldMode = tile.getMode().ordinal();
 		this.oldFrame = tile.getFrame();
+		this.oldMax = tile.getMaxFrame();
 		//Adding animator slots
 		addSlotToContainer(new ControllerSlot(tile, 0, 19, 21));
 		//Adding player inventory
@@ -35,7 +36,12 @@ public class ContainerAnimator extends ContainerBase {
 
 	public String getFrame() 
 	{
-		return "Frame: "+ (this.oldFrame + 1);
+		return "Frame: "+ new Integer(this.oldFrame + 1).toString();
+	}
+	
+	public String getMax()
+	{
+		return "Max: "+ this.oldMax;
 	}
 	
     /**
@@ -52,14 +58,22 @@ public class ContainerAnimator extends ContainerBase {
 	        if(this.oldDelay != ((TileEntityAnimator)this.control).getDelay())
 	        {
 	        	icrafting.sendProgressBarUpdate(this, DELAY_INDEX, ((TileEntityAnimator)this.control).getDelay());
+	        	this.oldDelay = ((TileEntityAnimator)this.control).getDelay();
 	        }
 	        if(this.oldMode != ((TileEntityAnimator)this.control).getMode().ordinal())
 	        {
 	        	icrafting.sendProgressBarUpdate(this, MODE_INDEX, ((TileEntityAnimator)this.control).getMode().ordinal());
+	        	this.oldMode = ((TileEntityAnimator)this.control).getMode().ordinal();
 	        }
 	        if(this.oldFrame != ((TileEntityAnimator)this.control).getFrame())
 	        {
 	        	icrafting.sendProgressBarUpdate(this, FRAME_INDEX, ((TileEntityAnimator)this.control).getFrame());
+	        	this.oldFrame = ((TileEntityAnimator)this.control).getFrame();
+	        }
+	        if(this.oldMax != ((TileEntityAnimator)this.control).getMaxFrame())
+	        {
+	        	icrafting.sendProgressBarUpdate(this, MAX_INDEX, ((TileEntityAnimator)this.control).getMaxFrame());
+	        	this.oldMax = ((TileEntityAnimator)this.control).getMaxFrame();
 	        }
         }
     }
@@ -76,6 +90,9 @@ public class ContainerAnimator extends ContainerBase {
     		break;
     	case FRAME_INDEX:
     		this.oldFrame = par2;
+    		break;
+    	case MAX_INDEX:
+    		this.oldMax = par2;
     		break;
     	}
     }
