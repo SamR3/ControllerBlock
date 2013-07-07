@@ -90,7 +90,7 @@ public class ItemLinker extends ItemBase {
         		setEditAndTag(new int[]{par4, par5, par6},par1ItemStack);
             }
             else
-            	player.sendChatToPlayer(MESSAGE_0);
+            	player.sendChatToPlayer(MESSAGE_0+MESSAGE_4);
         }
         return false;
     }
