@@ -6,13 +6,10 @@ import java.util.List;
 
 import nekto.controller.animator.Mode;
 import nekto.controller.item.ItemRemote;
-import nekto.controller.network.PacketHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.packet.Packet;
-import cpw.mods.fml.common.FMLLog;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
@@ -91,7 +88,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
         {
             this.orbRotation -= 360;
         }
-        //FMLLog.getLogger().info(this.count+" frames done max is "+this.max);//DEBUG
+        //Side side = FMLCommonHandler.instance().getEffectiveSide();
+        //FMLLog.getLogger().info((side==Side.CLIENT?"client has ":"server has ")+this.count+" frames done max is "+this.max);//DEBUG
     }
     
     public float getRotation()

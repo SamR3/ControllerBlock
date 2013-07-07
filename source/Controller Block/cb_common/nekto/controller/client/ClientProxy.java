@@ -1,9 +1,6 @@
 package nekto.controller.client;
 
-import java.io.ByteArrayOutputStream;
-
 import nekto.controller.network.CommonProxy;
-import nekto.controller.ref.GeneralRef;
 import nekto.controller.render.TileEntityAnimatorRenderer;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -22,7 +19,7 @@ public class ClientProxy extends CommonProxy {
 	{
         if (player instanceof EntityClientPlayerMP) 
         {
-            ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(packet);    	
+            ((EntityClientPlayerMP) player).sendQueue.addToSendQueue(packet);
         }
 	}
 }

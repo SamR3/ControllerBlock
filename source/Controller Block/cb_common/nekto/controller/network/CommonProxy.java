@@ -8,7 +8,6 @@ import nekto.controller.gui.AnimatorGUI;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -68,9 +67,5 @@ public class CommonProxy implements IGuiHandler{
 
 	protected void addPacketToQueue(Packet250CustomPayload packet, EntityPlayer player) 
 	{
-        if (player instanceof EntityPlayerMP)
-        {
-        	((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(packet);
-        }
 	}
 }
