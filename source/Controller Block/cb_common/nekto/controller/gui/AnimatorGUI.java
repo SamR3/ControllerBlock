@@ -36,8 +36,16 @@ public class AnimatorGUI extends GuiContainer {
         String s = "Animator Block";
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
         int delay = ((ContainerAnimator)this.inventorySlots).getDelay()+2;
-        String value = Controller.tickDisplay?(delay) + "ticks":(delay)*0.05F + "s";
-        this.fontRenderer.drawString(value, this.xSize / 2 - this.fontRenderer.getStringWidth(value) / 2, 109, 0);
+        if(Controller.tickDisplay)
+        	s = (delay) + "ticks";
+        else
+        {
+        	s = Float.toString((delay)*0.05F);
+        	if(s.length()>3)
+        		s = s.substring(0, 4);
+        	s = s+ "s"; 
+        }
+        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 109, 0);
     }
 
 	@Override
