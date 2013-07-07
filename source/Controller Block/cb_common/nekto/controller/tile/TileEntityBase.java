@@ -54,7 +54,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     {
     	String name = Block.blocksList[data[0]].getUnlocalizedName().substring(5);
     	if(removed) 
-    	{
+    	{//addChatMessage
         	player.sendChatToPlayer("Removed from list " + name + " " + data[1] + " " + data[2] + " " + data[3] + " " + data[4]);
         } else 
         {

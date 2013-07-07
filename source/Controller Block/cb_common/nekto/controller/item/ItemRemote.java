@@ -47,7 +47,7 @@ public class ItemRemote extends ItemBase {
                 	else//It had data on a block that doesn't exist anymore
             		{
             			par1ItemStack.getTagCompound().removeTag(KEYTAG);
-            			player.sendChatToPlayer(MESSAGE_2);
+            			player.sendChatToPlayer(MESSAGE_2);//addChatMessage
             			return false;
             		}
                 }

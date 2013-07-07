@@ -8,6 +8,7 @@ import nekto.controller.item.ItemBase;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+//import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -44,6 +45,7 @@ public class AnimatorGUI extends GuiContainer {
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture("/mods/controller/textures/gui/controllergui.png");
+        //this.mc.renderEngine.func_110577_a(new ResourceLocation("/assets/controller/textures/gui/controllergui.png"));
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     }
     
