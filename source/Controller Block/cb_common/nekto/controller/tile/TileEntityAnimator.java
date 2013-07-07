@@ -20,6 +20,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     private Mode currMode = Mode.ORDER;
     private float orbRotation = 0;
     private float hoverHeight = 0;
+	private boolean removed;
 	
     public TileEntityAnimator()
     {
@@ -38,9 +39,10 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     	super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setInteger("frame", this.frame);
         par1NBTTagCompound.setInteger("delay", this.delay);
-        par1NBTTagCompound.setInteger("stop", this.max);
+        par1NBTTagCompound.setInteger("max", this.max);
         par1NBTTagCompound.setInteger("count", this.count);
         par1NBTTagCompound.setShort("mode", (short) this.getMode().ordinal());
+        par1NBTTagCompound.setBoolean("removed", this.removed);
         
         NBTTagList tags = new NBTTagList("frames");
         
@@ -63,9 +65,10 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
         int count = par1NBTTagCompound.getInteger("length");
         this.frame = par1NBTTagCompound.getInteger("frame");
         this.delay = par1NBTTagCompound.getInteger("delay");
-        this.max = par1NBTTagCompound.getInteger("stop");
+        this.max = par1NBTTagCompound.getInteger("max");
         this.count = par1NBTTagCompound.getInteger("count");
         this.setMode(Mode.values()[par1NBTTagCompound.getShort("mode")]);
+        this.removed = par1NBTTagCompound.getBoolean("removed");
         
         for(int i = 0; i < count; i++)
         {
@@ -159,7 +162,17 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
     public boolean isWaiting()
     {
-    	return this.max >= 0 && this.count >= this.max;
+    	return (this.max >= 0 && this.count >= this.max);
+    }
+    
+    public boolean hasRemoved()
+    {
+    	return this.removed;
+    }
+    
+    public void setRemoved(boolean rem)
+    {
+    	this.removed = rem;
     }
     
     public void setMaxFrame(int number)

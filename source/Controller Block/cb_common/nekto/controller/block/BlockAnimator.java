@@ -79,14 +79,15 @@ public class BlockAnimator extends BlockBase {
 		TileEntityAnimator tile = (TileEntityAnimator) par1World.getBlockTileEntity(par2, par3, par4);
 		//FMLLog.getLogger().info(tile.getDelay()+" ticked "+tile.getFrame());//DEBUG
 		boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
-		if(flag && !tile.isWaiting())
-        {
-        	if(tile.getFrame() < tile.getBaseList().size())
-        		previousFrame(par1World ,tile);
-    		nextFrame(par1World, tile);
-        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World) + tile.getDelay());//Here we loop the ticks
-        	tile.addToCount();
-        }	
+		if(!tile.isWaiting())
+			if(flag || tile.getFrame()!=0)
+	        {
+	        	if(tile.getFrame() < tile.getBaseList().size())
+	        		previousFrame(par1World ,tile);
+	    		nextFrame(par1World, tile);
+	        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World) + tile.getDelay());//Here we loop the ticks
+	        	tile.addToCount();
+	        }
     }
 
 	private void nextFrame(World par1World, TileEntityAnimator tile) 
@@ -136,27 +137,35 @@ public class BlockAnimator extends BlockBase {
 	{
 		if(powered)//Powered but previously not powered
     	{
-    		for(int frame = 0; frame < tile.getBaseList().size(); frame++) 			
-    		{
-    			if(((TileEntityAnimator)tile).getFrame()!=frame)
-    			{
-	    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).listIterator();
-	            	setActiveBlocks(par1World,itr);
-    			}
-    		}
-    		par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+((TileEntityAnimator)tile).getDelay());
+			if(!((TileEntityAnimator)tile).hasRemoved())
+			{
+	    		for(int frame = 0; frame < tile.getBaseList().size(); frame++) 			
+	    		{
+	    			if(((TileEntityAnimator)tile).getFrame()!=frame)
+	    			{
+		    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).listIterator();
+		            	setActiveBlocks(par1World,itr);	            	
+	    			}
+	    		}
+	    		((TileEntityAnimator)tile).setRemoved(true);
+			}
     	}
     	else//Not powered but previously powered
     	{
-    		if(((TileEntityAnimator)tile).getMode()==Mode.REVERSE)
-    			((TileEntityAnimator)tile).setFrame(tile.getBaseList().size()-1);	
-    		else
-    			((TileEntityAnimator)tile).setFrame(0);
-    		for(int frame = 0;frame < tile.getBaseList().size(); frame++)
+    		if(((TileEntityAnimator)tile).getMode()==Mode.ORDER || ((TileEntityAnimator)tile).getMode()==Mode.LOOP)
+    			((TileEntityAnimator)tile).setMode(Mode.REVERSE);
+    		else if(((TileEntityAnimator)tile).getMode()!=Mode.REVERSE)
     		{
-    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).listIterator();
-            	setUnactiveBlocks(par1World,itr);//Make all the blocks reappear
+	    		for(int frame = 0;frame < tile.getBaseList().size(); frame++)
+	    		{
+	    			Iterator itr = ((TileEntityAnimator)tile).getBaseList().get(frame).listIterator();
+	            	setUnactiveBlocks(par1World,itr);//Make all the blocks reappear 	
+	    		}
+	    		((TileEntityAnimator)tile).setRemoved(false);
+	    		((TileEntityAnimator)tile).setFrame(0);
     		}
     	}
+		if(powered || ((TileEntityAnimator)tile).getFrame() != 0)
+			par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World)+((TileEntityAnimator)tile).getDelay());
 	}
 }
