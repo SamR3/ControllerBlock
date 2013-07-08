@@ -7,6 +7,8 @@ import java.util.List;
 import nekto.controller.animator.Mode;
 import nekto.controller.item.ItemRemote;
 import nekto.controller.network.PacketHandler;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
@@ -31,7 +33,13 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	{	
 		return getBaseList().get(frame);
 	}
-
+	
+	@Override
+	protected String getListName()
+    {
+		return "frame "+(frame+1);
+	}  
+	
 	@Override
     public void writeToNBT(NBTTagCompound par1NBTTagCompound)
     {

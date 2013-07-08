@@ -50,19 +50,29 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 		return false;
 	}
 	
-    private static void sendMessage(EntityPlayer player, boolean removed, int[] data) 
+    private void sendMessage(EntityPlayer player, boolean removed, int[] data) 
     {
     	String name = Block.blocksList[data[0]].getUnlocalizedName().substring(5);
     	if(removed) 
     	{//addChatMessage
-        	player.sendChatToPlayer("Removed from list " + name + " " + data[1] + " " + data[2] + " " + data[3] + " " + data[4]);
+        	player.sendChatToPlayer("Removed "+ name + " from "+getListName()+dataAsString(data));
         } else 
         {
-        	player.sendChatToPlayer("Added to list " + name + " " + data[1] + " " +data[2] + " " + data[3] + " " + data[4]);
+        	player.sendChatToPlayer("Added "+ name + " to "+getListName()+dataAsString(data));
         }
 	}
 	
-    public void setState(boolean active)
+    private static String dataAsString(int[] data) 
+    {
+		return " ["+ data[1] + "," + data[2] + "," + data[3] + "] " + data[4];
+	}
+
+	protected String getListName()
+    {
+    	return "list";
+	}
+
+	public void setState(boolean active)
     {
         this.previousState = active;
     }
