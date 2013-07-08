@@ -33,12 +33,9 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class Controller {
 
     //Blocks
-    public static Block controllerBlock;
-    public static Block animator;
-    
+    public static Block controller,animator;
     //Items
-    public static Item controllerLinker;
-    public static Item remote;
+    public static Item linker,remote;
     
 	public static boolean tickDisplay;
     
@@ -58,22 +55,22 @@ public class Controller {
     public void load(FMLInitializationEvent event) 
     {
     	config.load();
-    	controllerBlock = new BlockController(config.get("block", "controller id", 500).getInt());
-    	controllerLinker = new ItemLinker(config.get("item", "linker id", 1000).getInt());
+    	controller = new BlockController(config.get("block", "controller id", 500).getInt());
+    	linker = new ItemLinker(config.get("item", "linker id", 1000).getInt());
     	animator = new BlockAnimator(config.get("block", "animator id", 501).getInt());
     	remote = new ItemRemote(config.get("item", "remote id", 1001).getInt());
     	tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
     	if(config.hasChanged())
     		config.save();
         
-        GameRegistry.registerBlock(controllerBlock, "controllerBlock");
-        GameRegistry.registerBlock(animator, "animatorBlock");
-        GameRegistry.registerItem(controllerLinker, "controllerLinker");
+        GameRegistry.registerBlock(controller, "controller");
+        GameRegistry.registerBlock(animator, "animator");
+        GameRegistry.registerItem(linker, "linker");
         GameRegistry.registerItem(remote, "remote");
         
-        LanguageRegistry.addName(controllerBlock, "Controller Block");
+        LanguageRegistry.addName(controller, "Controller");
         LanguageRegistry.addName(animator, "Animator");
-        LanguageRegistry.addName(controllerLinker, "Linker");
+        LanguageRegistry.addName(linker, "Linker");
         LanguageRegistry.addName(remote, "Remote");
         
         NetworkRegistry.instance().registerGuiHandler(this, proxy);

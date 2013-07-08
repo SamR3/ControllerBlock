@@ -17,7 +17,7 @@ public class BlockController extends BlockBase {
     public BlockController(int id)
     {
         super(id);
-        setUnlocalizedName("controllerBlock");
+        setUnlocalizedName("controller");
     }
 
     @Override

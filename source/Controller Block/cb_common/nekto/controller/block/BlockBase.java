@@ -22,8 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BlockBase extends BlockContainer{
 
-	protected Icon textureSide;
-	protected Icon textureTop;
+	protected Icon textureSide,textureTop;
 	protected BlockBase(int par1) 
 	{
 		super(par1, Material.rock);
@@ -37,10 +36,10 @@ public abstract class BlockBase extends BlockContainer{
     }
     
     @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister par1IconRegister)//Both controller and animator have temporarily same textures
+    public void registerIcons(IconRegister par1IconRegister)
     {
-        this.textureSide = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + "controller_side");
-        this.textureTop = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + "controller_top");
+        this.textureSide = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + getUnlocalizedName2() +"_side");
+        this.textureTop = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + getUnlocalizedName2() + "_top");
     }
     
     @Override

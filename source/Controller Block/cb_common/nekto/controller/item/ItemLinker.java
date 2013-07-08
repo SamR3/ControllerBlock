@@ -13,7 +13,7 @@ public class ItemLinker extends ItemBase {
     public ItemLinker(int id)
     {
         super(id);
-        setUnlocalizedName("controllerLinker");
+        setUnlocalizedName("linker");
     }
     
     @Override

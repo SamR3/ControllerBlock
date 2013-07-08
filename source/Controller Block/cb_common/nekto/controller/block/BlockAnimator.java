@@ -19,7 +19,7 @@ public class BlockAnimator extends BlockBase {
     public BlockAnimator(int id)
     {
         super(id);
-        setUnlocalizedName("animatorBlock");
+        setUnlocalizedName("animator");
     }
 
     @Override
