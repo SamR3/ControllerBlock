@@ -110,8 +110,6 @@ public abstract class BlockBase extends BlockContainer{
 	@Override
     public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
     {
-		if(!par1World.isRemote)
-		{
 		TileEntityBase tile = (TileEntityBase) par1World.getBlockTileEntity(par2, par3, par4);
     	boolean flag =par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
         if( tile.previousState!=flag)
@@ -120,7 +118,6 @@ public abstract class BlockBase extends BlockContainer{
         		onRedstoneChange(par1World, par2, par3, par4, par5, flag, tile);   	
         	tile.setState(flag);
         }
-		}
     }
 	protected abstract void onRedstoneChange(World par1World, int par2, int par3,
 			int par4, int par5, boolean powered, TileEntityBase tile);

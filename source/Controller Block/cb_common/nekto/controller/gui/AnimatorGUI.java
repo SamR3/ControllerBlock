@@ -5,7 +5,6 @@ import java.util.List;
 import nekto.controller.container.ContainerAnimator;
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
-import nekto.controller.network.PacketHandler;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -47,6 +46,7 @@ public class AnimatorGUI extends GuiContainer {
         	s = s+ "s"; 
         }
         this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 109, 0);
+        refreshButtonsText();
     }
 
 	@Override
@@ -73,7 +73,6 @@ public class AnimatorGUI extends GuiContainer {
         
         buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getMax()));
         buttonList.add(new GuiButton(6, guiLeft + 24, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
-        refreshButtonsText();
     }
     
     private void refreshButtonsText()
@@ -85,7 +84,8 @@ public class AnimatorGUI extends GuiContainer {
 
 	@Override
     protected void actionPerformed(GuiButton guibutton) 
-    {      
+    {
+    	super.actionPerformed(guibutton);
     	TileEntityAnimator animator = (TileEntityAnimator) ((ContainerAnimator)this.inventorySlots).getControl();
         
     	switch(guibutton.id)
@@ -100,8 +100,7 @@ public class AnimatorGUI extends GuiContainer {
             		for(int i = 0; i < data.length; i++)
             			cData[i + 1] = data[i];
             		
-            		PacketHandler.handleData(animator, player, cData);
-            		Controller.proxy.sendPacket(player, cData);
+            		Controller.proxy.sendGuiPacket(player, cData);
             		break;
             	}
             	else if(guibutton.id == 3)
@@ -109,11 +108,8 @@ public class AnimatorGUI extends GuiContainer {
             		break;
             	}
             default:
-                PacketHandler.handleData(animator, player, guibutton.id);
-                Controller.proxy.sendPacket(player, guibutton.id);
+                Controller.proxy.sendGuiPacket(player, guibutton.id);
                 break;
         }
-    	refreshButtonsText();
-    	super.actionPerformed(guibutton);
     }
 }

@@ -28,7 +28,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = GeneralRef.MOD_ID, name = GeneralRef.MOD_NAME, version = GeneralRef.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false , channels={GeneralRef.PACKET_CHANNEL}, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, serverSideRequired = false , channels={"Gui","Animator"}, packetHandler = PacketHandler.class)
 
 public class Controller {
 

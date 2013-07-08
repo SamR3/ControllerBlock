@@ -86,10 +86,10 @@ public class BlockAnimator extends BlockBase {
 	        		previousFrame(par1World ,tile);
 	    		nextFrame(par1World, tile);
 	        	par1World.scheduleBlockUpdate(par2, par3, par4, this.blockID, this.tickRate(par1World) + tile.getDelay());//Here we loop the ticks
-	        	tile.addToCount();
+	        	tile.setCount(tile.getCount()+1);
 	        }
 		if(!flag && tile.getFrame()==0)
-    		((TileEntityAnimator)tile).resetCount();
+    		((TileEntityAnimator)tile).setCount(0);
     }
 
 	private void nextFrame(World par1World, TileEntityAnimator tile) 

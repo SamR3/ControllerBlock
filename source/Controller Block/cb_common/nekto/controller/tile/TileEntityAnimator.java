@@ -6,10 +6,12 @@ import java.util.List;
 
 import nekto.controller.animator.Mode;
 import nekto.controller.item.ItemRemote;
+import nekto.controller.network.PacketHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.packet.Packet;
 
 public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
@@ -76,6 +78,12 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
             	list.add(((NBTTagIntArray)itr.next()).intArray);
             this.getBaseList().add(list);
         }
+    }
+    
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        return PacketHandler.getPacket(this);
     }
     
     @Override
@@ -180,13 +188,13 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     	return this.max;
     }
     
-    public void addToCount()
+    public int getCount()
     {
-    	this.count++;
+    	return this.count;
     }
     
-    public void resetCount()
+    public void setCount(int ct)
     {
-    	this.count = 0;
+    	this.count = ct;
     }
 }

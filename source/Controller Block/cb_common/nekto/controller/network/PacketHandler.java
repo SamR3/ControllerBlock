@@ -8,16 +8,21 @@ import java.io.IOException;
 
 import nekto.controller.animator.Mode;
 import nekto.controller.container.ContainerAnimator;
+import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
-import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
+
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -26,13 +31,44 @@ public class PacketHandler implements IPacketHandler{
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) 
 	{
-		if(packet.channel == GeneralRef.PACKET_CHANNEL)
+		if(packet.channel == GeneralRef.PACKET_CHANNELS[0])
 		{
-			this.handle(packet,(EntityPlayer) player);
+			this.handleGuiChange(packet,(EntityPlayer) player);
+		}
+		else if(packet.channel == GeneralRef.PACKET_CHANNELS[1])
+		{
+			this.handleDescriptionPacket(packet,(EntityPlayer) player);
 		}
 	}
 
-	private void handle(Packet250CustomPayload packet, EntityPlayer player) 
+	private void handleDescriptionPacket(Packet250CustomPayload packet, EntityPlayer player)
+	{
+		ByteArrayDataInput dat = ByteStreams.newDataInput(packet.data);
+        int x = dat.readInt();
+        int y = dat.readInt();
+        int z = dat.readInt();
+        World world = Controller.proxy.getClientWorld();
+        TileEntity te = world.getBlockTileEntity(x, y, z);
+        if (te instanceof TileEntityAnimator)
+        {
+            TileEntityAnimator animator = (TileEntityAnimator) te;
+            boolean editing = dat.readBoolean();
+            animator.setEditing(editing);
+            /*if(!editing && player.openContainer.getSlot(0).getHasStack())
+                resetRemote(player.openContainer.getSlot(0).getStack());*/
+            animator.setFrame(dat.readInt());
+            animator.setMaxFrame(dat.readInt());
+            animator.setCount(dat.readInt());
+            animator.setDelay(dat.readInt());
+            animator.setMode(Mode.values()[dat.readShort()]);
+        }
+        if(player.openContainer != null)
+		{
+        	player.openContainer.detectAndSendChanges();
+		}
+	}
+
+	private void handleGuiChange(Packet250CustomPayload packet, EntityPlayer player) 
 	{
 		DataInputStream inStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		int[] data = new int[packet.data.length/4];
@@ -87,10 +123,7 @@ public class PacketHandler implements IPacketHandler{
                     	resetAnimator(animator);
                     }
                     //Get the item and reset it
-                    ItemStack stack = player.openContainer.getSlot(0).getStack();
-                    ItemBase remote = (ItemBase)stack.getItem();
-                    remote.resetLinker();
-                    stack.getTagCompound().removeTag(ItemBase.KEYTAG);
+                    resetRemote(player.openContainer.getSlot(0).getStack());
                 }
                 break;
         	}
@@ -108,7 +141,7 @@ public class PacketHandler implements IPacketHandler{
     		animator.setFrame(animator.getFrame() + 1);
         	break;
 		}
-		player.openContainer.detectAndSendChanges();
+		Controller.proxy.sendDescriptionPacket(getPacket(animator),player);
 	}
 
 	public static void resetAnimator(TileEntityAnimator animator) 
@@ -117,31 +150,37 @@ public class PacketHandler implements IPacketHandler{
         animator.setMode(Mode.ORDER);
         animator.resetDelay();
         animator.setMaxFrame(-1);
-        animator.resetCount();
+        animator.setCount(0);
+	}
+	
+	public static void resetRemote(ItemStack stack)
+	{
+        ItemBase remote = (ItemBase)stack.getItem();
+        remote.resetLinker();
+        stack.getTagCompound().removeTag(ItemBase.KEYTAG);
 	}
 
-	public static <e> Packet getPacket(TileEntityBase<e> base) 
+	public static Packet getPacket(TileEntityAnimator animator) 
 	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(14);
-        DataOutputStream dos = new DataOutputStream(bos);
-        int x = base.xCoord;
-        int y = base.yCoord;
-        int z = base.zCoord;
-        boolean edit = base.isEditing();
-        boolean active = base.previousState;
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(31);
+        DataOutputStream dos = new DataOutputStream(bos);     
         try
         {
-            dos.writeInt(x);
-            dos.writeInt(y);
-            dos.writeInt(z);
-            dos.writeBoolean(edit);
-            dos.writeBoolean(active);
+            dos.writeInt(animator.xCoord);
+            dos.writeInt(animator.yCoord);
+            dos.writeInt(animator.zCoord);
+            dos.writeBoolean(animator.isEditing());
+            dos.writeInt(animator.getFrame());
+            dos.writeInt(animator.getMaxFrame());
+            dos.writeInt(animator.getCount());
+            dos.writeInt(animator.getDelay());
+            dos.writeShort(animator.getMode().ordinal());
         }
         catch (IOException e)
         {
         }
         Packet250CustomPayload pkt = new Packet250CustomPayload();
-        pkt.channel = GeneralRef.PACKET_CHANNEL;
+        pkt.channel = GeneralRef.PACKET_CHANNELS[1];
         pkt.data = bos.toByteArray();
         pkt.length = bos.size();
         pkt.isChunkDataPacket = true;

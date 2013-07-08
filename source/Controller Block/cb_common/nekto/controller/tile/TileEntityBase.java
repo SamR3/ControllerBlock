@@ -189,12 +189,6 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 
 	@Override
 	public void closeChest() {}
-	
-	@Override
-    public Packet getDescriptionPacket()
-    {
-        return PacketHandler.getPacket(this);
-    }
 
 	protected abstract List getBlockList();
 }
