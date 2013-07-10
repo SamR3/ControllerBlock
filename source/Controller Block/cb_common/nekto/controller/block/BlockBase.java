@@ -43,6 +43,22 @@ public abstract class BlockBase extends BlockContainer{
     }
     
     @Override
+    public int getLightValue(IBlockAccess world, int x, int y, int z)
+    {
+    	if(world instanceof World)
+    	{
+    		if(((World)world).isBlockIndirectlyGettingPowered(x, y, z))
+    		{
+    			return 15;
+    		}
+    		else
+    			return 8;
+    	}
+    	else
+    		return super.getLightValue(world, x, y, z);
+    }
+    
+    @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
     {
         return (side>=0 && side<=3);
