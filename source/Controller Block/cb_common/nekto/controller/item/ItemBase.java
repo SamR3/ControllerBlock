@@ -57,7 +57,7 @@ public abstract class ItemBase extends Item{
                 	else//It had data on a block that doesn't exist anymore
             		{
             			par1ItemStack.getTagCompound().removeTag(KEYTAG);
-            			player.sendChatToPlayer(MESSAGE_2);//addChatMessage
+            			player.sendChatToPlayer(MESSAGE_2);//see ChatMessageComponent static string method
             			return false;
             		}
                 }

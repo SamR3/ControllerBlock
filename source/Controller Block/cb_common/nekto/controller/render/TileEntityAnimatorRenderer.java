@@ -3,31 +3,33 @@ package nekto.controller.render;
 import nekto.controller.core.Controller;
 import nekto.controller.render.model.ModelAnimator2;
 import nekto.controller.tile.TileEntityAnimator;
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-//import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
+//import net.minecraft.client.resources.ResourceLocation;
 
 public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
 
     private final ModelAnimator2 model;
     //private static final ResourceLocation texture = new ResourceLocation("");
-    public TileEntityAnimatorRenderer() {
-            this.model = new ModelAnimator2();
+    public TileEntityAnimatorRenderer() 
+    {
+        this.model = new ModelAnimator2();
     }
     
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float scale) {
+    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float scale) 
+    {
         GL11.glPushMatrix();
         
-        TileEntityAnimator tileEntityYour = (TileEntityAnimator)tileEntity;
-        setLighting(tileEntityYour, tileEntity.worldObj, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
+        setLighting(tileEntity.worldObj, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
         
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTextureByName("");
@@ -37,25 +39,26 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
         
-        renderOrb(tileEntity);
+        renderOrb((TileEntityBase)tileEntity);
         
         GL11.glPopMatrix();
         
         GL11.glPopMatrix();
     }
     
-    private void renderOrb(TileEntity tile)
+    private void renderOrb(TileEntityBase tile)
     {
-        GL11.glRotatef(((TileEntityAnimator) tile).getRotation(), 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(tile.getRotation(), 0.0F, 1.0F, 0.0F);
         
-        float f2 = MathHelper.sin(((TileEntityAnimator) tile).getHoverHeight() / 10.0F) * 0.04F;
+        float f2 = MathHelper.sin(tile.getHoverHeight() / 10.0F) * 0.04F;
 
         GL11.glTranslatef(0.0F, f2, 0.0F);
         
         this.model.renderOrb(0.0625F);
     }
     
-    public void setLighting(TileEntityAnimator tl, World world, int i, int j, int k, Block block) {
+    public void setLighting(World world, int i, int j, int k, Block block) 
+    {
         Tessellator tessellator = Tessellator.instance;
         float f = block.getBlockBrightness(world, i, j, k);
         int l = world.getLightBrightnessForSkyBlocks(i, j, k, 0);

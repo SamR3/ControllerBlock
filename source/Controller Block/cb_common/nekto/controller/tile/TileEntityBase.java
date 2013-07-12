@@ -21,6 +21,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	private List<e> baseList;
 	private ItemBase linker = null;
 	private boolean editing;
+    private float orbRotation = 0, hoverHeight = 0;
 	
 	public TileEntityBase(int size)
     {
@@ -28,6 +29,30 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     	this.setBaseList(new ArrayList<e>());
     }
 
+	@Override
+    public void updateEntity()
+    {
+        this.hoverHeight += 3;
+        this.orbRotation += 3;
+        
+        if(this.orbRotation > 360)
+        {
+            this.orbRotation -= 360;
+        }
+        //Side side = FMLCommonHandler.instance().getEffectiveSide();
+        //FMLLog.getLogger().info((side==Side.CLIENT?"client has ":"server has ")+this.count+" frames done max is "+this.max);//DEBUG
+    }
+	
+	public float getRotation()
+    {
+        return this.orbRotation;
+    }
+    
+    public float getHoverHeight()
+    {
+        return this.hoverHeight;
+    }
+    
 	public void add(EntityPlayer player, int blockId, int x, int y, int z, int blockMetadata)
 	{
 		int[] temp = new int[]{blockId,x,y,z,blockMetadata};
@@ -54,7 +79,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     {
     	String name = Block.blocksList[data[0]].getUnlocalizedName().substring(5);
     	if(removed) 
-    	{//addChatMessage
+    	{//see ChatMessageComponent static string method
         	player.sendChatToPlayer("Removed "+ name + " from "+getListName()+dataAsString(data));
         } else 
         {

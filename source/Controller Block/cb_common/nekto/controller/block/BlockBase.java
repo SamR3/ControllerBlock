@@ -7,6 +7,7 @@ import nekto.controller.item.ItemLinker;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
 import nekto.controller.tile.TileEntityController;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -29,6 +30,17 @@ public abstract class BlockBase extends BlockContainer{
 		setCreativeTab(CreativeTabs.tabBlock);
     }
 
+	@SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
+    {
+       return false;
+    }
+	@SideOnly(Side.CLIENT)
+    public boolean isOpaqueCube()
+    {
+       return false;
+    }
+    
     @SideOnly(Side.CLIENT)
     public Icon getIcon(int par1, int par2)
     {

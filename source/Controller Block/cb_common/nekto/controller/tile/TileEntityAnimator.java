@@ -19,8 +19,6 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     
     private int frame = 0, delay = 0, count = 0, max = -1;
     private Mode currMode = Mode.ORDER;
-    private float orbRotation = 0;
-    private float hoverHeight = 0;
 	private boolean removed;
 	
     public TileEntityAnimator()
@@ -92,30 +90,6 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     public Packet getDescriptionPacket()
     {
         return PacketHandler.getPacket(this);
-    }
-    
-    @Override
-    public void updateEntity()
-    {
-        this.hoverHeight += 3;
-        this.orbRotation += 3;
-        
-        if(this.orbRotation > 360)
-        {
-            this.orbRotation -= 360;
-        }
-        //Side side = FMLCommonHandler.instance().getEffectiveSide();
-        //FMLLog.getLogger().info((side==Side.CLIENT?"client has ":"server has ")+this.count+" frames done max is "+this.max);//DEBUG
-    }
-    
-    public float getRotation()
-    {
-        return this.orbRotation;
-    }
-    
-    public float getHoverHeight()
-    {
-        return this.hoverHeight;
     }
 
 	@Override

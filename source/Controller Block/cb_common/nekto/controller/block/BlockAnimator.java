@@ -28,16 +28,6 @@ public class BlockAnimator extends BlockBase {
         return new TileEntityAnimator();
     }
     
-    public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
-    {
-       return false;
-    }
-
-    public boolean isOpaqueCube()
-    {
-       return false;
-    }
-    
     @Override
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {    

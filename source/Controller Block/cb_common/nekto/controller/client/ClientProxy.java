@@ -4,6 +4,7 @@ import nekto.controller.gui.AnimatorGUI;
 import nekto.controller.network.CommonProxy;
 import nekto.controller.render.TileEntityAnimatorRenderer;
 import nekto.controller.tile.TileEntityAnimator;
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -16,7 +17,7 @@ public class ClientProxy extends CommonProxy {
 
     public void registerRenderThings() 
     {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAnimator.class, new TileEntityAnimatorRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBase.class, new TileEntityAnimatorRenderer());
     }
     @Override
     protected void addPacketToQueue(Packet250CustomPayload packet, EntityPlayer player) 
