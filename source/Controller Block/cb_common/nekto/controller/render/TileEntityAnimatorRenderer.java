@@ -1,8 +1,8 @@
 package nekto.controller.render;
 
 import nekto.controller.core.Controller;
+import nekto.controller.ref.GeneralRef;
 import nekto.controller.render.model.ModelAnimator2;
-import nekto.controller.tile.TileEntityAnimator;
 import nekto.controller.tile.TileEntityBase;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -32,7 +32,7 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
         setLighting(tileEntity.worldObj, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
         
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTextureByName("");
+        bindTextureByName(GeneralRef.FULL_TEXTURE_PATH+((TileEntityBase)tileEntity).getTexture());
         //func_110628_a(texture);
         GL11.glPushMatrix();
         

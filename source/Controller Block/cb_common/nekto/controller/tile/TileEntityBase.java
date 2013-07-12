@@ -6,13 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import nekto.controller.item.ItemBase;
-import nekto.controller.network.PacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class TileEntityBase<e> extends TileEntity implements IInventory {
@@ -39,8 +37,6 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
         {
             this.orbRotation -= 360;
         }
-        //Side side = FMLCommonHandler.instance().getEffectiveSide();
-        //FMLLog.getLogger().info((side==Side.CLIENT?"client has ":"server has ")+this.count+" frames done max is "+this.max);//DEBUG
     }
 	
 	public float getRotation()
@@ -61,7 +57,12 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
         if(!removed)
         	getBlockList().add(temp);
 	}
-	
+	/**
+	 * Remove given int array from given Iterator
+	 * @param itr Iterator assuming it has int arrays
+	 * @param temp The int array to search and remove
+	 * @return true if given int array has been found and removed
+	 */
 	private static boolean removeFromList(Iterator itr,int[] temp)
 	{
 		while(itr.hasNext())
@@ -86,7 +87,11 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
         	player.sendChatToPlayer("Added "+ name + " to "+getListName()+dataAsString(data));
         }
 	}
-	
+	/**
+	 * Prints data with separator for easier to read messages
+	 * @param data
+	 * @return
+	 */
     private static String dataAsString(int[] data) 
     {
 		return " ["+ data[1] + "," + data[2] + "," + data[3] + "] " + data[4];
@@ -226,4 +231,9 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	public void closeChest() {}
 
 	protected abstract List getBlockList();
+/**
+ * TileEntity specific texture, to use in the TileEntity renderer
+ * @return Path of the texture to use (inside textures folder)
+ */
+	public abstract String getTexture();
 }

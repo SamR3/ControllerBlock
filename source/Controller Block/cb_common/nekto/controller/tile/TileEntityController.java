@@ -54,4 +54,9 @@ public class TileEntityController extends TileEntityBase<int[]> {
 		return i<getSizeInventory() && itemstack.getItem() instanceof ItemBlock;
 	}
 
+	@Override
+	public String getTexture()
+	{
+		return "blocks/controller_side.png";
+	}
 }

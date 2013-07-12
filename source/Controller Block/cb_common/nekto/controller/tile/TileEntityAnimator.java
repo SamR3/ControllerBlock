@@ -7,8 +7,6 @@ import java.util.List;
 import nekto.controller.animator.Mode;
 import nekto.controller.item.ItemRemote;
 import nekto.controller.network.PacketHandler;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
@@ -127,7 +125,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
     	while(getBaseList().size() <= i)
         	getBaseList().add(new ArrayList());
-         this.frame = i;
+        this.frame = i;
     }
 
 	public int getFrame() 
@@ -179,4 +177,10 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
     	this.count = ct;
     }
+
+	@Override
+	public String getTexture()
+	{
+		return "blocks/animator_side.png";
+	}
 }
