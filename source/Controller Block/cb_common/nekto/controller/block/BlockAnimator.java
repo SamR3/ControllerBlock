@@ -11,7 +11,6 @@ import nekto.controller.tile.TileEntityAnimator;
 import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockAnimator extends BlockBase {

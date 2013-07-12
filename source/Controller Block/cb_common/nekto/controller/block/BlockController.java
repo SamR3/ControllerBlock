@@ -3,12 +3,8 @@
  */
 package nekto.controller.block;
 
-import java.util.Iterator;
-
-import nekto.controller.item.ItemLinker;
 import nekto.controller.tile.TileEntityBase;
 import nekto.controller.tile.TileEntityController;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 

@@ -3,17 +3,13 @@ package nekto.controller.block;
 import java.util.Iterator;
 
 import nekto.controller.item.ItemBase;
-import nekto.controller.item.ItemLinker;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
-import nekto.controller.tile.TileEntityController;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
