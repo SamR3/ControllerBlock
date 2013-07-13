@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumMovingObjectType;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -32,55 +34,63 @@ public abstract class ItemBase extends Item{
     }
 	
 	@Override
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer player, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)
     {
-        if(!par3World.isRemote)
-        {
-        	TileEntityBase tempTile = null;
-        	if(isController(par4, par5, par6, par3World))
-        	{   
-            	tempTile = (TileEntityBase) par3World.getBlockTileEntity(par4, par5, par6);
-        	}
-            if(par1ItemStack.hasTagCompound() && par1ItemStack.stackTagCompound.hasKey(KEYTAG))
-            {
-            	int[] pos = null;
-            	if(this.link == null)
-                {
-                	pos = par1ItemStack.getTagCompound().getIntArray(KEYTAG);
-                	//Try to find the old controller block to set its linker
-                	if(isController(pos[0], pos[1], pos[2], par3World))
-                	{
-                		setItemVar(par3World, pos);
-                	}
-                	else//It had data on a block that doesn't exist anymore
-            		{
-            			par1ItemStack.getTagCompound().removeTag(KEYTAG);
-            			player.sendChatToPlayer(MESSAGE_2);//see ChatMessageComponent static string method
-            			return false;
-            		}
-                }
-                if(tempTile != null)
-            	{   
-                    if(!onControlUsed(tempTile, player, par4, par5, par6, par1ItemStack))
-                    	player.sendChatToPlayer(MESSAGE_3);
-                	//Another player might be editing, let's avoid any issue and do nothing.
-                }
-                else if(!par3World.isAirBlock(par4, par5, par6))
-                {
-                	onBlockSelected(player, par3World.getBlockId(par4, par5, par6), par4, par5, par6, par3World.getBlockMetadata(par4, par5, par6));   
-                } 
-            }   
-            else if(isController(par4, par5, par6, par3World) && ((TileEntityBase) par3World.getBlockTileEntity(par4, par5, par6)).getLinker() == null)           
-            {
-            	player.sendChatToPlayer(MESSAGE_1 + par4 + ", " + par5 + ", " + par6);
-        		this.link = (TileEntityBase) par3World.getBlockTileEntity(par4, par5, par6);
-        		this.link.setLinker(this);
-            	setEditAndTag(getStartData(par4, par5, par6), par1ItemStack);
-            }
-            else
-            	player.sendChatToPlayer(MESSAGE_0+MESSAGE_4);
-        }
-        return false;
+		if(!world.isRemote)
+		{
+	        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, true);
+	
+	        if (movingobjectposition != null && movingobjectposition.typeOfHit == EnumMovingObjectType.TILE)
+	        {
+	            int i = movingobjectposition.blockX;
+	            int j = movingobjectposition.blockY;
+	            int k = movingobjectposition.blockZ;
+	        	TileEntityBase tempTile = null;
+	        	if(isController(i, j, k, world))
+	        	{   
+	            	tempTile = (TileEntityBase) world.getBlockTileEntity(i, j, k);
+	        	}
+	            if(itemStack.hasTagCompound() && itemStack.stackTagCompound.hasKey(KEYTAG))
+	            {
+	            	int[] pos = null;
+	            	if(this.link == null)
+	                {
+	                	pos = itemStack.getTagCompound().getIntArray(KEYTAG);
+	                	//Try to find the old controller block to set its linker
+	                	if(isController(pos[0], pos[1], pos[2], world))
+	                	{
+	                		setItemVar(world, pos);
+	                	}
+	                	else//It had data on a block that doesn't exist anymore
+	            		{
+	            			itemStack.getTagCompound().removeTag(KEYTAG);
+	        				player.sendChatToPlayer(MESSAGE_2);//see ChatMessageComponent static string method
+	            			return itemStack;
+	            		}
+	                }
+	                if(tempTile != null)
+	            	{   
+	                    if(!onControlUsed(tempTile, player, i, j, k, itemStack))
+	                    	player.sendChatToPlayer(MESSAGE_3);
+	                	//Another player might be editing, let's avoid any issue and do nothing.
+	                }
+	                else if(!world.isAirBlock(i, j, k))
+	                {
+	                	onBlockSelected(player, world.getBlockId(i, j, k), i, j, k, world.getBlockMetadata(i, j, k));   
+	                } 
+	            }   
+	            else if(isController(i, j, k, world) && ((TileEntityBase) world.getBlockTileEntity(i, j, k)).getLinker() == null)           
+	            {
+	            	player.sendChatToPlayer(MESSAGE_1 + i + ", " + j + ", " + k);
+	        		this.link = (TileEntityBase) world.getBlockTileEntity(i, j, k);
+	        		this.link.setLinker(this);
+	            	setEditAndTag(getStartData(i, j, k), itemStack);
+	            }
+	            else
+	            	player.sendChatToPlayer(MESSAGE_0+MESSAGE_4);
+	        }
+		}
+        return itemStack;
     }
 	
 	protected int[] getStartData(int par4, int par5, int par6) 
