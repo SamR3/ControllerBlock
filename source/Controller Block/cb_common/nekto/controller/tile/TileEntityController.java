@@ -57,6 +57,6 @@ public class TileEntityController extends TileEntityBase<int[]> {
 	@Override
 	public String getTexture()
 	{
-		return "blocks/controller_side.png";
+		return "models/controller.png";
 	}
 }

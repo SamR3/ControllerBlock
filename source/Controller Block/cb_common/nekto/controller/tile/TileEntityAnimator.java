@@ -181,6 +181,6 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	@Override
 	public String getTexture()
 	{
-		return "blocks/animator_side.png";
+		return "models/animator.png";
 	}
 }
