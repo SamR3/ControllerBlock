@@ -14,6 +14,7 @@ import nekto.controller.tile.TileEntityAnimator;
 import nekto.controller.tile.TileEntityController;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -67,6 +68,11 @@ public class Controller {
         GameRegistry.registerBlock(animator, "animator");
         GameRegistry.registerItem(linker, "linker");
         GameRegistry.registerItem(remote, "remote");
+        GameRegistry.addRecipe(new ItemStack(animator), new Object[]
+        		{"IPI","DRE","TBW",
+        	'I',Block.oreIron,'P',Item.enderPearl,
+        	'D',Item.diamond,'R',Block.blockRedstone,'E',Item.emerald,
+        	'T',Block.enchantmentTable,'B',Item.book,'W',Block.workbench});
         
         LanguageRegistry.addName(controller, "Controller");
         LanguageRegistry.addName(animator, "Animator");
