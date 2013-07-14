@@ -48,12 +48,22 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     {
         return this.hoverHeight;
     }
-    
-	public void add(EntityPlayer player, int blockId, int x, int y, int z, int blockMetadata)
+    /**
+     * Add or remove block from list given by {@link #getBlockList()}
+     * @param player The player sending the command
+     * @param blockId From {@link World#getBlockId(int,int,int)}
+     * @param x
+     * @param y
+     * @param z
+     * @param blockMetadata From {@link World#getBlockMetadata(int,int,int)}
+     * @param send If message should be sent to the player chat
+     */
+	public void add(EntityPlayer player, int blockId, int x, int y, int z, int blockMetadata, boolean send)
 	{
 		int[] temp = new int[]{blockId,x,y,z,blockMetadata};
 		boolean removed = removeFromList(getBlockList().listIterator(), temp);
-		sendMessage(player,removed,temp);
+		if(send)
+			sendMessage(player,removed,temp);
         if(!removed)
         	getBlockList().add(temp);
 	}
@@ -78,13 +88,12 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	
     private void sendMessage(EntityPlayer player, boolean removed, int[] data) 
     {
-    	String name = Block.blocksList[data[0]].getUnlocalizedName().substring(5);
     	if(removed) 
     	{//see ChatMessageComponent static string method
-        	player.sendChatToPlayer("Removed "+ name + " from "+getListName()+dataAsString(data));
+        	player.sendChatToPlayer("Removed "+dataAsString(data)+ " from "+getListName());
         } else 
         {
-        	player.sendChatToPlayer("Added "+ name + " to "+getListName()+dataAsString(data));
+        	player.sendChatToPlayer("Added "+dataAsString(data)+ " to "+getListName());
         }
 	}
 	/**
@@ -94,7 +103,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	 */
     private static String dataAsString(int[] data) 
     {
-		return " ["+ data[1] + "," + data[2] + "," + data[3] + "] " + data[4];
+		return  Block.blocksList[data[0]].getUnlocalizedName().substring(5)+data[4]+" ["+ data[1] + "," + data[2] + "," + data[3] + "] " ;
 	}
 
 	protected String getListName()
