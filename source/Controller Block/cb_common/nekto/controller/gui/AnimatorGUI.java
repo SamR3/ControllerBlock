@@ -45,7 +45,7 @@ public class AnimatorGUI extends GuiContainer {
         		s = s.substring(0, 4);
         	s = s+ "s"; 
         }
-        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 109, 0);
+        this.fontRenderer.drawString(s, 131 - this.fontRenderer.getStringWidth(s) / 2, 87, 0);
         refreshButtonsText();
     }
 
@@ -62,17 +62,17 @@ public class AnimatorGUI extends GuiContainer {
     public void initGui() 
     {
         super.initGui();
-        //id, x, y, width, height, text
-        buttonList.add(new GuiButton(0, guiLeft + 109, guiTop + 105, 16, 15, "+"));
-        buttonList.add(new GuiButton(1, guiLeft + 51, guiTop + 105, 16, 15, "-"));
+        //id, x, y, width, height, textr
+        buttonList.add(new GuiButton(0, guiLeft + 149, guiTop + 81, 19, 20, "+"));
+        buttonList.add(new GuiButton(1, guiLeft + 96, guiTop + 81, 19, 20, "-"));
 
-        buttonList.add(new GuiButton(2, guiLeft + 32, guiTop + 74, 60, 20, ((ContainerAnimator)this.inventorySlots).getMode()));
+        buttonList.add(new GuiButton(2, guiLeft + 10, guiTop + 81, 82, 20, ((ContainerAnimator)this.inventorySlots).getMode()));
         
-        buttonList.add(new GuiButton(3, guiLeft + 39, guiTop + 19, 60, 20, "Reset Link"));
-        buttonList.add(new GuiButton(4, guiLeft + 100, guiTop + 19, 70, 20, "Forced Reset"));
+        buttonList.add(new GuiButton(3, guiLeft + 32, guiTop + 19, 60, 20, "Reset Link"));
+        buttonList.add(new GuiButton(4, guiLeft + 96, guiTop + 19, 70, 20, "Force Reset"));
         
         buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getMax()));
-        buttonList.add(new GuiButton(6, guiLeft + 24, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
+        buttonList.add(new GuiButton(6, guiLeft + 10, guiTop + 50, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
     }
     
     private void refreshButtonsText()

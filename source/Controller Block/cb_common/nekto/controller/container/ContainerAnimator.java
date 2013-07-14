@@ -19,7 +19,7 @@ public class ContainerAnimator extends ContainerBase {
 		this.oldFrame = tile.getFrame();
 		this.oldMax = tile.getMaxFrame();
 		//Adding animator slots
-		addSlotToContainer(new ControllerSlot(tile, 0, 19, 21));
+		addSlotToContainer(new ControllerSlot(tile, 0, 11, 21));
 		//Adding player inventory
 		addPlayerInventory(inventory);
 	}

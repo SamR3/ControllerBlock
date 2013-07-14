@@ -63,6 +63,6 @@ public class ContainerBase extends Container{
 				addSlotToContainer(new Slot(inventory, k + i * 9 + 9, 8 + k * 18, 84 + i * 18));*/
 	    
 		for(int j = 0; j < 9; j++)
-		    addSlotToContainer(new Slot(inventory, j, 8 + j * 18, 140));
+		    addSlotToContainer(new Slot(inventory, j, 8 + j * 18, 114));
 	}
 }
