@@ -1,6 +1,7 @@
 package nekto.controller.item;
 
 import java.util.List;
+import java.util.Arrays;
 
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
@@ -25,6 +26,10 @@ public abstract class ItemBase extends Item{
     public String MESSAGE_2="Unlinked from "+getControlName()+".";
 	public String MESSAGE_3=getControlName()+" is already linked to another "+toString()+".";
 	public String MESSAGE_4="Right click on a "+getControlName()+" block to begin linking.";
+	public final static String MESSAGE_5="Added first corner to selection at ";
+	public final static String MESSAGE_6="Selection finished.";
+	public final static String MESSAGE_7="Removed corner from selection";
+	public int[] corner = null;
 	
 	public ItemBase(int id)
     {
@@ -76,7 +81,7 @@ public abstract class ItemBase extends Item{
 	                }
 	                else if(!world.isAirBlock(i, j, k))
 	                {
-	                	onBlockSelected(player, world.getBlockId(i, j, k), i, j, k, world.getBlockMetadata(i, j, k));   
+	                	onBlockSelected(player,world, world.getBlockId(i, j, k), i, j, k, world.getBlockMetadata(i, j, k));   
 	                } 
 	            }   
 	            else if(isController(i, j, k, world) && ((TileEntityBase) world.getBlockTileEntity(i, j, k)).getLinker() == null)           
@@ -103,18 +108,62 @@ public abstract class ItemBase extends Item{
  * @param id blockID from {@link World#getBlockId(int, int, int)}
  * @param meta block metadata {@link World#getBlockMetadata(int, int, int)}
  */
-	protected void onBlockSelected(EntityPlayer player, int id, int par4, int par5, int par6, int meta) 
+	protected void onBlockSelected(EntityPlayer player, World world, int id, int par4, int par5, int par6, int meta) 
 	{
     	this.link.setEditing(true);
-    	if(player.capabilities.isCreativeMode)
+    	if(player.capabilities.isCreativeMode || id != 7/*bedrock case out*/)
         {
-            this.link.add(player, id, par4, par5, par6, meta);
-        } 
-        else if (id != 7)
-        {//Bedrock case removed
-            this.link.add(player, id, par4, par5, par6, meta);             
+    		if(!player.isSneaking())
+    			this.link.add(player, id, par4, par5, par6, meta, true);
+    		else
+    		{
+    			if(corner == null)
+    			{
+    				corner = new int[]{par4,par5,par6};
+    				player.sendChatToPlayer(MESSAGE_5+ par4 + ", " + par5 + ", " + par6);
+    			}
+    			else 
+    			{
+    				if(!Arrays.areEqual(corner, new int[]{par4,par5,par6}))
+    				{
+	    				onMultipleSelection(player, world, corner, new int[]{par4,par5,par6});
+	    				player.sendChatToPlayer(MESSAGE_6);
+    				}
+    				else
+    					player.sendChatToPlayer(MESSAGE_7);
+    				corner = null;
+    			}
+    		}
         }
 	}
+	/**
+	 * Fired if player is sneaking and selected two different corner blocks
+	 * @param corner the first selected block position
+	 * @param endCorner the second selected block position
+	 */
+	private void onMultipleSelection(EntityPlayer player, World world, int[] corner, int[] endCorner) 
+	{
+		int temp = 0;
+		//Sort the corners
+		for(int i=0; i<corner.length; i++)
+		{
+			if(corner[i] > endCorner[i])
+			{
+				temp = corner[i];
+				corner[i] = endCorner[i];
+				endCorner[i] = temp;
+			}
+		}
+		//Corner is now minimum, endCorner is maximum
+		for(int x=corner[0]; x<=endCorner[0]; x++)
+			for(int y=corner[1]; y<=endCorner[1]; y++)
+				for(int z=corner[2]; z<=endCorner[2];z++)
+				{
+					if(!world.isAirBlock(x, y, z))
+						this.link.add(player, world.getBlockId(x, y, z), x, y, z, world.getBlockMetadata(x, y, z), false);
+				}
+	}
+
 /**
  * Fired if link is null but item has NBTTag data pointing to a valid control
  * @param world

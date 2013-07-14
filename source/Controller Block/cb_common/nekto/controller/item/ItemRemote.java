@@ -24,10 +24,10 @@ public class ItemRemote extends ItemBase {
     }
     
     @Override
-    protected void onBlockSelected(EntityPlayer player, int id, int par4, int par5, int par6, int meta) 
+    protected void onBlockSelected(EntityPlayer player, World world, int id, int par4, int par5, int par6, int meta) 
 	{
     	((TileEntityAnimator) this.link).setFrame(this.frame);
-    	super.onBlockSelected(player, id, par4, par5, par6, meta);
+    	super.onBlockSelected(player, world, id, par4, par5, par6, meta);
 	}
     
     @Override
