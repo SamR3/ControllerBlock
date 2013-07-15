@@ -124,7 +124,7 @@ public abstract class ItemBase extends Item{
     			}
     			else 
     			{
-    				if(!Arrays.areEqual(corner, new int[]{par4,par5,par6}))
+    				if(!Arrays.equals(corner, new int[]{par4,par5,par6}))
     				{
 	    				onMultipleSelection(player, world, corner, new int[]{par4,par5,par6});
 	    				player.sendChatToPlayer(MESSAGE_6);
