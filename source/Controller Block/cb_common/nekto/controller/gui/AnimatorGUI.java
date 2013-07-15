@@ -1,16 +1,20 @@
 package nekto.controller.gui;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.util.List;
 
 import nekto.controller.container.ContainerAnimator;
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
+import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet250CustomPayload;
 
 import org.lwjgl.opengl.GL11;
 
@@ -21,13 +25,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class AnimatorGUI extends GuiContainer {
 
-    private EntityPlayer player;
     private List<GuiButton> frameButtons;
 
     public AnimatorGUI(InventoryPlayer par1InventoryPlayer, TileEntityAnimator par2TileEntity)
     {
         super(new ContainerAnimator(par1InventoryPlayer, par2TileEntity));
-        this.player = par1InventoryPlayer.player;
     }
     
     @Override
@@ -62,7 +64,7 @@ public class AnimatorGUI extends GuiContainer {
     public void initGui() 
     {
         super.initGui();
-        //id, x, y, width, height, textr
+        //id, x, y, width, height, text
         buttonList.add(new GuiButton(0, guiLeft + 149, guiTop + 81, 19, 20, "+"));
         buttonList.add(new GuiButton(1, guiLeft + 96, guiTop + 81, 19, 20, "-"));
 
@@ -87,7 +89,7 @@ public class AnimatorGUI extends GuiContainer {
     {
     	super.actionPerformed(guibutton);
     	TileEntityAnimator animator = (TileEntityAnimator) ((ContainerAnimator)this.inventorySlots).getControl();
-        
+        Packet packet = null;
     	switch(guibutton.id)
     	{
     	    case 3: case 4://One of the "Reset" button has been pressed
@@ -100,7 +102,7 @@ public class AnimatorGUI extends GuiContainer {
             		for(int i = 0; i < data.length; i++)
             			cData[i + 1] = data[i];
             		
-            		Controller.proxy.sendGuiPacket(player, cData);
+            		packet = getGuiPacket(cData);
             		break;
             	}
             	else if(guibutton.id == 3)
@@ -108,8 +110,30 @@ public class AnimatorGUI extends GuiContainer {
             		break;
             	}
             default:
-                Controller.proxy.sendGuiPacket(player, guibutton.id);
+                packet = getGuiPacket(guibutton.id);
                 break;
         }
+    	if(packet!=null)
+    		this.mc.getNetHandler().addToSendQueue(packet);
     }
+
+	private static Packet getGuiPacket(int... data) 
+	{
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(4*data.length);
+		DataOutputStream outputStream = new DataOutputStream(bos);
+		try 
+		{
+			for(int d:data)
+				outputStream.writeInt(d);
+		} 
+		catch (Exception ex) 
+		{
+			ex.printStackTrace();
+		}
+		Packet250CustomPayload packet = new Packet250CustomPayload();
+		packet.channel = GeneralRef.PACKET_CHANNELS[0];
+		packet.data = bos.toByteArray();
+		packet.length = bos.size();
+		return packet;
+	}
 }

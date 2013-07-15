@@ -13,6 +13,7 @@ import nekto.controller.item.ItemBase;
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -32,16 +33,23 @@ public class PacketHandler implements IPacketHandler{
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) 
 	{
 		if(packet.channel == GeneralRef.PACKET_CHANNELS[0])
-		{
-			this.handleGuiChange(packet,(EntityPlayer) player);
+		{//Sent by AnimatorGUI to server when a button has been activated
+			handleGuiChange(packet,(EntityPlayer) player);
 		}
 		else if(packet.channel == GeneralRef.PACKET_CHANNELS[1])
-		{
-			this.handleDescriptionPacket(packet,(EntityPlayer) player);
+		{//Sent by server to client
+			handleDescriptionPacket(packet,(EntityPlayer) player);
 		}
+		//DEBUG:
+		/*Side side = FMLCommonHandler.instance().getEffectiveSide();
+		FMLLog.getLogger().info(side.toString()+" recieved a "+packet.channel +" packet");*/
 	}
-
-	private void handleDescriptionPacket(Packet250CustomPayload packet, EntityPlayer player)
+/**
+ * Client method to handle a packet describing the TileEntityAnimator from server
+ * @param packet
+ * @param player
+ */
+	private static void handleDescriptionPacket(Packet250CustomPayload packet, EntityPlayer player)
 	{
 		ByteArrayDataInput dat = ByteStreams.newDataInput(packet.data);
         int x = dat.readInt();
@@ -54,21 +62,21 @@ public class PacketHandler implements IPacketHandler{
             TileEntityAnimator animator = (TileEntityAnimator) te;
             boolean editing = dat.readBoolean();
             animator.setEditing(editing);
-            /*if(!editing && player.openContainer.getSlot(0).getHasStack())
-                resetRemote(player.openContainer.getSlot(0).getStack());*/
+            if(!editing && animator.getStackInSlot(0)!=null)
+                resetRemote(animator.getStackInSlot(0));
             animator.setFrame(dat.readInt());
             animator.setMaxFrame(dat.readInt());
             animator.setCount(dat.readInt());
             animator.setDelay(dat.readInt());
             animator.setMode(Mode.values()[dat.readShort()]);
         }
-        if(player.openContainer != null)
-		{
-        	player.openContainer.detectAndSendChanges();
-		}
 	}
-
-	private void handleGuiChange(Packet250CustomPayload packet, EntityPlayer player) 
+/**
+ * Server method to handle a client action in AnimatorGUI
+ * @param packet
+ * @param player
+ */
+	private static void handleGuiChange(Packet250CustomPayload packet, EntityPlayer player) 
 	{
 		DataInputStream inStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		int[] data = new int[packet.data.length/4];
@@ -84,7 +92,8 @@ public class PacketHandler implements IPacketHandler{
 		}
 		if(player.openContainer instanceof ContainerAnimator)
 		{
-			handleData((TileEntityAnimator) ((ContainerAnimator)player.openContainer).getControl(),player,data);	
+			handleData((TileEntityAnimator) ((ContainerAnimator)player.openContainer).getControl(),player,data);
+			player.openContainer.detectAndSendChanges();
 		}
 	}
 
@@ -141,7 +150,7 @@ public class PacketHandler implements IPacketHandler{
     		animator.setFrame(animator.getFrame() + 1);
         	break;
 		}
-		Controller.proxy.sendDescriptionPacket(getPacket(animator),player);
+		((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(getPacket(animator));
 	}
 
 	public static void resetAnimator(TileEntityAnimator animator) 
