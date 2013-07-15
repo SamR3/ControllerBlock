@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class TileEntityBase<e> extends TileEntity implements IInventory {
@@ -158,6 +159,18 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     	par1NBTTagCompound.setInteger("length", getBaseList().size());
         par1NBTTagCompound.setBoolean("active", this.previousState);
         par1NBTTagCompound.setBoolean("edit", this.isEditing());
+        NBTTagList list = new NBTTagList();
+        for (int i = 0; i < this.items.length; ++i)
+        {
+            if (this.items[i] != null)
+            {
+                NBTTagCompound compound = new NBTTagCompound();
+                compound.setByte("Slot", (byte)i);
+                this.items[i].writeToNBT(compound);
+                list.appendTag(compound);
+            }
+        }
+        par1NBTTagCompound.setTag("Items", list);
     }
     
     @Override
@@ -167,6 +180,17 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
         this.previousState = par1NBTTagCompound.getBoolean("active");
         this.setEditing(par1NBTTagCompound.getBoolean("edit"));
     	this.getBaseList().clear();
+    	NBTTagList list = par1NBTTagCompound.getTagList("Items");
+        this.items = new ItemStack[this.getSizeInventory()];
+        for (int i = 0; i < list.tagCount(); ++i)
+        {
+            NBTTagCompound compound = (NBTTagCompound)list.tagAt(i);
+            int j = compound.getByte("Slot") & 255;
+            if (j >= 0 && j < this.items.length)
+            {
+                this.items[j] = ItemStack.loadItemStackFromNBT(compound);
+            }
+        }
     }
     
 	@Override
