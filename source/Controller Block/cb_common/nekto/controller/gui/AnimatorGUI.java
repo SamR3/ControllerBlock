@@ -90,29 +90,32 @@ public class AnimatorGUI extends GuiContainer {
     	super.actionPerformed(guibutton);
     	TileEntityAnimator animator = (TileEntityAnimator) ((ContainerAnimator)this.inventorySlots).getControl();
         Packet packet = null;
+        int[] data = null;
     	switch(guibutton.id)
     	{
     	    case 3: case 4://One of the "Reset" button has been pressed
             	ItemStack stack = this.inventorySlots.getSlot(0).getStack();
             	if(stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
             	{
-            		int[] data = stack.getTagCompound().getIntArray(ItemBase.KEYTAG);
-            		int[] cData = new int[1+data.length];
-            		cData[0] = guibutton.id;
-            		for(int i = 0; i < data.length; i++)
-            			cData[i + 1] = data[i];
-            		
-            		packet = getGuiPacket(cData);
-            		break;
-            	}
-            	else if(guibutton.id == 3)
-            	{//This means if there wasn't an item, and full reset button was pressed, it falls back to sending the button id
+            		data = stack.getTagCompound().getIntArray(ItemBase.KEYTAG);
             		break;
             	}
             default:
-                packet = getGuiPacket(guibutton.id);
                 break;
         }
+    	if(data!=null)
+    	{
+	    	int[] cData = new int[4+data.length];
+			cData[0] = guibutton.id;
+			cData[1] = animator.xCoord;
+			cData[2] = animator.yCoord;
+			cData[3] = animator.zCoord;
+			for(int i = 0; i < data.length; i++)
+				cData[i + 4] = data[i];
+	    	packet = getGuiPacket(cData);
+    	}
+    	else
+    		packet = getGuiPacket(new int[]{guibutton.id, animator.xCoord, animator.yCoord, animator.zCoord});
     	if(packet!=null)
     		this.mc.getNetHandler().addToSendQueue(packet);
     }

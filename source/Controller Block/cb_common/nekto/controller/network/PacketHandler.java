@@ -55,18 +55,17 @@ public class PacketHandler implements IPacketHandler{
         int x = dat.readInt();
         int y = dat.readInt();
         int z = dat.readInt();
-        World world = Controller.proxy.getClientWorld();
-        TileEntity te = world.getBlockTileEntity(x, y, z);
+        TileEntity te = player.worldObj.getBlockTileEntity(x, y, z);
         if (te instanceof TileEntityAnimator)
         {
             TileEntityAnimator animator = (TileEntityAnimator) te;
-            boolean editing = dat.readBoolean();
-            animator.setEditing(editing);
-            if(!editing && animator.getStackInSlot(0)!=null)
+            animator.setEditing(dat.readBoolean());
+            if(!animator.isEditing() && animator.getStackInSlot(0)!=null)
                 resetRemote(animator.getStackInSlot(0));
             animator.setFrame(dat.readInt());
             animator.setMaxFrame(dat.readInt());
             animator.setCount(dat.readInt());
+            animator.resetDelay();
             animator.setDelay(dat.readInt());
             animator.setMode(Mode.values()[dat.readShort()]);
         }
@@ -90,10 +89,11 @@ public class PacketHandler implements IPacketHandler{
             e.printStackTrace();
             return;
 		}
-		if(player.openContainer instanceof ContainerAnimator)
+		TileEntity tile = player.worldObj.getBlockTileEntity(data[1], data[2], data[3]);
+		if(tile instanceof TileEntityAnimator)
 		{
-			handleData((TileEntityAnimator) ((ContainerAnimator)player.openContainer).getControl(),player,data);
-			player.openContainer.detectAndSendChanges();
+			handleData((TileEntityAnimator) tile,player,data);
+			player.worldObj.markBlockForUpdate(data[1], data[2], data[3]);
 		}
 	}
 
@@ -119,30 +119,15 @@ public class PacketHandler implements IPacketHandler{
             break;
         case 3:
         case 4://One of the "Reset" button has been pressed
-        	if(data.length > 1)//We got data from the item in slot
-        	{
-                TileEntity ent = player.worldObj.getBlockTileEntity(data[1], data[2], data[3]);
-                if(ent != null && ent instanceof TileEntityAnimator)
-                {//We change the animator to the one pointed by the item
-                    animator = (TileEntityAnimator) ent;
-                    animator.setEditing(false);
-                    animator.setLinker(null);
-                    if(data[0]==4)//This is a full reset
-                    {
-                    	resetAnimator(animator);
-                    }
-                    //Get the item and reset it
-                    resetRemote(player.openContainer.getSlot(0).getStack());
-                }
-                break;
-        	}
-        	else//No item, so it falls back to full reset
-        	{
-        		animator.setEditing(false);
+                animator.setEditing(false);
                 animator.setLinker(null);
-                resetAnimator(animator);
-        	}
-        	break;
+                if(data[0]==4)//This is a full reset
+                {
+                	resetAnimator(animator);
+                }
+                if(data.length > 4)//Get the item and reset it
+                	resetRemote(player.openContainer.getSlot(0).getStack());
+                break;
         case 5://Increment Max number of frames that will run
         	animator.setMaxFrame(animator.getMaxFrame() + 1);
 			break;
@@ -150,7 +135,7 @@ public class PacketHandler implements IPacketHandler{
     		animator.setFrame(animator.getFrame() + 1);
         	break;
 		}
-		((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(getPacket(animator));
+		//((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(getPacket(animator));
 	}
 
 	public static void resetAnimator(TileEntityAnimator animator) 
