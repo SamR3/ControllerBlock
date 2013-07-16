@@ -140,6 +140,7 @@ public abstract class BlockBase extends BlockContainer{
         	if(tile.getBaseList().size()>0)
         		onRedstoneChange(par1World, par2, par3, par4, par5, flag, tile);   	
         	tile.setState(flag);
+        	par1World.markBlockForUpdate(par2, par3, par4);
         }
     }
 	protected abstract void onRedstoneChange(World par1World, int par2, int par3,
