@@ -7,6 +7,7 @@ import java.util.Random;
 import nekto.controller.animator.Mode;
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemRemote;
+import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityAnimator;
 import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,7 +36,7 @@ public class BlockAnimator extends BlockBase {
 	        if(!par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))//We don't want to enable any changes when block is powered
 	        {
 	        	if(!par1World.isRemote && par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityAnimator)
-	        		par5EntityPlayer.openGui(Controller.instance, Controller.proxy.GUI_ID, par1World, par2, par3, par4);
+	        		par5EntityPlayer.openGui(Controller.instance, GeneralRef.GUI_ID, par1World, par2, par3, par4);
 	        	return true;
 	        }
         }

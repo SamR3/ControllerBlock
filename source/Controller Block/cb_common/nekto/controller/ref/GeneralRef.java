@@ -14,6 +14,8 @@ public class GeneralRef {
     public static final String[] PACKET_CHANNELS = {"Gui","Animator"};
     public static final String CLIENT_PROXY = "nekto.controller.client.ClientProxy";
     public static final String COMMON_PROXY = "nekto.controller.network.CommonProxy";
+    public static final int GUI_ID = 0;
+    public static final int REMOTE_GUI_ID = 1;
     
 }
 
