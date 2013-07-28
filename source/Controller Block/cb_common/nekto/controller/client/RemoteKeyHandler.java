@@ -4,11 +4,14 @@ import java.util.EnumSet;
 
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
+import nekto.controller.item.ItemRemote;
+import nekto.controller.network.PacketHandler;
 import nekto.controller.ref.GeneralRef;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet;
 
 import org.lwjgl.input.Keyboard;
 
@@ -33,23 +36,23 @@ public class RemoteKeyHandler extends KeyHandler{
 	@Override
 	public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) 
 	{
-		if(kb.keyDescription == keyBind.keyDescription && tickEnd)
+		if(kb.keyDescription.equals(keyBind.keyDescription) && tickEnd)
 		{
 			if(Minecraft.getMinecraft().currentScreen == null)
 			{
-				EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+				EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
 				if(player != null)
 				{
 					 ItemStack stack = player.inventory.getCurrentItem();
-					 if(stack !=null && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
+					 if(stack !=null && stack.getItem() instanceof ItemRemote && stack.hasTagCompound() && stack.getTagCompound().hasKey(ItemBase.KEYTAG))
 					 {
 						 int[] data = stack.getTagCompound().getIntArray(ItemBase.KEYTAG);
-						 player.openGui(Controller.instance, GeneralRef.REMOTE_GUI_ID, Minecraft.getMinecraft().theWorld,data[0],data[1],data[2]);
+						 Packet packet = PacketHandler.getGuiPacket(true,-1,data[0],data[1],data[2]);
+						 player.sendQueue.addToSendQueue(packet);
+						 player.openGui(Controller.instance, GeneralRef.REMOTE_GUI_ID, Minecraft.getMinecraft().theWorld,(int)player.posX, (int)player.posY, (int)player.posZ);
 					 }
 				}
 			}
-			else
-				Minecraft.getMinecraft().currentScreen.onGuiClosed();
 		}
 	}
 

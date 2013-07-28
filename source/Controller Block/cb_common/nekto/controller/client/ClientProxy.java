@@ -9,7 +9,6 @@ import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 
@@ -27,11 +26,11 @@ public class ClientProxy extends CommonProxy {
         if(tile instanceof TileEntityAnimator)
 	        if(ID == GeneralRef.GUI_ID )
 	        {
-				return new AnimatorGUI(player.inventory, (TileEntityAnimator) tile);
+				return new AnimatorGUI(player.inventory, (TileEntityAnimator) tile, false);
 	        }
 	        else if(ID == GeneralRef.REMOTE_GUI_ID)
 			{
-				
+				return new AnimatorGUI(player.inventory, (TileEntityAnimator) tile, true);
 			}
 	    return null;
 	}

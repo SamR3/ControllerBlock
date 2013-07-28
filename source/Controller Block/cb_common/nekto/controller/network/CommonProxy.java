@@ -19,19 +19,19 @@ public class CommonProxy implements IGuiHandler{
 	    if(tile instanceof TileEntityAnimator)
 	        if(ID == GeneralRef.GUI_ID )
 			{
-				return new ContainerAnimator(player.inventory, (TileEntityAnimator) tile);
+				return new ContainerAnimator(player.inventory, (TileEntityAnimator) tile, true);
 			}
 			else if(ID == GeneralRef.REMOTE_GUI_ID)
 			{
-				
+				return new ContainerAnimator(player.inventory, (TileEntityAnimator) tile, false);
 			}
 		
 		return null;
 	}
 	
 	@Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-    {
-        return null;
-    }
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	{
+	    return null;
+	}
 }

@@ -25,18 +25,28 @@ public abstract class BlockBase extends BlockContainer{
 		super(par1, Material.rock);
 		setCreativeTab(CreativeTabs.tabBlock);
     }
-
+	
+	@Override
 	@SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess iblockaccess, int i, int j, int k, int l)
     {
        return false;
     }
+	
+	@Override
 	@SideOnly(Side.CLIENT)
     public boolean isOpaqueCube()
     {
        return false;
     }
-    
+	
+	@Override
+	public boolean renderAsNormalBlock()
+    {
+        return false;
+    }
+	
+	@Override
     @SideOnly(Side.CLIENT)
     public Icon getIcon(int par1, int par2)
     {

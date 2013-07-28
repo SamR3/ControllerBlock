@@ -35,7 +35,7 @@ public class BlockAnimator extends BlockBase {
         {
 	        if(!par1World.isBlockIndirectlyGettingPowered(par2, par3, par4))//We don't want to enable any changes when block is powered
 	        {
-	        	if(!par1World.isRemote && par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityAnimator)
+	        	if(par1World.getBlockTileEntity(par2, par3, par4) instanceof TileEntityAnimator)
 	        		par5EntityPlayer.openGui(Controller.instance, GeneralRef.GUI_ID, par1World, par2, par3, par4);
 	        	return true;
 	        }

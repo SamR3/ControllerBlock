@@ -11,17 +11,20 @@ public class ContainerAnimator extends ContainerBase {
 
 	private int oldDelay,oldMode,oldFrame,oldMax=-1;
 	private final static int DELAY_INDEX=0,MODE_INDEX=1,FRAME_INDEX=2,MAX_INDEX=3;
-	public ContainerAnimator(InventoryPlayer inventory, TileEntityAnimator tile)
+	public ContainerAnimator(InventoryPlayer inventory, TileEntityAnimator tile, boolean hasSlots)
 	{
 		this.control = tile;
 		this.oldDelay = tile.getDelay();
 		this.oldMode = tile.getMode().ordinal();
 		this.oldFrame = tile.getFrame();
 		this.oldMax = tile.getMaxFrame();
-		//Adding animator slots
-		addSlotToContainer(new ControllerSlot(tile, 0, 11, 21));
-		//Adding player inventory
-		addPlayerInventory(inventory);
+		if(hasSlots)
+		{
+			//Adding animator slots
+			addSlotToContainer(new ControllerSlot(tile, 0, 11, 21));
+			//Adding player inventory
+			addPlayerInventory(inventory);
+		}
 	}
 
     public int getDelay() 
@@ -31,7 +34,7 @@ public class ContainerAnimator extends ContainerBase {
 
     public String getMode()
     {
-    	return Mode.values()[this.oldMode].toString()/*.toLowerCase()*/;
+    	return Mode.values()[this.oldMode].toString();
     }
 
 	public String getFrame() 
@@ -44,9 +47,6 @@ public class ContainerAnimator extends ContainerBase {
 		return "Max: "+ this.oldMax;
 	}
 	
-    /**
-     * Looks for changes made in the container, sends them to every listener.
-     */
     @Override
     public void detectAndSendChanges()
     {
@@ -83,15 +83,20 @@ public class ContainerAnimator extends ContainerBase {
     {
     	switch(par1){
     	case DELAY_INDEX:
+    		((TileEntityAnimator)this.control).resetDelay();
+    		((TileEntityAnimator)this.control).setDelay(par2);
     		this.oldDelay = par2;
     		break;
     	case MODE_INDEX:
+    		((TileEntityAnimator)this.control).setMode(Mode.values()[par2]);
     		this.oldMode = par2;
     		break;
     	case FRAME_INDEX:
+    		((TileEntityAnimator)this.control).setFrame(par2);
     		this.oldFrame = par2;
     		break;
     	case MAX_INDEX:
+    		((TileEntityAnimator)this.control).setMaxFrame(par2);
     		this.oldMax = par2;
     		break;
     	}

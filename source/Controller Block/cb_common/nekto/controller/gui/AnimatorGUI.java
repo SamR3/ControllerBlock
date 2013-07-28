@@ -1,20 +1,17 @@
 package nekto.controller.gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.util.List;
 
 import nekto.controller.container.ContainerAnimator;
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
-import nekto.controller.ref.GeneralRef;
+import nekto.controller.network.PacketHandler;
 import nekto.controller.tile.TileEntityAnimator;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
 
 import org.lwjgl.opengl.GL11;
 
@@ -26,55 +23,80 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class AnimatorGUI extends GuiContainer {
 
     private List<GuiButton> frameButtons;
+	private boolean remote;
 
-    public AnimatorGUI(InventoryPlayer par1InventoryPlayer, TileEntityAnimator par2TileEntity)
+    public AnimatorGUI(InventoryPlayer par1InventoryPlayer, TileEntityAnimator par2TileEntity, boolean isRemote)
     {
-        super(new ContainerAnimator(par1InventoryPlayer, par2TileEntity));
+        super(new ContainerAnimator(par1InventoryPlayer, par2TileEntity, !isRemote));
+        this.remote = isRemote;
     }
     
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2)
-    {        
-        String s = "Animator Block";
-        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
-        int delay = ((ContainerAnimator)this.inventorySlots).getDelay()+2;
-        if(Controller.tickDisplay)
-        	s = (delay) + "ticks";
-        else
-        {
-        	s = Float.toString((delay)*0.05F);
-        	if(s.length()>3)
-        		s = s.substring(0, 4);
-        	s = s+ "s"; 
-        }
-        this.fontRenderer.drawString(s, 131 - this.fontRenderer.getStringWidth(s) / 2, 87, 0);
-        refreshButtonsText();
+    {
+    	if(!remote)
+    	{
+	        String s = "Animator Block";
+	        this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 6, 4210752);
+	        int delay = ((ContainerAnimator)this.inventorySlots).getDelay()+2;
+	        if(Controller.tickDisplay)
+	        	s = (delay) + "ticks";
+	        else
+	        {
+	        	s = Float.toString((delay)*0.05F);
+	        	if(s.length()>3)
+	        		s = s.substring(0, 4);
+	        	s = s+ "s"; 
+	        }
+	        this.fontRenderer.drawString(s, 131 - this.fontRenderer.getStringWidth(s) / 2, 87, 0);
+	        refreshButtonsText();
+    	}
+    	else
+    	{
+    		TileEntityAnimator animator = (TileEntityAnimator) ((ContainerAnimator)this.inventorySlots).getControl();
+            String s = "Linked to animator @"+animator.xCoord+","+animator.yCoord+","+animator.zCoord;
+    	}
     }
 
 	@Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture("/mods/controller/textures/gui/controllergui.png");
-        //this.mc.renderEngine.func_110577_a(new ResourceLocation("/assets/controller/textures/gui/controllergui.png"));
+        this.mc.renderEngine.bindTexture(getTexture());
+        //this.mc.renderEngine.func_110577_a(new ResourceLocation("controller","/textures/gui/controllergui.png"));
         this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     }
     
-    @Override
+    private String getTexture() 
+    {
+		return "/mods/controller/textures/gui/"+(remote ? "remotegui.png":"controllergui.png");
+	}
+
+	@Override
     public void initGui() 
     {
         super.initGui();
         //id, x, y, width, height, text
-        buttonList.add(new GuiButton(0, guiLeft + 149, guiTop + 81, 19, 20, "+"));
-        buttonList.add(new GuiButton(1, guiLeft + 96, guiTop + 81, 19, 20, "-"));
-
-        buttonList.add(new GuiButton(2, guiLeft + 10, guiTop + 81, 82, 20, ((ContainerAnimator)this.inventorySlots).getMode()));
-        
-        buttonList.add(new GuiButton(3, guiLeft + 32, guiTop + 19, 60, 20, "Reset Link"));
-        buttonList.add(new GuiButton(4, guiLeft + 96, guiTop + 19, 70, 20, "Force Reset"));
-        
-        buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getMax()));
-        buttonList.add(new GuiButton(6, guiLeft + 10, guiTop + 50, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
+        if(remote)
+        {
+        	buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 50, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
+        	buttonList.add(new GuiButton(1, guiLeft + 149, guiTop + 81, 19, 20, "Corner"));
+        	buttonList.add(new GuiButton(2, guiLeft + 32, guiTop + 19, 60, 20, "Reset Link"));
+	        
+        }
+        else
+        {
+	        buttonList.add(new GuiButton(0, guiLeft + 149, guiTop + 81, 19, 20, "+"));
+	        buttonList.add(new GuiButton(1, guiLeft + 96, guiTop + 81, 19, 20, "-"));
+	
+	        buttonList.add(new GuiButton(2, guiLeft + 10, guiTop + 81, 82, 20, ((ContainerAnimator)this.inventorySlots).getMode()));
+	        
+	        buttonList.add(new GuiButton(3, guiLeft + 32, guiTop + 19, 60, 20, "Reset Link"));
+	        buttonList.add(new GuiButton(4, guiLeft + 96, guiTop + 19, 70, 20, "Force Reset"));
+	        
+	        buttonList.add(new GuiButton(5, guiLeft + 96, guiTop + 50, 70, 20, ((ContainerAnimator)this.inventorySlots).getMax()));
+	        buttonList.add(new GuiButton(6, guiLeft + 10, guiTop + 50, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
+        }
     }
     
     private void refreshButtonsText()
@@ -112,31 +134,14 @@ public class AnimatorGUI extends GuiContainer {
 			cData[3] = animator.zCoord;
 			for(int i = 0; i < data.length; i++)
 				cData[i + 4] = data[i];
-	    	packet = getGuiPacket(cData);
+	    	packet = PacketHandler.getGuiPacket(remote, cData);
     	}
     	else
-    		packet = getGuiPacket(new int[]{guibutton.id, animator.xCoord, animator.yCoord, animator.zCoord});
+    	{
+    		packet = PacketHandler.getGuiPacket(remote, guibutton.id, animator.xCoord, animator.yCoord, animator.zCoord);
+    	}
     	if(packet!=null)
     		this.mc.getNetHandler().addToSendQueue(packet);
+    	refreshButtonsText();
     }
-
-	private static Packet getGuiPacket(int... data) 
-	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(4*data.length);
-		DataOutputStream outputStream = new DataOutputStream(bos);
-		try 
-		{
-			for(int d:data)
-				outputStream.writeInt(d);
-		} 
-		catch (Exception ex) 
-		{
-			ex.printStackTrace();
-		}
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel = GeneralRef.PACKET_CHANNELS[0];
-		packet.data = bos.toByteArray();
-		packet.length = bos.size();
-		return packet;
-	}
 }

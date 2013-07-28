@@ -1,6 +1,3 @@
-/*
- *  Author: Sam6982
- */
 package nekto.controller.core;
 
 import nekto.controller.block.BlockAnimator;
@@ -50,12 +47,7 @@ public class Controller {
 	public void preLoad(FMLPreInitializationEvent event) 
 	{
 		config= new Configuration(event.getSuggestedConfigurationFile(),true);
-	}
-
-    @Init
-    public void load(FMLInitializationEvent event) 
-    {
-    	config.load();
+		config.load();
     	controller = new BlockController(config.get("block", "controller id", 500).getInt());
     	linker = new ItemLinker(config.get("item", "linker id", 1000).getInt());
     	animator = new BlockAnimator(config.get("block", "animator id", 501).getInt());
@@ -63,7 +55,11 @@ public class Controller {
     	tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
     	if(config.hasChanged())
     		config.save();
-        
+	}
+
+    @Init
+    public void load(FMLInitializationEvent event) 
+    {
         GameRegistry.registerBlock(controller, "controller");
         GameRegistry.registerBlock(animator, "animator");
         GameRegistry.registerItem(linker, "linker");

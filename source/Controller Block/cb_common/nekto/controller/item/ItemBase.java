@@ -1,7 +1,7 @@
 package nekto.controller.item;
 
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
@@ -30,6 +30,7 @@ public abstract class ItemBase extends Item{
 	public final static String MESSAGE_6="Selection finished.";
 	public final static String MESSAGE_7="Removed corner from selection";
 	public int[] corner = null;
+	private boolean isCornerMode = false;
 	
 	public ItemBase(int id)
     {
@@ -113,7 +114,7 @@ public abstract class ItemBase extends Item{
     	this.link.setEditing(true);
     	if(player.capabilities.isCreativeMode || id != 7/*bedrock case out*/)
         {
-    		if(!player.isSneaking())
+    		if(!isCornerMode && !player.isSneaking())
     			this.link.add(player, id, par4, par5, par6, meta, true);
     		else
     		{
@@ -137,7 +138,7 @@ public abstract class ItemBase extends Item{
         }
 	}
 	/**
-	 * Fired if player is sneaking and selected two different corner blocks
+	 * Fired if corner mode is true or player is sneaking and selected two different corner blocks
 	 * @param corner the first selected block position
 	 * @param endCorner the second selected block position
 	 */
@@ -164,11 +165,11 @@ public abstract class ItemBase extends Item{
 				}
 	}
 
-/**
- * Fired if link is null but item has NBTTag data pointing to a valid control
- * @param world
- * @param data from the item {@link NBTTagCompound}
- */
+	/**
+	 * Fired if link is null but item has NBTTag data pointing to a valid control
+	 * @param world
+	 * @param data from the item {@link NBTTagCompound}
+	 */
 	protected void setItemVar(World world, int...data) 
 	{
 		this.link = (TileEntityBase)world.getBlockTileEntity(data[0], data[1], data[2]);
@@ -184,6 +185,16 @@ public abstract class ItemBase extends Item{
     {
         this.link = null;
     }
+	
+	public void setCornerMode(boolean bool)
+	{
+		this.isCornerMode = bool;
+	}
+	
+	public boolean isInCornerMode()
+	{
+		return this.isCornerMode;
+	}
 	
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
@@ -218,7 +229,14 @@ public abstract class ItemBase extends Item{
 	{
     	return getControl().isInstance(world.getBlockTileEntity(x, y, z));
     }
-	
+	/**
+	 * What should happen if the selected {@link #TileEntityBase} by a player is marked 
+	 * as already used by someone else
+	 * @param tempTile The selected TileEntity
+	 * @param player The player doing the use
+	 * @param stack The ItemStack used by player
+	 * @return false to send {@link #MESSAGE_3} to player
+	 */
 	protected abstract boolean onControlUsed(TileEntityBase tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack);
 	protected abstract Class<? extends TileEntityBase> getControl();
 	protected abstract String getControlName();
