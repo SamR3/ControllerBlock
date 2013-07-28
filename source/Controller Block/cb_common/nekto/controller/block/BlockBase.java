@@ -19,6 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BlockBase extends BlockContainer{
 
+	public static int renderID;
 	protected Icon textureSide,textureTop;
 	protected BlockBase(int par1) 
 	{
@@ -45,6 +46,12 @@ public abstract class BlockBase extends BlockContainer{
     {
         return false;
     }
+	
+	@Override
+	public int getRenderType()
+	{
+		return this.renderID;
+	}
 	
 	@Override
     @SideOnly(Side.CLIENT)

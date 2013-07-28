@@ -34,5 +34,4 @@ public class BlockController extends BlockBase {
         	setUnactiveBlocks(par1World,tile.getBaseList().iterator());
         }
 	}
-
 }

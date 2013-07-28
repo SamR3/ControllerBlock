@@ -64,8 +64,8 @@ public class ModelAnimator2 extends ModelBase
   
   public void render(float f)
   {
-    Frame.render(f);
-    Cage.render(f);
+	  Frame.render(f);
+	  Cage.render(f);
   }
   
   public void renderOrb(float f)
@@ -79,5 +79,4 @@ public class ModelAnimator2 extends ModelBase
     model.rotateAngleY = y;
     model.rotateAngleZ = z;
   }
-
 }

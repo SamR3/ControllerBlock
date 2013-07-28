@@ -5,6 +5,7 @@ import nekto.controller.ref.GeneralRef;
 import nekto.controller.render.model.ModelAnimator2;
 import nekto.controller.tile.TileEntityBase;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -28,7 +29,7 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
     {
         GL11.glPushMatrix();
         
-        setLighting(tileEntity.worldObj, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
+        setLighting(Minecraft.getMinecraft().theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
         
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTextureByName(GeneralRef.FULL_TEXTURE_PATH+((TileEntityBase)tileEntity).getTexture());

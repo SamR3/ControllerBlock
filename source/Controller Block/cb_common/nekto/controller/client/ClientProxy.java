@@ -1,8 +1,10 @@
 package nekto.controller.client;
 
+import nekto.controller.block.BlockBase;
 import nekto.controller.gui.AnimatorGUI;
 import nekto.controller.network.CommonProxy;
 import nekto.controller.ref.GeneralRef;
+import nekto.controller.render.ControllerRenderer;
 import nekto.controller.render.TileEntityAnimatorRenderer;
 import nekto.controller.tile.TileEntityAnimator;
 import nekto.controller.tile.TileEntityBase;
@@ -11,11 +13,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
 
     public void registerRenderThings() 
     {
+    	BlockBase.renderID = RenderingRegistry.getNextAvailableRenderId();
+    	RenderingRegistry.registerBlockHandler(BlockBase.renderID,new ControllerRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBase.class, new TileEntityAnimatorRenderer());
         KeyBindingRegistry.registerKeyBinding(new RemoteKeyHandler());
     }
