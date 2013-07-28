@@ -2,7 +2,6 @@ package nekto.controller.render.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 public class ModelAnimator2 extends ModelBase
 {
@@ -63,12 +62,10 @@ public class ModelAnimator2 extends ModelBase
       Orb.addBox("Orb2", -1F, 1F, -1F, 4, 3, 4);
   }
   
-  public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+  public void render(float f)
   {
-    super.render(entity, f, f1, f2, f3, f4, f5);
-    setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-    Frame.render(f5);
-    Cage.render(f5);
+    Frame.render(f);
+    Cage.render(f);
   }
   
   public void renderOrb(float f)
@@ -81,11 +78,6 @@ public class ModelAnimator2 extends ModelBase
     model.rotateAngleX = x;
     model.rotateAngleY = y;
     model.rotateAngleZ = z;
-  }
-  
-  public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
-  {
-    super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
   }
 
 }
