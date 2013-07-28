@@ -89,13 +89,13 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     {
         return PacketHandler.getPacket(this);
     }
-
+    
 	@Override
 	public String getInvName() 
 	{
 		return "Animator.inventory";
 	}
-
+	
 	@Override
 	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
 	{
