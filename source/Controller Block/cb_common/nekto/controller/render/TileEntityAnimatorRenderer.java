@@ -8,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -37,7 +36,7 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
         GL11.glPushMatrix();
         
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        this.model.render((Entity)null, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+        this.model.render(0.0625F);
         
         renderOrb((TileEntityBase)tileEntity);
         
