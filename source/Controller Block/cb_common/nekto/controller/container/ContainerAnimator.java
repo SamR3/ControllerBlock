@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ContainerAnimator extends ContainerBase {
 
 	private int oldDelay,oldMode,oldFrame,oldMax=-1;
+	private boolean isRemote;
 	private final static int DELAY_INDEX=0,MODE_INDEX=1,FRAME_INDEX=2,MAX_INDEX=3;
 	public ContainerAnimator(InventoryPlayer inventory, TileEntityAnimator tile, boolean hasSlots)
 	{
@@ -18,6 +19,7 @@ public class ContainerAnimator extends ContainerBase {
 		this.oldMode = tile.getMode().ordinal();
 		this.oldFrame = tile.getFrame();
 		this.oldMax = tile.getMaxFrame();
+		this.isRemote = !hasSlots;
 		if(hasSlots)
 		{
 			//Adding animator slots
@@ -28,7 +30,7 @@ public class ContainerAnimator extends ContainerBase {
 	}
 
     public int getDelay() 
-    {
+	{
 		return this.oldDelay;
 	}
 
@@ -47,6 +49,11 @@ public class ContainerAnimator extends ContainerBase {
 		return "Max: "+ this.oldMax;
 	}
 	
+	@Override
+	public boolean canInteractWith(EntityPlayer player) 
+	{
+		return this.isRemote || super.canInteractWith(player);
+	}
     @Override
     public void detectAndSendChanges()
     {
