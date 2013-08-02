@@ -3,10 +3,12 @@ package nekto.controller.gui;
 import java.util.List;
 
 import nekto.controller.container.ContainerAnimator;
+import nekto.controller.container.ContainerBase;
 import nekto.controller.core.Controller;
 import nekto.controller.item.ItemBase;
 import nekto.controller.network.PacketHandler;
 import nekto.controller.tile.TileEntityAnimator;
+import nekto.controller.tile.TileEntityBase;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -29,6 +31,11 @@ public class AnimatorGUI extends GuiContainer {
     {
         super(new ContainerAnimator(par1InventoryPlayer, par2TileEntity, !isRemote));
         this.remote = isRemote;
+        if(remote)
+        {
+        	xSize = 256;
+        	ySize = 596;
+        }
     }
     
     @Override
@@ -48,14 +55,17 @@ public class AnimatorGUI extends GuiContainer {
 	        		s = s.substring(0, 4);
 	        	s = s+ "s"; 
 	        }
-	        this.fontRenderer.drawString(s, 131 - this.fontRenderer.getStringWidth(s) / 2, 87, 0);
-	        refreshButtonsText();
+	        this.fontRenderer.drawString(s, 131 - this.fontRenderer.getStringWidth(s) / 2, 87, 0);   
     	}
     	else
     	{
-    		TileEntityAnimator animator = (TileEntityAnimator) ((ContainerAnimator)this.inventorySlots).getControl();
-            String s = "Linked to animator @"+animator.xCoord+","+animator.yCoord+","+animator.zCoord;
-    	}
+    		TileEntityBase control = ((ContainerBase)this.inventorySlots).getControl();
+            String s = "Linked to "+control.getName()+" @";
+            this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 40, 4210752);
+            s = control.xCoord+", "+control.yCoord+", "+control.zCoord;
+            this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 50, 4210752);
+        }
+    	refreshButtonsText();
     }
 
 	@Override
@@ -64,12 +74,12 @@ public class AnimatorGUI extends GuiContainer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(getTexture());
         //this.mc.renderEngine.func_110577_a(new ResourceLocation("controller","/textures/gui/controllergui.png"));
-        this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
+    	this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     }
     
     private String getTexture() 
     {
-		return "/mods/controller/textures/gui/"+(remote ? "remotegui.png":"controllergui.png");
+		return "/mods/controller/textures/gui/"+(remote ? "remote":"controller")+"gui.png";
 	}
 
 	@Override
@@ -79,10 +89,10 @@ public class AnimatorGUI extends GuiContainer {
         //id, x, y, width, height, text
         if(remote)
         {
-        	buttonList.add(new GuiButton(0, guiLeft + 10, guiTop + 50, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
-        	buttonList.add(new GuiButton(1, guiLeft + 149, guiTop + 81, 19, 20, "Corner"));
-        	buttonList.add(new GuiButton(2, guiLeft + 32, guiTop + 19, 60, 20, "Reset Link"));
-	        
+        	buttonList.add(new GuiButton(0, guiLeft + 85, guiTop + 300, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
+        	buttonList.add(new GuiButton(1, guiLeft + 107, guiTop + 330, 36, 20, ((ContainerAnimator)this.inventorySlots).getCorner()));
+        	buttonList.add(new GuiButton(2, guiLeft + 95, guiTop + 360, 60, 20, "Reset Link"));
+        	guiTop = 0;
         }
         else
         {
@@ -101,9 +111,17 @@ public class AnimatorGUI extends GuiContainer {
     
     private void refreshButtonsText()
     {
-    	((GuiButton)this.buttonList.get(2)).displayString = ((ContainerAnimator)this.inventorySlots).getMode();
-    	((GuiButton)this.buttonList.get(5)).displayString = ((ContainerAnimator)this.inventorySlots).getMax();
-    	((GuiButton)this.buttonList.get(6)).displayString = ((ContainerAnimator)this.inventorySlots).getFrame();
+    	if(!remote)
+    	{
+    		((GuiButton)this.buttonList.get(2)).displayString = ((ContainerAnimator)this.inventorySlots).getMode();
+    		((GuiButton)this.buttonList.get(5)).displayString = ((ContainerAnimator)this.inventorySlots).getMax();
+    		((GuiButton)this.buttonList.get(6)).displayString = ((ContainerAnimator)this.inventorySlots).getFrame();
+    	}
+    	else
+    	{
+    		((GuiButton)this.buttonList.get(0)).displayString = ((ContainerAnimator)this.inventorySlots).getFrame();
+    		((GuiButton)this.buttonList.get(1)).displayString = ((ContainerAnimator)this.inventorySlots).getCorner();
+    	}
 	}
 
 	@Override

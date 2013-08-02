@@ -1,7 +1,9 @@
 package nekto.controller.container;
 
 import nekto.controller.animator.Mode;
+import nekto.controller.item.ItemBase;
 import nekto.controller.tile.TileEntityAnimator;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import cpw.mods.fml.relauncher.Side;
@@ -10,17 +12,27 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ContainerAnimator extends ContainerBase {
 
 	private int oldDelay,oldMode,oldFrame,oldMax=-1;
-	private boolean isRemote;
-	private final static int DELAY_INDEX=0,MODE_INDEX=1,FRAME_INDEX=2,MAX_INDEX=3;
+	private boolean isRemote,corner;
+	private ItemBase remote;
+	private final static int DELAY_INDEX=0,MODE_INDEX=1,FRAME_INDEX=2,MAX_INDEX=3,CORNER_INDEX=4;
 	public ContainerAnimator(InventoryPlayer inventory, TileEntityAnimator tile, boolean hasSlots)
 	{
 		this.control = tile;
 		this.oldDelay = tile.getDelay();
+		
 		this.oldMode = tile.getMode().ordinal();
 		this.oldFrame = tile.getFrame();
 		this.oldMax = tile.getMaxFrame();
 		this.isRemote = !hasSlots;
-		if(hasSlots)
+		if(isRemote)
+		{
+			if(inventory.player.getHeldItem().getItem() instanceof ItemBase)
+			{
+				remote = (ItemBase)inventory.player.getHeldItem().getItem();
+				this.corner = remote.isInCornerMode();
+			}
+		}
+		else
 		{
 			//Adding animator slots
 			addSlotToContainer(new ControllerSlot(tile, 0, 11, 21));
@@ -30,13 +42,18 @@ public class ContainerAnimator extends ContainerBase {
 	}
 
     public int getDelay() 
-	{
+    {
 		return this.oldDelay;
 	}
 
     public String getMode()
     {
     	return Mode.values()[this.oldMode].toString();
+    }
+    
+    public String getCorner()
+    {
+    	return this.corner?"Corner":"Single";
     }
 
 	public String getFrame() 
@@ -54,6 +71,7 @@ public class ContainerAnimator extends ContainerBase {
 	{
 		return this.isRemote || super.canInteractWith(player);
 	}
+	
     @Override
     public void detectAndSendChanges()
     {
@@ -82,6 +100,11 @@ public class ContainerAnimator extends ContainerBase {
 	        	icrafting.sendProgressBarUpdate(this, MAX_INDEX, ((TileEntityAnimator)this.control).getMaxFrame());
 	        	this.oldMax = ((TileEntityAnimator)this.control).getMaxFrame();
 	        }
+	        if(this.isRemote && this.corner != this.remote.isInCornerMode())
+	        {
+	        	icrafting.sendProgressBarUpdate(this, CORNER_INDEX, this.remote.isInCornerMode()?1:0);
+    			this.corner = this.remote.isInCornerMode();
+	        }
         }
     }
     
@@ -105,6 +128,10 @@ public class ContainerAnimator extends ContainerBase {
     	case MAX_INDEX:
     		((TileEntityAnimator)this.control).setMaxFrame(par2);
     		this.oldMax = par2;
+    		break;
+    	case CORNER_INDEX:
+    		this.remote.setCornerMode(par2==1);
+    		this.corner = par2==1;
     		break;
     	}
     }

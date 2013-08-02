@@ -264,10 +264,25 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	@Override
 	public void closeChest() {}
 
+	
+	/**
+	 * TileEntity specific texture, to use in the TileEntity renderer
+	 * @return Path of the texture to use (inside textures folder)
+	 */
+	public String getTexture()
+	{
+		return "models/"+getName()+".png";
+	}
+	/**
+	 * User-friendly name of the TileEntity, to use in the Remote GUI
+	 * Also used for texture path
+	 * @return
+	 */
+	public abstract String getName();
+	/**
+	 * List to which blocks are added, as int arrays
+	 * It isn't saved in NBT by this class.
+	 * @return
+	 */
 	protected abstract List getBlockList();
-/**
- * TileEntity specific texture, to use in the TileEntity renderer
- * @return Path of the texture to use (inside textures folder)
- */
-	public abstract String getTexture();
 }

@@ -65,7 +65,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     public void readFromNBT(NBTTagCompound par1NBTTagCompound)
     {
     	super.readFromNBT(par1NBTTagCompound);
-        int count = par1NBTTagCompound.getInteger("length");
+        int length = par1NBTTagCompound.getInteger("length");
         this.frame = par1NBTTagCompound.getInteger("frame");
         this.delay = par1NBTTagCompound.getInteger("delay");
         this.max = par1NBTTagCompound.getInteger("max");
@@ -73,7 +73,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
         this.setMode(Mode.values()[par1NBTTagCompound.getShort("mode")]);
         this.removed = par1NBTTagCompound.getBoolean("removed");
         
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < length; i++)
         {
             NBTTagCompound tag = ((NBTTagCompound) par1NBTTagCompound.getTagList("frames").tagAt(i));
             List list = new ArrayList();
@@ -179,8 +179,8 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
     }
 
 	@Override
-	public String getTexture()
+	public String getName() 
 	{
-		return "models/animator.png";
+		return "animator";
 	}
 }
