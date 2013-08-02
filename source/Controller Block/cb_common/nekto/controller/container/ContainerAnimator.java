@@ -71,7 +71,7 @@ public class ContainerAnimator extends ContainerBase {
 	{
 		return this.isRemote || super.canInteractWith(player);
 	}
-	
+
     @Override
     public void detectAndSendChanges()
     {
