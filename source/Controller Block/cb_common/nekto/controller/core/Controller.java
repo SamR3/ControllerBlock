@@ -72,6 +72,8 @@ public class Controller {
         	'I',Block.oreIron,'P',Item.enderPearl,
         	'D',Item.diamond,'R',Block.blockRedstone,'E',Item.emerald,
         	'T',Block.enchantmentTable,'B',Item.book,'W',Block.workbench});
+        GameRegistry.addRecipe(new ItemStack(remote), new Object[]
+        		{"D","I","I", 'D', Item.diamond, 'I', Item.ingotIron});
         
         LanguageRegistry.addName(controller, "Controller");
         LanguageRegistry.addName(animator, "Animator");
