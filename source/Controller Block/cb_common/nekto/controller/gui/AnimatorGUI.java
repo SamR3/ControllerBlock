@@ -34,7 +34,7 @@ public class AnimatorGUI extends GuiContainer {
         if(remote)
         {
         	xSize = 256;
-        	ySize = 596;
+        	ySize = 256;
         }
     }
     
@@ -60,10 +60,12 @@ public class AnimatorGUI extends GuiContainer {
     	else
     	{
     		TileEntityBase control = ((ContainerBase)this.inventorySlots).getControl();
-            String s = "Linked to "+control.getName()+" @";
-            this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 40, 4210752);
+            String s = "Linked to";
+            this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 39, 4210752);
+            s = control.getName()+" @";
+            this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 48, 4210752);
             s = control.xCoord+", "+control.yCoord+", "+control.zCoord;
-            this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 50, 4210752);
+            this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 57, 4210752);
         }
     	refreshButtonsText();
     }
@@ -72,16 +74,17 @@ public class AnimatorGUI extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(getTexture());
-        //this.mc.renderEngine.func_110577_a(new ResourceLocation("controller","/textures/gui/controllergui.png"));
+
+    	this.mc.renderEngine.bindTexture(getTexture(remote));
+    	//this.mc.renderEngine.func_110577_a(new ResourceLocation("controller","/textures/gui/controllergui.png"));
     	this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     }
     
-    private String getTexture() 
+    private static String getTexture(boolean remote)
     {
 		return "/mods/controller/textures/gui/"+(remote ? "remote":"controller")+"gui.png";
 	}
-
+    
 	@Override
     public void initGui() 
     {
@@ -89,10 +92,9 @@ public class AnimatorGUI extends GuiContainer {
         //id, x, y, width, height, text
         if(remote)
         {
-        	buttonList.add(new GuiButton(0, guiLeft + 85, guiTop + 300, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
-        	buttonList.add(new GuiButton(1, guiLeft + 107, guiTop + 330, 36, 20, ((ContainerAnimator)this.inventorySlots).getCorner()));
-        	buttonList.add(new GuiButton(2, guiLeft + 95, guiTop + 360, 60, 20, "Reset Link"));
-        	guiTop = 0;
+        	buttonList.add(new GuiButton(0, guiLeft + 86, guiTop + 125, 82, 20, ((ContainerAnimator)this.inventorySlots).getFrame()));
+        	buttonList.add(new GuiButton(1, guiLeft + 109, guiTop + 159, 40, 20, ((ContainerAnimator)this.inventorySlots).getCorner()));
+        	buttonList.add(new GuiButton(2, guiLeft + 99, guiTop + 193, 60, 20, "Reset Link"));
         }
         else
         {
