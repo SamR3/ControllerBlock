@@ -3,7 +3,6 @@ package nekto.controller.block;
 import java.util.Iterator;
 
 import nekto.controller.item.ItemBase;
-import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -20,7 +19,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class BlockBase extends BlockContainer{
 
 	public static int renderID;
-	//protected Icon textureSide,textureTop;
 	protected BlockBase(int par1) 
 	{
 		super(par1, Material.rock);
@@ -52,19 +50,10 @@ public abstract class BlockBase extends BlockContainer{
 	{
 		return this.renderID;
 	}
-	
-	/*@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getIcon(int par1, int par2)
-    {
-        return par1 <= 1 ? this.textureTop : this.textureSide;
-    }*/
     
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister par1IconRegister)
     {
-        //this.textureSide = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + getUnlocalizedName2() +"_side");
-        //this.textureTop = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + getUnlocalizedName2() + "_top");
     }
     
     @Override

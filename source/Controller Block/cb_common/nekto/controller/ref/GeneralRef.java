@@ -7,7 +7,7 @@ public class GeneralRef {
     
     public static final String MOD_ID = "CB";
     public static final String MOD_NAME = "Controller Block";
-    public static final String VERSION = "dev";
+    public static final String VERSION = "1.0";
     public static final String DEPENDENCIES = "";
     public static final String TEXTURE_PATH = "controller:";
     public static final String FULL_TEXTURE_PATH = "/mods/controller/textures/";
