@@ -9,6 +9,7 @@ import nekto.controller.tile.TileEntityAnimator;
 import nekto.controller.tile.TileEntityBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,17 +41,17 @@ public class ItemRemote extends ItemBase {
 	    		this.link.setEditing(false);
 	    		this.link.setLinker(null);
 	    		this.link = tempTile;
-	    		player.sendChatToPlayer(MESSAGE_2);
+	    		player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_2));
     		}
         	tempTile.setLinker(this);
         	this.frame = ((TileEntityAnimator)tempTile).getFrame();
-        	player.sendChatToPlayer(MESSAGE_1 + par4 + ", " + par5 + ", " + par6);
+        	player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_1 + par4 + ", " + par5 + ", " + par6));
             setEditAndTag( new int[]{par4, par5, par6, this.frame},stack);
             return true;
         }
     	else if(tempTile.getLinker() == this)
         {
-	        player.sendChatToPlayer("Finished frame # "+ (this.frame + 1) +" Continuing with frame # "+ (this.frame + 2));
+	        player.sendChatToPlayer(ChatMessageComponent.createFromText("Finished frame # "+ (this.frame + 1) +" Continuing with frame # "+ (this.frame + 2)));
 	        this.frame++;
 	        setEditAndTag( new int[]{par4, par5, par6, this.frame},stack);
 			return true;

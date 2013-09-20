@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -70,14 +71,14 @@ public abstract class ItemBase extends Item{
 	                	else//It had data on a block that doesn't exist anymore
 	            		{
 	            			itemStack.getTagCompound().removeTag(KEYTAG);
-	        				player.sendChatToPlayer(MESSAGE_2);//see ChatMessageComponent static string method
+	        				player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_2));
 	            			return itemStack;
 	            		}
 	                }
 	                if(tempTile != null)
 	            	{   
 	                    if(!onControlUsed(tempTile, player, i, j, k, itemStack))
-	                    	player.sendChatToPlayer(MESSAGE_3);
+	                    	player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_3));
 	                	//Another player might be editing, let's avoid any issue and do nothing.
 	                }
 	                else if(!world.isAirBlock(i, j, k))
@@ -87,13 +88,13 @@ public abstract class ItemBase extends Item{
 	            }   
 	            else if(isController(i, j, k, world) && ((TileEntityBase) world.getBlockTileEntity(i, j, k)).getLinker() == null)           
 	            {
-	            	player.sendChatToPlayer(MESSAGE_1 + i + ", " + j + ", " + k);
+	            	player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_1 + i + ", " + j + ", " + k));
 	        		this.link = (TileEntityBase) world.getBlockTileEntity(i, j, k);
 	        		this.link.setLinker(this);
 	            	setEditAndTag(getStartData(i, j, k), itemStack);
 	            }
 	            else
-	            	player.sendChatToPlayer(MESSAGE_0+MESSAGE_4);
+	            	player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_0+MESSAGE_4));
 	        }
 		}
         return itemStack;
@@ -121,17 +122,17 @@ public abstract class ItemBase extends Item{
     			if(corner == null)
     			{
     				corner = new int[]{par4,par5,par6};
-    				player.sendChatToPlayer(MESSAGE_5+ par4 + ", " + par5 + ", " + par6);
+    				player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_5+ par4 + ", " + par5 + ", " + par6));
     			}
     			else 
     			{
     				if(!Arrays.equals(corner, new int[]{par4,par5,par6}))
     				{
 	    				onMultipleSelection(player, world, corner, new int[]{par4,par5,par6});
-	    				player.sendChatToPlayer(MESSAGE_6);
+	    				player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_6));
     				}
     				else
-    					player.sendChatToPlayer(MESSAGE_7);
+    					player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_7));
     				corner = null;
     			}
     		}
@@ -174,12 +175,6 @@ public abstract class ItemBase extends Item{
 	{
 		this.link = (TileEntityBase)world.getBlockTileEntity(data[0], data[1], data[2]);
 	}
-
-	@Override
-    public void registerIcons(IconRegister par1IconRegister) 
-    {
-        this.itemIcon = par1IconRegister.registerIcon(GeneralRef.TEXTURE_PATH + this.getUnlocalizedName().substring(5));
-    }
 	
 	public void resetLinker()
     {

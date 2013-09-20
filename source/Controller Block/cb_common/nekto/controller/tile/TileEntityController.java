@@ -49,7 +49,7 @@ public class TileEntityController extends TileEntityBase<int[]> {
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) 
 	{
 		return i<getSizeInventory() && itemstack.getItem() instanceof ItemBlock;
 	}

@@ -97,7 +97,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	}
 	
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) 
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) 
 	{
 		return (i == 0 && itemstack.getItem() instanceof ItemRemote);
 	}

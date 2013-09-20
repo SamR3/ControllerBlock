@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 
 public abstract class TileEntityBase<e> extends TileEntity implements IInventory {
@@ -91,11 +92,11 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
     private void sendMessage(EntityPlayer player, boolean removed, int[] data) 
     {
     	if(removed) 
-    	{//see ChatMessageComponent static string method
-        	player.sendChatToPlayer("Removed "+dataAsString(data)+ " from "+getListName());
+    	{
+        	player.sendChatToPlayer(ChatMessageComponent.createFromText("Removed "+dataAsString(data)+ " from "+getListName()));
         } else 
         {
-        	player.sendChatToPlayer("Added "+dataAsString(data)+ " to "+getListName());
+        	player.sendChatToPlayer(ChatMessageComponent.createFromText("Added "+dataAsString(data)+ " to "+getListName()));
         }
 	}
 	/**

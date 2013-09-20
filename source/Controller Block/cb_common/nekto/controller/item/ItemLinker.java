@@ -7,6 +7,7 @@ import nekto.controller.tile.TileEntityBase;
 import nekto.controller.tile.TileEntityController;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatMessageComponent;
 
 public class ItemLinker extends ItemBase {
 
@@ -26,10 +27,10 @@ public class ItemLinker extends ItemBase {
 	    		this.link.setEditing(false);
 	    		this.link.setLinker(null);
 	    		this.link = tempTile;
-	    		player.sendChatToPlayer(MESSAGE_2);
+	    		player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_2));
     		}
         	tempTile.setLinker(this);
-        	player.sendChatToPlayer(MESSAGE_1 + par4 + ", " + par5 + ", " + par6);
+        	player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_1 + par4 + ", " + par5 + ", " + par6));
         	setEditAndTag(new int[]{par4, par5, par6},stack);
         	return true;
         }
@@ -39,7 +40,7 @@ public class ItemLinker extends ItemBase {
         	tempTile.setEditing(false);
         	stack.getTagCompound().removeTag(KEYTAG);
         	this.resetLinker();
-        	player.sendChatToPlayer(MESSAGE_2);
+        	player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_2));
         	return true;
         }
     	return false;

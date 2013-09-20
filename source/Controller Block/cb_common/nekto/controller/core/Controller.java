@@ -17,9 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -46,23 +45,23 @@ public class Controller {
 	public static CommonProxy proxy;
 	
 	private Configuration config;
-	@PreInit
+	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event) 
 	{
 		config= new Configuration(event.getSuggestedConfigurationFile(),true);
 		config.load();
-    	controller = new BlockController(config.get("block", "controller id", 500).getInt());
-    	linker = new ItemLinker(config.get("item", "linker id", 1000).getInt());
-    	animator = new BlockAnimator(config.get("block", "animator id", 501).getInt());
-    	remote = new ItemRemote(config.get("item", "remote id", 1001).getInt());
+	}
+
+    @EventHandler
+    public void load(FMLInitializationEvent event) 
+    {
+    	controller = new BlockController(config.getBlock("controller id", 500).getInt());
+    	linker = new ItemLinker(config.getItem("linker id", 1000).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"linker");
+    	animator = new BlockAnimator(config.getBlock("animator id", 501).getInt());
+    	remote = new ItemRemote(config.getItem("remote id", 1001).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"remote");
     	tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
     	if(config.hasChanged())
     		config.save();
-	}
-
-    @Init
-    public void load(FMLInitializationEvent event) 
-    {
         GameRegistry.registerBlock(controller, "controller");
         GameRegistry.registerBlock(animator, "animator");
         GameRegistry.registerItem(linker, "linker");

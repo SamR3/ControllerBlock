@@ -14,6 +14,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -75,14 +76,14 @@ public class AnimatorGUI extends GuiContainer {
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-    	this.mc.renderEngine.bindTexture(getTexture(remote));
-    	//this.mc.renderEngine.func_110577_a(new ResourceLocation("controller","/textures/gui/controllergui.png"));
+    	//this.mc.renderEngine.bindTexture(getTexture(remote));
+    	this.mc.renderEngine.bindTexture(new ResourceLocation("controller",getTexture(remote)));
     	this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
     }
     
     private static String getTexture(boolean remote)
     {
-		return "/mods/controller/textures/gui/"+(remote ? "remote":"controller")+"gui.png";
+		return "textures/gui/"+(remote ? "remote":"controller")+"gui.png";
 	}
     
 	@Override

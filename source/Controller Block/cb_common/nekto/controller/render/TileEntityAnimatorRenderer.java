@@ -11,15 +11,14 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
-//import net.minecraft.client.resources.ResourceLocation;
 
 public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
 
     private final ModelAnimator2 model;
-    //private static final ResourceLocation texture = new ResourceLocation("");
     public TileEntityAnimatorRenderer() 
     {
         this.model = new ModelAnimator2();
@@ -32,8 +31,8 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
         setLighting(Minecraft.getMinecraft().theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
         
         GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTextureByName(GeneralRef.FULL_TEXTURE_PATH+((TileEntityBase)tileEntity).getTexture());
-        //func_110628_a(texture);
+        //bindTextureByName(GeneralRef.FULL_TEXTURE_PATH+((TileEntityBase)tileEntity).getTexture());
+        bindTexture(new ResourceLocation(GeneralRef.FULL_TEXTURE_PATH+((TileEntityBase)tileEntity).getTexture()));
         GL11.glPushMatrix();
         
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);

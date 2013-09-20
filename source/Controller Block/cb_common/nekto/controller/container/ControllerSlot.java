@@ -16,6 +16,6 @@ public class ControllerSlot extends Slot{
 	@Override
 	public boolean isItemValid(ItemStack stack)
     {
-        return this.control.isStackValidForSlot(slotNumber, stack);
+        return this.control.isItemValidForSlot(slotNumber, stack);
     }
 }
