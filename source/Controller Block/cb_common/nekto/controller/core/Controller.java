@@ -44,24 +44,23 @@ public class Controller {
     @SidedProxy(clientSide = GeneralRef.CLIENT_PROXY, serverSide = GeneralRef.COMMON_PROXY)
 	public static CommonProxy proxy;
 	
-	private Configuration config;
 	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event) 
 	{
-		config= new Configuration(event.getSuggestedConfigurationFile(),true);
+		Configuration config= new Configuration(event.getSuggestedConfigurationFile(),true);
 		config.load();
-	}
-
-    @EventHandler
-    public void load(FMLInitializationEvent event) 
-    {
-    	controller = new BlockController(config.getBlock("controller id", 500).getInt());
+		controller = new BlockController(config.getBlock("controller id", 500).getInt());
     	linker = new ItemLinker(config.getItem("linker id", 1000).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"linker");
     	animator = new BlockAnimator(config.getBlock("animator id", 501).getInt());
     	remote = new ItemRemote(config.getItem("remote id", 1001).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"remote");
     	tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
     	if(config.hasChanged())
     		config.save();
+	}
+
+    @EventHandler
+    public void load(FMLInitializationEvent event) 
+    {
         GameRegistry.registerBlock(controller, "controller");
         GameRegistry.registerBlock(animator, "animator");
         GameRegistry.registerItem(linker, "linker");
