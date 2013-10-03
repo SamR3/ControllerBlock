@@ -3,9 +3,7 @@ package nekto.controller.item;
 import java.util.Arrays;
 import java.util.List;
 
-import nekto.controller.ref.GeneralRef;
 import nekto.controller.tile.TileEntityBase;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -191,6 +189,7 @@ public abstract class ItemBase extends Item{
 		return this.isCornerMode;
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {

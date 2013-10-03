@@ -24,7 +24,8 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
         this.model = new ModelAnimator2();
     }
     
-    public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float scale) 
+    @Override
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float scale) 
     {
         GL11.glPushMatrix();
         

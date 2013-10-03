@@ -108,7 +108,8 @@ public class ContainerAnimator extends ContainerBase {
         }
     }
     
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public void updateProgressBar(int par1, int par2) 
     {
     	switch(par1){

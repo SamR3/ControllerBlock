@@ -17,7 +17,8 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
 
-    public void registerRenderThings() 
+    @Override
+	public void registerRenderThings() 
     {
     	BlockBase.renderID = RenderingRegistry.getNextAvailableRenderId();
     	RenderingRegistry.registerBlockHandler(BlockBase.renderID,new ControllerRenderer());

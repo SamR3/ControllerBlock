@@ -50,9 +50,9 @@ public class Controller {
 		Configuration config= new Configuration(event.getSuggestedConfigurationFile(),true);
 		config.load();
 		controller = new BlockController(config.getBlock("controller id", 500).getInt());
-    	linker = new ItemLinker(config.getItem("linker id", 1000).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"linker");
+    	linker = new ItemLinker(config.getItem("linker id", 9000).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"linker");
     	animator = new BlockAnimator(config.getBlock("animator id", 501).getInt());
-    	remote = new ItemRemote(config.getItem("remote id", 1001).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"remote");
+    	remote = new ItemRemote(config.getItem("remote id", 9001).getInt()).setTextureName(GeneralRef.TEXTURE_PATH +"remote");
     	tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
     	if(config.hasChanged())
     		config.save();
@@ -66,12 +66,19 @@ public class Controller {
         GameRegistry.registerItem(linker, "linker");
         GameRegistry.registerItem(remote, "remote");
         GameRegistry.addRecipe(new ItemStack(animator), new Object[]
-        		{"IPI","DRE","TBW",
-        	'I',Block.oreIron,'P',Item.enderPearl,
-        	'D',Item.diamond,'R',Block.blockRedstone,'E',Item.emerald,
-        	'T',Block.enchantmentTable,'B',Item.book,'W',Block.workbench});
+    		{"IPI","DRE","TBW",
+        	Character.valueOf('I'),Block.oreIron,
+        	Character.valueOf('P'),Item.enderPearl,
+			Character.valueOf('D'),Item.diamond,
+			Character.valueOf('R'),Block.blockRedstone,
+			Character.valueOf('E'),Item.emerald,
+			Character.valueOf('T'),Block.enchantmentTable,
+			Character.valueOf('B'),Item.book,
+			Character.valueOf('W'),Block.workbench});
         GameRegistry.addRecipe(new ItemStack(remote), new Object[]
-        		{"D","I","I", 'D', Item.diamond, 'I', Item.ingotIron});
+    		{"D","I","I", 
+        	Character.valueOf('D'), Item.diamond, 
+        	Character.valueOf('I'), Item.ingotIron});
         
         LanguageRegistry.addName(controller, "Controller");
         LanguageRegistry.addName(animator, "Animator");
