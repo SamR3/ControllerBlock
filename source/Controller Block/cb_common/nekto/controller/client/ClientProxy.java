@@ -16,28 +16,23 @@ import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class ClientProxy extends CommonProxy {
+	@Override
+	public void registerRenderThings() {
+		BlockBase.renderID = RenderingRegistry.getNextAvailableRenderId();
+		RenderingRegistry.registerBlockHandler(BlockBase.renderID, new ControllerRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBase.class, new TileEntityAnimatorRenderer());
+		KeyBindingRegistry.registerKeyBinding(new RemoteKeyHandler());
+	}
 
-    @Override
-	public void registerRenderThings() 
-    {
-    	BlockBase.renderID = RenderingRegistry.getNextAvailableRenderId();
-    	RenderingRegistry.registerBlockHandler(BlockBase.renderID,new ControllerRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBase.class, new TileEntityAnimatorRenderer());
-        KeyBindingRegistry.registerKeyBinding(new RemoteKeyHandler());
-    }
-    @Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) 
-	{	       
-        TileEntity tile = world.getBlockTileEntity(x, y, z);
-        if(tile instanceof TileEntityAnimator)
-	        if(ID == GeneralRef.GUI_ID )
-	        {
+	@Override
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		if (tile instanceof TileEntityAnimator)
+			if (ID == GeneralRef.GUI_ID) {
 				return new AnimatorGUI(player.inventory, (TileEntityAnimator) tile, false);
-	        }
-	        else if(ID == GeneralRef.REMOTE_GUI_ID)
-			{
+			} else if (ID == GeneralRef.REMOTE_GUI_ID) {
 				return new AnimatorGUI(player.inventory, (TileEntityAnimator) tile, true);
 			}
-	    return null;
+		return null;
 	}
 }
