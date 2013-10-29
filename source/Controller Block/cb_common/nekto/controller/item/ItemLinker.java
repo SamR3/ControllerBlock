@@ -16,6 +16,16 @@ public class ItemLinker extends ItemBase {
 	}
 
 	@Override
+	protected Class<? extends TileEntityBase> getControl() {
+		return TileEntityController.class;
+	}
+
+	@Override
+	protected String getControlName() {
+		return "tile.controller.name";
+	}
+
+	@Override
 	protected boolean onControlUsed(TileEntityBase tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack) {
 		if (tempTile.getLinker() == null) {
 			if (this.link != tempTile) {
@@ -37,20 +47,5 @@ public class ItemLinker extends ItemBase {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	protected Class<? extends TileEntityBase> getControl() {
-		return TileEntityController.class;
-	}
-
-	@Override
-	protected String getControlName() {
-		return "Controller";
-	}
-
-	@Override
-	public String toString() {
-		return "Linker";
 	}
 }

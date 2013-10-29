@@ -1,0 +1,15 @@
+﻿
+tile.animator.name=Animator
+tile.controller.name=Controller
+item.linker.name=Linker
+item.remote.name=Remote
+
+chat.item.message1=is not connected
+chat.item.message2=Linked to
+chat.item.message3=Unlinked from
+chat.item.message4=is already linked to another
+chat.item.message5.part1=Right click on a
+chat.item.message5.part2=block to begin linking
+chat.item.message6=Added first corner to selection at
+chat.item.message7=Selection finished
+chat.item.message8=Removed corner from selection

@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,14 +20,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class ItemBase extends Item {
 	public TileEntityBase link = null;
 	public final static String KEYTAG = "Control";
-	public String MESSAGE_0 = "The " + toString() + " is not connected.";
-	public String MESSAGE_1 = "Linked to " + getControlName() + " at ";
-	public String MESSAGE_2 = "Unlinked from " + getControlName() + ".";
-	public String MESSAGE_3 = getControlName() + " is already linked to another " + toString() + ".";
-	public String MESSAGE_4 = "Right click on a " + getControlName() + " block to begin linking.";
-	public final static String MESSAGE_5 = "Added first corner to selection at ";
-	public final static String MESSAGE_6 = "Selection finished.";
-	public final static String MESSAGE_7 = "Removed corner from selection";
+	public final static String MESS = "chat.item.message";
+	public String MESSAGE_0 = StatCollector.translateToLocal(getUnlocalizedName()) + " " + StatCollector.translateToLocal(MESS + 1);
+	public String MESSAGE_1 = StatCollector.translateToLocal(MESS + 2) + " " + StatCollector.translateToLocal(getControlName()) + " at ";
+	public String MESSAGE_2 = StatCollector.translateToLocal(MESS + 3) + " " + StatCollector.translateToLocal(getControlName());
+	public String MESSAGE_3 = StatCollector.translateToLocal(getControlName()) + " " + StatCollector.translateToLocal(MESS + 4) + " " + StatCollector.translateToLocal(getUnlocalizedName());
+	public String MESSAGE_4 = StatCollector.translateToLocal(MESS + "5.part1") + " " + StatCollector.translateToLocal(getControlName()) + " " + StatCollector.translateToLocal(MESS + "5.part2");
+	public final static String MESSAGE_5 = StatCollector.translateToLocal(MESS + 6) + " ";
+	public final static String MESSAGE_6 = StatCollector.translateToLocal(MESS + 7);
+	public final static String MESSAGE_7 = StatCollector.translateToLocal(MESS + 8);
 	public int[] corner = null;
 	private boolean isCornerMode = false;
 
@@ -34,6 +36,21 @@ public abstract class ItemBase extends Item {
 		super(id);
 		setMaxStackSize(1);
 		setCreativeTab(CreativeTabs.tabBlock);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+		if (stack.hasTagCompound() && stack.stackTagCompound.hasKey(KEYTAG)) {
+			int[] pos = stack.getTagCompound().getIntArray(KEYTAG);
+			par3List.add(MESSAGE_1 + pos[0] + ", " + pos[1] + ", " + pos[2]);
+		} else {
+			par3List.add(MESSAGE_4);
+		}
+	}
+
+	public boolean isInCornerMode() {
+		return this.isCornerMode;
 	}
 
 	@Override
@@ -81,6 +98,18 @@ public abstract class ItemBase extends Item {
 		return itemStack;
 	}
 
+	public void resetLinker() {
+		this.link = null;
+	}
+
+	public void setCornerMode(boolean bool) {
+		this.isCornerMode = bool;
+	}
+
+	protected abstract Class<? extends TileEntityBase> getControl();
+
+	protected abstract String getControlName();
+
 	protected int[] getStartData(int par4, int par5, int par6) {
 		return new int[] { par4, par5, par6 };
 	}
@@ -116,6 +145,57 @@ public abstract class ItemBase extends Item {
 	}
 
 	/**
+	 * What should happen if the selected {@link #TileEntityBase} by a player is
+	 * marked as already used by someone else
+	 * 
+	 * @param tempTile
+	 *            The selected TileEntity
+	 * @param player
+	 *            The player doing the use
+	 * @param stack
+	 *            The ItemStack used by player
+	 * @return false to send {@link #MESSAGE_3} to player
+	 */
+	protected abstract boolean onControlUsed(TileEntityBase tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack);
+
+	/**
+	 * Helper function to set data into the item and its Control in editing mode
+	 * 
+	 * @param pos
+	 *            Data to set into the item {@link NBTTagCompound}
+	 * @param par1ItemStack
+	 *            The item that will get the data
+	 */
+	protected void setEditAndTag(int[] pos, ItemStack par1ItemStack) {
+		this.link.setEditing(true);
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setIntArray(KEYTAG, pos);
+		par1ItemStack.setTagCompound(tag);
+	}
+
+	/**
+	 * Fired if link is null but item has NBTTag data pointing to a valid
+	 * control
+	 * 
+	 * @param world
+	 * @param data
+	 *            from the item {@link NBTTagCompound}
+	 */
+	protected void setItemVar(World world, int... data) {
+		this.link = (TileEntityBase) world.getBlockTileEntity(data[0], data[1], data[2]);
+	}
+
+	/**
+	 * Check for a controller on the coordinates
+	 * 
+	 * @return True only if there is a tile entity which extends from
+	 *         {@link #getControl()}
+	 */
+	private boolean isController(int x, int y, int z, World world) {
+		return getControl().isInstance(world.getBlockTileEntity(x, y, z));
+	}
+
+	/**
 	 * Fired if corner mode is true or player is sneaking and selected two
 	 * different corner blocks
 	 * 
@@ -142,82 +222,4 @@ public abstract class ItemBase extends Item {
 						this.link.add(player, world.getBlockId(x, y, z), x, y, z, world.getBlockMetadata(x, y, z), false);
 				}
 	}
-
-	/**
-	 * Fired if link is null but item has NBTTag data pointing to a valid
-	 * control
-	 * 
-	 * @param world
-	 * @param data
-	 *            from the item {@link NBTTagCompound}
-	 */
-	protected void setItemVar(World world, int... data) {
-		this.link = (TileEntityBase) world.getBlockTileEntity(data[0], data[1], data[2]);
-	}
-
-	public void resetLinker() {
-		this.link = null;
-	}
-
-	public void setCornerMode(boolean bool) {
-		this.isCornerMode = bool;
-	}
-
-	public boolean isInCornerMode() {
-		return this.isCornerMode;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		if (stack.hasTagCompound() && stack.stackTagCompound.hasKey(KEYTAG)) {
-			int[] pos = stack.getTagCompound().getIntArray(KEYTAG);
-			par3List.add(MESSAGE_1 + pos[0] + ", " + pos[1] + ", " + pos[2]);
-		} else {
-			par3List.add(MESSAGE_4);
-		}
-	}
-
-	/**
-	 * Helper function to set data into the item and its Control in editing mode
-	 * 
-	 * @param pos
-	 *            Data to set into the item {@link NBTTagCompound}
-	 * @param par1ItemStack
-	 *            The item that will get the data
-	 */
-	protected void setEditAndTag(int[] pos, ItemStack par1ItemStack) {
-		this.link.setEditing(true);
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setIntArray(KEYTAG, pos);
-		par1ItemStack.setTagCompound(tag);
-	}
-
-	/**
-	 * Check for a controller on the coordinates
-	 * 
-	 * @return True only if there is a tile entity which extends from
-	 *         {@link #getControl()}
-	 */
-	private boolean isController(int x, int y, int z, World world) {
-		return getControl().isInstance(world.getBlockTileEntity(x, y, z));
-	}
-
-	/**
-	 * What should happen if the selected {@link #TileEntityBase} by a player is
-	 * marked as already used by someone else
-	 * 
-	 * @param tempTile
-	 *            The selected TileEntity
-	 * @param player
-	 *            The player doing the use
-	 * @param stack
-	 *            The ItemStack used by player
-	 * @return false to send {@link #MESSAGE_3} to player
-	 */
-	protected abstract boolean onControlUsed(TileEntityBase tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack);
-
-	protected abstract Class<? extends TileEntityBase> getControl();
-
-	protected abstract String getControlName();
 }

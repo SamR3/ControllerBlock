@@ -23,6 +23,31 @@ public class ItemRemote extends ItemBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+		super.addInformation(stack, par2EntityPlayer, par3List, par4);
+		if (stack.hasTagCompound() && stack.stackTagCompound.hasKey(KEYTAG)) {
+			int data = stack.getTagCompound().getIntArray(KEYTAG)[3];
+			par3List.add("Editing frame # " + (data + 1));
+		}
+	}
+
+	@Override
+	protected Class<? extends TileEntityBase> getControl() {
+		return TileEntityAnimator.class;
+	}
+
+	@Override
+	protected String getControlName() {
+		return "tile.animator.name";
+	}
+
+	@Override
+	protected int[] getStartData(int par4, int par5, int par6) {
+		return new int[] { par4, par5, par6, 0 };
+	}
+
+	@Override
 	protected void onBlockSelected(EntityPlayer player, World world, int id, int par4, int par5, int par6, int meta) {
 		((TileEntityAnimator) this.link).setFrame(this.frame);
 		super.onBlockSelected(player, world, id, par4, par5, par6, meta);
@@ -52,44 +77,14 @@ public class ItemRemote extends ItemBase {
 	}
 
 	@Override
-	protected int[] getStartData(int par4, int par5, int par6) {
-		return new int[] { par4, par5, par6, 0 };
-	}
-
-	@Override
-	protected void setItemVar(World par3World, int... data) {
-		super.setItemVar(par3World, data);
-		this.frame = data[3];
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-		super.addInformation(stack, par2EntityPlayer, par3List, par4);
-		if (stack.hasTagCompound() && stack.stackTagCompound.hasKey(KEYTAG)) {
-			int data = stack.getTagCompound().getIntArray(KEYTAG)[3];
-			par3List.add("Editing frame # " + (data + 1));
-		}
-	}
-
-	@Override
-	protected Class<? extends TileEntityBase> getControl() {
-		return TileEntityAnimator.class;
-	}
-
-	@Override
 	protected void setEditAndTag(int[] pos, ItemStack par1ItemStack) {
 		((TileEntityAnimator) this.link).setFrame(pos[3]);
 		super.setEditAndTag(pos, par1ItemStack);
 	}
 
 	@Override
-	protected String getControlName() {
-		return "Animator";
-	}
-
-	@Override
-	public String toString() {
-		return "Remote";
+	protected void setItemVar(World par3World, int... data) {
+		super.setItemVar(par3World, data);
+		this.frame = data[3];
 	}
 }
