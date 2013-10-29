@@ -25,10 +25,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = GeneralRef.MOD_ID, name = GeneralRef.MOD_NAME, version = GeneralRef.VERSION)
-@NetworkMod(clientSideRequired = true, serverSideRequired = false, channels = { "Gui", "Animator" }, packetHandler = PacketHandler.class)
+@NetworkMod(clientSideRequired = true, channels = { "AnimatorGui", "Animator" }, packetHandler = PacketHandler.class)
 public class Controller {
 	//Blocks
 	public static Block controller, animator;
@@ -41,6 +40,22 @@ public class Controller {
 	public static CommonProxy proxy;
 
 	@EventHandler
+	public void load(FMLInitializationEvent event) {
+		GameRegistry.registerBlock(controller, "controller");
+		GameRegistry.registerBlock(animator, "animator");
+		GameRegistry.registerItem(linker, "linker");
+		GameRegistry.registerItem(remote, "remote");
+		GameRegistry.addRecipe(new ItemStack(animator), new Object[] { "IPI", "DRE", "TBW", Character.valueOf('I'), Block.oreIron, Character.valueOf('P'), Item.enderPearl, Character.valueOf('D'),
+				Item.diamond, Character.valueOf('R'), Block.blockRedstone, Character.valueOf('E'), Item.emerald, Character.valueOf('T'), Block.enchantmentTable, Character.valueOf('B'), Item.book,
+				Character.valueOf('W'), Block.workbench });
+		GameRegistry.addRecipe(new ItemStack(remote), new Object[] { "D", "I", "I", Character.valueOf('D'), Item.diamond, Character.valueOf('I'), Item.ingotIron });
+		NetworkRegistry.instance().registerGuiHandler(this, proxy);
+		GameRegistry.registerTileEntity(TileEntityController.class, "controllerBlockList");
+		GameRegistry.registerTileEntity(TileEntityAnimator.class, "animatorBlockList");
+		proxy.registerRenderThings();
+	}
+
+	@EventHandler
 	public void preLoad(FMLPreInitializationEvent event) {
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile(), true);
 		config.load();
@@ -51,25 +66,5 @@ public class Controller {
 		tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
 		if (config.hasChanged())
 			config.save();
-	}
-
-	@EventHandler
-	public void load(FMLInitializationEvent event) {
-		GameRegistry.registerBlock(controller, "controller");
-		GameRegistry.registerBlock(animator, "animator");
-		GameRegistry.registerItem(linker, "linker");
-		GameRegistry.registerItem(remote, "remote");
-		GameRegistry.addRecipe(new ItemStack(animator), new Object[] { "IPI", "DRE", "TBW", Character.valueOf('I'), Block.oreIron, Character.valueOf('P'), Item.enderPearl, Character.valueOf('D'),
-			Item.diamond, Character.valueOf('R'), Block.blockRedstone, Character.valueOf('E'), Item.emerald, Character.valueOf('T'), Block.enchantmentTable, Character.valueOf('B'), Item.book,
-			Character.valueOf('W'), Block.workbench });
-		GameRegistry.addRecipe(new ItemStack(remote), new Object[] { "D", "I", "I", Character.valueOf('D'), Item.diamond, Character.valueOf('I'), Item.ingotIron });
-		LanguageRegistry.addName(controller, "Controller");
-		LanguageRegistry.addName(animator, "Animator");
-		LanguageRegistry.addName(linker, "Linker");
-		LanguageRegistry.addName(remote, "Remote");
-		NetworkRegistry.instance().registerGuiHandler(this, proxy);
-		GameRegistry.registerTileEntity(TileEntityController.class, "controllerBlockList");
-		GameRegistry.registerTileEntity(TileEntityAnimator.class, "animatorBlockList");
-		proxy.registerRenderThings();
 	}
 }
