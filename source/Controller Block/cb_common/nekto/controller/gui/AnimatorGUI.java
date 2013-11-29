@@ -1,7 +1,5 @@
 package nekto.controller.gui;
 
-import java.util.List;
-
 import nekto.controller.container.ContainerAnimator;
 import nekto.controller.container.ContainerBase;
 import nekto.controller.core.Controller;
@@ -23,7 +21,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class AnimatorGUI extends GuiContainer {
-	private List<GuiButton> frameButtons;
 	private boolean remote;
 
 	public AnimatorGUI(InventoryPlayer par1InventoryPlayer, TileEntityAnimator par2TileEntity, boolean isRemote) {

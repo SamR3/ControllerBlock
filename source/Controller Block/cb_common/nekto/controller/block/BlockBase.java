@@ -42,7 +42,7 @@ public abstract class BlockBase extends BlockContainer {
 
 	@Override
 	public int getRenderType() {
-		return this.renderID;
+		return renderID;
 	}
 
 	@Override
