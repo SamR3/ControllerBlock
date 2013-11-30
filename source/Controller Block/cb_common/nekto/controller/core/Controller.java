@@ -41,10 +41,6 @@ public class Controller {
 
 	@EventHandler
 	public void load(FMLInitializationEvent event) {
-		GameRegistry.registerBlock(controller, "controller");
-		GameRegistry.registerBlock(animator, "animator");
-		GameRegistry.registerItem(linker, "linker");
-		GameRegistry.registerItem(remote, "remote");
 		GameRegistry.addRecipe(new ItemStack(animator), new Object[] { "IPI", "DRE", "TBW", Character.valueOf('I'), Block.oreIron, Character.valueOf('P'), Item.enderPearl, Character.valueOf('D'),
 				Item.diamond, Character.valueOf('R'), Block.blockRedstone, Character.valueOf('E'), Item.emerald, Character.valueOf('T'), Block.enchantmentTable, Character.valueOf('B'), Item.book,
 				Character.valueOf('W'), Block.workbench });
@@ -66,5 +62,9 @@ public class Controller {
 		tickDisplay = config.get("general", "Show delay as ticks", false).getBoolean(false);
 		if (config.hasChanged())
 			config.save();
+		GameRegistry.registerBlock(controller, "controller");
+		GameRegistry.registerBlock(animator, "animator");
+		GameRegistry.registerItem(linker, "linker");
+		GameRegistry.registerItem(remote, "remote");
 	}
 }
