@@ -23,7 +23,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 	}
 
 	@Override
-	protected List getBlockList() {
+	protected List<int[]> getBlockList() {
 		return getBaseList().get(frame);
 	}
 
@@ -64,10 +64,11 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 		this.removed = par1NBTTagCompound.getBoolean("removed");
 		for (int i = 0; i < length; i++) {
 			NBTTagCompound tag = ((NBTTagCompound) par1NBTTagCompound.getTagList("frames").tagAt(i));
-			List list = new ArrayList();
-			Iterator itr = tag.getTags().iterator();
+			List<int[]> list = new ArrayList<int[]>();
+			@SuppressWarnings("unchecked")
+			Iterator<NBTTagIntArray> itr = tag.getTags().iterator();
 			while (itr.hasNext())
-				list.add(((NBTTagIntArray) itr.next()).intArray);
+				list.add(itr.next().intArray);
 			this.getBaseList().add(list);
 		}
 	}
@@ -105,7 +106,7 @@ public class TileEntityAnimator extends TileEntityBase<List<int[]>> {
 
 	public void setFrame(int i) {
 		while (getBaseList().size() <= i)
-			getBaseList().add(new ArrayList());
+			getBaseList().add(new ArrayList<int[]>());
 		this.frame = i;
 	}
 

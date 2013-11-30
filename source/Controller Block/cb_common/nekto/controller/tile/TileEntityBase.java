@@ -79,7 +79,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	 *            The int array to search and remove
 	 * @return true if given int array has been found and removed
 	 */
-	private static boolean removeFromList(Iterator itr, int[] temp) {
+	private static boolean removeFromList(Iterator<int[]> itr, int[] temp) {
 		while (itr.hasNext()) {
 			if (Arrays.equals((int[]) itr.next(), temp)) {
 				itr.remove();
@@ -123,7 +123,7 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 		return baseList;
 	}
 
-	public void setBaseList(List baseList) {
+	public void setBaseList(List<e> baseList) {
 		this.baseList = baseList;
 	}
 
@@ -264,5 +264,5 @@ public abstract class TileEntityBase<e> extends TileEntity implements IInventory
 	 * 
 	 * @return
 	 */
-	protected abstract List getBlockList();
+	protected abstract List<int[]> getBlockList();
 }

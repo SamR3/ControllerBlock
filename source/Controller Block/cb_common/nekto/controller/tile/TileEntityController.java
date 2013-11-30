@@ -15,7 +15,7 @@ public class TileEntityController extends TileEntityBase<int[]> {
 	}
 
 	@Override
-	protected List getBlockList() {
+	protected List<int[]> getBlockList() {
 		return getBaseList();
 	}
 

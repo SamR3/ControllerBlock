@@ -29,16 +29,16 @@ public class TileEntityAnimatorRenderer extends TileEntitySpecialRenderer {
 		setLighting(Minecraft.getMinecraft().theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, Controller.animator);
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
 		//bindTextureByName(GeneralRef.FULL_TEXTURE_PATH+((TileEntityBase)tileEntity).getTexture());
-		bindTexture(new ResourceLocation(GeneralRef.FULL_TEXTURE_PATH + ((TileEntityBase) tileEntity).getTexture()));
+		bindTexture(new ResourceLocation(GeneralRef.FULL_TEXTURE_PATH + ((TileEntityBase<?>) tileEntity).getTexture()));
 		GL11.glPushMatrix();
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		this.model.render(0.0625F);
-		renderOrb((TileEntityBase) tileEntity);
+		renderOrb((TileEntityBase<?>) tileEntity);
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 	}
 
-	private void renderOrb(TileEntityBase tile) {
+	private void renderOrb(TileEntityBase<?> tile) {
 		GL11.glRotatef(tile.getRotation(), 0.0F, 1.0F, 0.0F);
 		float f2 = MathHelper.sin(tile.getHoverHeight() / 10.0F) * 0.04F;
 		GL11.glTranslatef(0.0F, f2, 0.0F);

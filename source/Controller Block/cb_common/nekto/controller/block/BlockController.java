@@ -3,6 +3,8 @@
  */
 package nekto.controller.block;
 
+import java.util.Iterator;
+
 import nekto.controller.tile.TileEntityBase;
 import nekto.controller.tile.TileEntityController;
 import net.minecraft.tileentity.TileEntity;
@@ -20,11 +22,11 @@ public class BlockController extends BlockBase {
 	}
 
 	@Override
-	public void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase tile) {
+	public void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase<?> tile) {
 		if (powered) {
-			setActiveBlocks(par1World, tile.getBaseList().iterator());
+			setActiveBlocks(par1World, (Iterator<int[]>) tile.getBaseList().iterator());
 		} else {
-			setUnactiveBlocks(par1World, tile.getBaseList().iterator());
+			setUnactiveBlocks(par1World, (Iterator<int[]>) tile.getBaseList().iterator());
 		}
 	}
 }

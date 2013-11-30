@@ -8,14 +8,14 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerBase extends Container {
-	protected TileEntityBase control;
+	protected TileEntityBase<?> control;
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return this.getControl().isUseableByPlayer(player);
 	}
 
-	public TileEntityBase getControl() {
+	public TileEntityBase<?> getControl() {
 		return this.control;
 	}
 

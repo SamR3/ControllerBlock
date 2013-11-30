@@ -16,7 +16,7 @@ public class ItemLinker extends ItemBase {
 	}
 
 	@Override
-	protected Class<? extends TileEntityBase> getControl() {
+	protected Class<? extends TileEntityBase<?>> getControl() {
 		return TileEntityController.class;
 	}
 
@@ -26,7 +26,7 @@ public class ItemLinker extends ItemBase {
 	}
 
 	@Override
-	protected boolean onControlUsed(TileEntityBase tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack) {
+	protected boolean onControlUsed(TileEntityBase<?> tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack) {
 		if (tempTile.getLinker() == null) {
 			if (this.link != tempTile) {
 				this.link.setEditing(false);

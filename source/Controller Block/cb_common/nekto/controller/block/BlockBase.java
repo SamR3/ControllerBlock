@@ -68,10 +68,10 @@ public abstract class BlockBase extends BlockContainer {
 
 	@Override
 	public void breakBlock(World world, int par2, int par3, int par4, int par5, int par6) {
-		TileEntityBase tile = (TileEntityBase) world.getBlockTileEntity(par2, par3, par4);
+		TileEntityBase<?> tile = (TileEntityBase<?>) world.getBlockTileEntity(par2, par3, par4);
 		if (!world.isRemote && tile.isPowered() && !tile.isEditing())//We only spawn items if it is powered and not in editing mode
 		{
-			Iterator itr = tile.getBaseList().iterator();
+			Iterator<?> itr = tile.getBaseList().iterator();
 			dropItems(world, tile, itr, par2, par3, par4);
 		}
 		ItemBase linker = tile.getLinker();
@@ -81,18 +81,18 @@ public abstract class BlockBase extends BlockContainer {
 		super.breakBlock(world, par2, par3, par4, par5, par6);
 	}
 
-	protected void setUnactiveBlocks(World par1World, Iterator itr) {
+	protected void setUnactiveBlocks(World par1World, Iterator<int[]> itr) {
 		while (itr.hasNext()) {
-			int[] block = (int[]) itr.next();
+			int[] block = itr.next();
 			if (block != null && block.length > 4 && par1World.getBlockId(block[1], block[2], block[3]) != block[0]) {
 				par1World.setBlock(block[1], block[2], block[3], block[0], block[4], 3);
 			}
 		}
 	}
 
-	protected void setActiveBlocks(World par1World, Iterator itr) {
+	protected void setActiveBlocks(World par1World, Iterator<int[]> itr) {
 		while (itr.hasNext()) {
-			int[] block = (int[]) itr.next();
+			int[] block = itr.next();
 			if (block != null && block.length > 4) {
 				if (par1World.getBlockId(block[1], block[2], block[3]) != block[0])
 					itr.remove();
@@ -102,7 +102,7 @@ public abstract class BlockBase extends BlockContainer {
 		}
 	}
 
-	protected void dropItems(World world, TileEntityBase tile, Iterator itr, int par2, int par3, int par4) {
+	protected void dropItems(World world, TileEntityBase<?> tile, Iterator<?> itr, int par2, int par3, int par4) {
 		float f = world.rand.nextFloat() * 0.8F + 0.1F;
 		float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
 		float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
@@ -115,7 +115,7 @@ public abstract class BlockBase extends BlockContainer {
 
 	@Override
 	public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5) {
-		TileEntityBase tile = (TileEntityBase) par1World.getBlockTileEntity(par2, par3, par4);
+		TileEntityBase<?> tile = (TileEntityBase<?>) par1World.getBlockTileEntity(par2, par3, par4);
 		boolean flag = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4);
 		if (tile.previousState != flag) {
 			if (tile.getBaseList().size() > 0)
@@ -125,5 +125,5 @@ public abstract class BlockBase extends BlockContainer {
 		}
 	}
 
-	protected abstract void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase tile);
+	protected abstract void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase<?> tile);
 }

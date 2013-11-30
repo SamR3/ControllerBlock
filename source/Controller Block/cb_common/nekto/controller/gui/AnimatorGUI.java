@@ -48,7 +48,7 @@ public class AnimatorGUI extends GuiContainer {
 			}
 			this.fontRenderer.drawString(s, 131 - this.fontRenderer.getStringWidth(s) / 2, 87, 0);
 		} else {
-			TileEntityBase control = ((ContainerBase) this.inventorySlots).getControl();
+			TileEntityBase<?> control = ((ContainerBase) this.inventorySlots).getControl();
 			String s = "Linked to";
 			this.fontRenderer.drawString(s, this.xSize / 2 - this.fontRenderer.getStringWidth(s) / 2, 39, 4210752);
 			s = control.getName() + " @";

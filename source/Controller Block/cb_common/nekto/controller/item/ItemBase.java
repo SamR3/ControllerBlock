@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class ItemBase extends Item {
-	public TileEntityBase link = null;
+	public TileEntityBase<?> link = null;
 	public final static String KEYTAG = "Control";
 	public final static String MESS = "chat.item.message";
 	public String MESSAGE_0 = StatCollector.translateToLocal(getUnlocalizedName()) + " " + StatCollector.translateToLocal(MESS + 1);
@@ -61,9 +61,9 @@ public abstract class ItemBase extends Item {
 				int i = movingobjectposition.blockX;
 				int j = movingobjectposition.blockY;
 				int k = movingobjectposition.blockZ;
-				TileEntityBase tempTile = null;
+				TileEntityBase<?> tempTile = null;
 				if (isController(i, j, k, world)) {
-					tempTile = (TileEntityBase) world.getBlockTileEntity(i, j, k);
+					tempTile = (TileEntityBase<?>) world.getBlockTileEntity(i, j, k);
 				}
 				if (itemStack.hasTagCompound() && itemStack.stackTagCompound.hasKey(KEYTAG)) {
 					int[] pos = null;
@@ -86,9 +86,9 @@ public abstract class ItemBase extends Item {
 					} else if (!world.isAirBlock(i, j, k)) {
 						onBlockSelected(player, world, world.getBlockId(i, j, k), i, j, k, world.getBlockMetadata(i, j, k));
 					}
-				} else if (isController(i, j, k, world) && ((TileEntityBase) world.getBlockTileEntity(i, j, k)).getLinker() == null) {
+				} else if (isController(i, j, k, world) && ((TileEntityBase<?>) world.getBlockTileEntity(i, j, k)).getLinker() == null) {
 					player.sendChatToPlayer(ChatMessageComponent.createFromText(MESSAGE_1 + i + ", " + j + ", " + k));
-					this.link = (TileEntityBase) world.getBlockTileEntity(i, j, k);
+					this.link = (TileEntityBase<?>) world.getBlockTileEntity(i, j, k);
 					this.link.setLinker(this);
 					setEditAndTag(getStartData(i, j, k), itemStack);
 				} else
@@ -106,7 +106,7 @@ public abstract class ItemBase extends Item {
 		this.isCornerMode = bool;
 	}
 
-	protected abstract Class<? extends TileEntityBase> getControl();
+	protected abstract Class<? extends TileEntityBase<?>> getControl();
 
 	protected abstract String getControlName();
 
@@ -156,7 +156,7 @@ public abstract class ItemBase extends Item {
 	 *            The ItemStack used by player
 	 * @return false to send {@link #MESSAGE_3} to player
 	 */
-	protected abstract boolean onControlUsed(TileEntityBase tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack);
+	protected abstract boolean onControlUsed(TileEntityBase<?> tempTile, EntityPlayer player, int par4, int par5, int par6, ItemStack stack);
 
 	/**
 	 * Helper function to set data into the item and its Control in editing mode
@@ -182,7 +182,7 @@ public abstract class ItemBase extends Item {
 	 *            from the item {@link NBTTagCompound}
 	 */
 	protected void setItemVar(World world, int... data) {
-		this.link = (TileEntityBase) world.getBlockTileEntity(data[0], data[1], data[2]);
+		this.link = (TileEntityBase<?>) world.getBlockTileEntity(data[0], data[1], data[2]);
 	}
 
 	/**

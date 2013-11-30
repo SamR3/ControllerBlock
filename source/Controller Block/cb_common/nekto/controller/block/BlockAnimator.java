@@ -39,7 +39,7 @@ public class BlockAnimator extends BlockBase {
 	}
 
 	@Override
-	protected void dropItems(World world, TileEntityBase tile, Iterator itr, int par2, int par3, int par4) {
+	protected void dropItems(World world, TileEntityBase<?> tile, Iterator<?> itr, int par2, int par3, int par4) {
 		List<int[]> frames = null;
 		int index = 0;
 		while (itr.hasNext()) {
@@ -98,23 +98,23 @@ public class BlockAnimator extends BlockBase {
 				tile.setFrame(tile.getFrame() - 1);
 			break;
 		}
-		Iterator itr = tile.getBaseList().get(tile.getFrame()).listIterator();//build next frame
+		Iterator<int[]> itr = tile.getBaseList().get(tile.getFrame()).listIterator();//build next frame
 		setUnactiveBlocks(par1World, itr);
 	}
 
 	private void previousFrame(World par1World, TileEntityAnimator tile) {
-		Iterator oldItr = tile.getBaseList().get(tile.getFrame()).listIterator();//erase previous frame
+		Iterator<int[]> oldItr = tile.getBaseList().get(tile.getFrame()).listIterator();//erase previous frame
 		setActiveBlocks(par1World, oldItr);
 	}
 
 	@Override
-	public void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase tile) {
+	public void onRedstoneChange(World par1World, int par2, int par3, int par4, int par5, boolean powered, TileEntityBase<?> tile) {
 		if (powered)//Powered but previously not powered
 		{
 			if (!((TileEntityAnimator) tile).hasRemoved()) {
 				for (int frame = 0; frame < tile.getBaseList().size(); frame++) {
 					if (((TileEntityAnimator) tile).getFrame() != frame) {
-						Iterator itr = ((TileEntityAnimator) tile).getBaseList().get(frame).listIterator();
+						Iterator<int[]> itr = ((TileEntityAnimator) tile).getBaseList().get(frame).listIterator();
 						setActiveBlocks(par1World, itr);
 					}
 				}
@@ -126,7 +126,7 @@ public class BlockAnimator extends BlockBase {
 				((TileEntityAnimator) tile).setMode(Mode.REVERSE);
 			else if (((TileEntityAnimator) tile).getMode() != Mode.REVERSE) {
 				for (int frame = 0; frame < tile.getBaseList().size(); frame++) {
-					Iterator itr = ((TileEntityAnimator) tile).getBaseList().get(frame).listIterator();
+					Iterator<int[]> itr = ((TileEntityAnimator) tile).getBaseList().get(frame).listIterator();
 					setUnactiveBlocks(par1World, itr);//Make all the blocks reappear
 				}
 				((TileEntityAnimator) tile).setRemoved(false);
